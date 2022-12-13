@@ -16,9 +16,9 @@ import NotificationsPopover from './NotificationsPopover';
 
 const NAV_WIDTH = 280;
 
-const HEADER_MOBILE = 64;
+const HEADER_MOBILE = 45;
 
-const HEADER_DESKTOP = 92;
+const HEADER_DESKTOP = 65;
 
 const StyledRoot = styled(AppBar)(({ theme }) => ({
   ...bgBlur({ color: theme.palette.background.default }),
@@ -57,7 +57,6 @@ export default function Header({ onOpenNav }) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
 
-        <Searchbar />
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack
@@ -68,8 +67,6 @@ export default function Header({ onOpenNav }) {
             sm: 1,
           }}
         >
-          <LanguagePopover />
-          <NotificationsPopover />
           <AccountPopover />
         </Stack>
       </StyledToolbar>

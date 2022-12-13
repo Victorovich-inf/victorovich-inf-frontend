@@ -20,7 +20,7 @@ import {
   Typography,
   IconButton,
   TableContainer,
-  TablePagination,
+  TablePagination, Tab, Tabs, Box,
 } from '@mui/material';
 // components
 import Label from '../components/label';
@@ -30,6 +30,7 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
+import UsersCRUDTable from '../components/CRUD/table/UsersCRUDTable';
 
 // ----------------------------------------------------------------------
 
@@ -146,120 +147,52 @@ export default function UserPage() {
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
+  const TABS = [
+    { value: 'all', label: 'Все', color: 'info', count: 1 },
+    { value: 'ban', label: 'Забаненные', color: 'success', count: 2 },
+  ];
+
+
   return (
     <>
       <Helmet>
-        <title> User | Minimal UI </title>
+        <title> Пользователи | Feelifun CRM </title>
       </Helmet>
 
-      <Container>
+      <Box sx={{paddingLeft: '3rem', paddingRight: '3rem'}}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            User
+            Пользователи
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New User
-          </Button>
         </Stack>
 
         <Card>
+          {/*<Tabs*/}
+          {/*  allowScrollButtonsMobile*/}
+          {/*  variant="scrollable"*/}
+          {/*  scrollButtons="auto"*/}
+          {/*  sx={{ px: 2, bgcolor: 'background.neutral' }}*/}
+          {/*>*/}
+          {/*  {TABS.map((tab) => (*/}
+          {/*    <Tab*/}
+          {/*      disableRipple*/}
+          {/*      key={tab.value}*/}
+          {/*      value={tab.value}*/}
+          {/*      label={*/}
+          {/*        <Stack spacing={1} direction="row" alignItems="center">*/}
+          {/*          <div>{tab.label}</div> <Label color={tab.color}> {tab.count} </Label>*/}
+          {/*        </Stack>*/}
+          {/*      }*/}
+          {/*    />*/}
+          {/*  ))}*/}
+          {/*</Tabs>*/}
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <UserListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                    const selectedUser = selected.indexOf(name) !== -1;
-
-                    return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
-                        </TableCell>
-
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={avatarUrl} />
-                            <Typography variant="subtitle2" noWrap>
-                              {name}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-
-                        <TableCell align="left">{company}</TableCell>
-
-                        <TableCell align="left">{role}</TableCell>
-
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-
-                        <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-
-                {isNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: 'center',
-                          }}
-                        >
-                          <Typography variant="h6" paragraph>
-                            Not found
-                          </Typography>
-
-                          <Typography variant="body2">
-                            No results found for &nbsp;
-                            <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete words.
-                          </Typography>
-                        </Paper>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                )}
-              </Table>
-            </TableContainer>
+            <UsersCRUDTable/>
           </Scrollbar>
-
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={USERLIST.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
         </Card>
-      </Container>
+      </Box>
 
       <Popover
         open={Boolean(open)}
