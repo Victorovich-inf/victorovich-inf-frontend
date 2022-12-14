@@ -1,13 +1,10 @@
 import useLoader from '../../hooks/useLoader';
-import { Button, Grid } from '@mui/material';
-import TablePagination from '@mui/material/TablePagination';
-import { Table } from 'antd';
+import { Box, Button, Grid, Stack, TextField } from '@mui/material';
+import { Pagination, Table } from 'antd';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import CRUDFilter from './CRUDFilter';
-import CollapsibleCRUDTable from './CollapsibleCRUDTable';
-import CRUDTableContext from './CRUDTableContext';
 
 import Iconify from '../iconify';
+import TableToolbar from './TableToolbar';
 
 
 const CRUDTable = ({
@@ -67,14 +64,17 @@ const CRUDTable = ({
           width: 100,
           render: (_, record) => {
             return (
-              <>
-                {onClickDetailsButton && <Iconify icon={'clarity:details-line'} style={{ fontSize: '1.5rem', marginRight: '20px' }}
-                                                         onClick={() => onClickDetailsButton(record.id)} />}
-                {onClickEditButton && <Iconify icon={'material-symbols:edit-document-sharp'} style={{ fontSize: '1.5rem', marginRight: '20px' }}
-                                                onClick={() => onClickEditButton(record.id)} />}
+              <Box sx={{display: 'flex'}}>
+                {onClickDetailsButton &&
+                  <Iconify icon={'clarity:details-line'} style={{ fontSize: '1.5rem', marginRight: '20px', cursor: 'pointer' }}
+                           onClick={() => onClickDetailsButton(record.id)} />}
+                {onClickEditButton && <Iconify icon={'material-symbols:edit-document-sharp'}
+                                               style={{ fontSize: '1.5rem', marginRight: '20px', cursor: 'pointer' }}
+                                               onClick={() => onClickEditButton(record.id)} />}
                 {onClickDeleteButton &&
-                  <Iconify icon={'material-symbols:delete-forever-rounded'} style={{ fontSize: '1.5rem' }} onClick={() => onClickDeleteButton(record.id)} />}
-              </>
+                  <Iconify icon={'material-symbols:delete-forever-rounded'} style={{ fontSize: '1.5rem', cursor: 'pointer' }}
+                           onClick={() => onClickDeleteButton(record.id)} />}
+              </Box>
             );
           },
         });
@@ -86,61 +86,44 @@ const CRUDTable = ({
   }, [columns, extraActions, onClickDeleteButton, onClickEditButton, onClickDetailsButton]);
 
   const [data, setData] = useState([]);
-  const Context = CRUDTableContext;
 
+  const [pageNumber, setPageNumber] = React.useState(1);
   const [total, setTotal] = useState(0);
-  const [skip, setSkip] = useState(0);
-  const [take, setTake] = useState(pagination ? 10 : null);
 
   const { loading, start, stop } = useLoader(true);
-  const paging = useMemo(
-    () => ({ take, skip, returnCount: true }),
-    [take, skip],
-  );
   const [sort] = useState({ id: { operator: 'desc' } });
   const [filter, setFilter] = useState({});
   const [searchValue, setSearchValue] = useState({});
-  const [advancedSearchValue, setAdvancedSearchValue] = useState({});
+
   const fetch = useCallback(async (reloadExtraFilter) => {
     start();
     extraQuery = extraQuery || {};
     if (typeof search === 'function') {
-      search({ paging, sort, filter: { ...filter, ...(reloadExtraFilter || extraFilter || {}) }, ...extraQuery })
+      search({
+        page: pageNumber,
+        sort,
+        filter: { ...filter, ...(reloadExtraFilter || extraFilter || {}) }, ...extraQuery,
+      })
         .then(async (data) => {
-          if (mapData)
-            data.result = mapData(data.result);
-          if (onData) {
-            await onData(data.result);
-          }
-          if (onResult) {
-            await onResult(data);
-          }
           setData(data.result);
           setTotal(data.total);
         })
         .catch(alert)
         .finally(stop);
     } else {
-      if (mapData && search?.result)
-        search.result = mapData(search.result);
-      if (onData) {
-        await onData(search?.result);
-      }
 
       setData(search?.result);
       setTotal(search?.total);
       stop();
     }
-  }, [paging, filter, extraFilter, sort, start, stop, search]);
+  }, [pageNumber, filter, extraFilter, sort, start, stop, search]);
   useEffect(() => {
-    if (wait)
-      return;
 
     fetch(extraFilter);
-  }, [skip, take, paging, filter, extraFilter, search, reloadValue, wait]);
+  }, [pageNumber, filter, extraFilter, search, reloadValue, wait]);
 
 
-  const handleSearchPanelChange = (val, key, compareType, operandPosition, filterType, key1, key2) => {
+  const handleSearchPanelChange = (val, key, compareType, filterType, key1, key2) => {
     switch (filterType) {
       case 'normal':
       case 'text':
@@ -155,47 +138,27 @@ const CRUDTable = ({
             if (!filter) {
               filter = {};
             }
-            filter[key2] = {
-              ...filter[key2],
-              operator: compareType,
-              [`operand${operandPosition}`]: val,
-            };
+            filter[key2] = val;
             stateObject[key1 || key] = filter;
           } else {
-            stateObject[key1 || key] = {
-              ...state[key1 || key],
-              operator: compareType,
-              [`operand${operandPosition}`]: val,
-            };
+            stateObject[key1 || key] = val;
           }
           if (!val) {
-            delete stateObject[key1 || key][`operand${operandPosition}`];
-            if (!stateObject[key1 || key].operand1 && !stateObject[key1 || key].operand2) {
+            delete stateObject[key1 || key];
+            if (!stateObject[key1 || key]) {
               stateObject[key1 || key] = null;
             }
           }
           return stateObject;
         });
         break;
-      case 'advanced':
-        setAdvancedSearchValue(state => {
-          const stateObject = {
-            ...state,
-            [key]: val,
-          };
-          if (!val) {
-            stateObject[key] = null;
-          }
-          return stateObject;
-        });
-        break;
-
     }
 
 
   };
+
   const applyFilter = () => {
-    setSkip(0);
+    setPageNumber(1);
 
     setFilter(state => {
       return {
@@ -203,89 +166,92 @@ const CRUDTable = ({
       };
     });
   };
+
   const removeFilter = () => {
     setSearchValue({});
-    setAdvancedSearchValue({});
     setFilter({});
 
     onDidRemoveFilter && onDidRemoveFilter();
   };
+
   return (
-    <>{
-      (searchFields || filterFields) && <CRUDFilter rightChildren={
-        onClickCreateButton && <Button onClick={onClickCreateButton}>Добавить</Button>
-      }>
-        <Grid container xs={12} marginBottom={2} justifyContent={'space-between'}>
-          <Grid container xs={10}>
-            <Button onClick={() => applyFilter()}>
-              Найти
+    <>
+      {onClickCreateButton && <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2, px: 1 }}>
+        <Button variant='outlined' onClick={onClickCreateButton}>Добавить</Button>
+      </Box>}
+      <TableToolbar searchPlaceholder={'Фильтры'} filters={searchFields?.length}>
+        <Stack direction='row' flexWrap='wrap' spacing={2} sx={{ py: 1.5, px: 1 }}>
+          {searchFields && searchFields.map((field, idx) => (
+            <Grid key={idx} style={{
+              marginLeft: '10px',
+              minWidth: 200,
+              marginBottom: '10px',
+            }} item>
+              <TextField
+                type='text'
+                label={field.title}
+                size='small'
+                value={(() => {
+                  switch (field.filterType) {
+                    case 'normal':
+                      return searchValue[field.key] || '';
+                  }
+                })()}
+                style={{
+                  width: 'auto',
+                }}
+                onChange={(ev) => handleSearchPanelChange(ev.target.value, field.key, field.compareType, field.filterType)}
+              />
+            </Grid>
+          ))}
+        </Stack>
+        <Grid sx={{ paddingLeft: 2 }}
+              container item xs={12} marginBottom={2} justifyContent={'space-between'}>
+          <Grid container item xs={10}>
+            <Button variant='contained' onClick={() => applyFilter()}>
+              Поиск
             </Button>
-            <Button style={{ marginLeft: '10px' }} onClick={() => removeFilter()}>
-              Сбросить фильтры
+            <Button variant='contained' style={{ marginLeft: '10px' }} onClick={() => removeFilter()}>
+              Сброс
             </Button>
           </Grid>
         </Grid>
-      </CRUDFilter>
-    }
-      {collapsibleTable ?
-        <Context.Provider value={{
-          CollapseCRUDTable: CollapseCRUDTable,
-          onRowClick: onRowClick,
-          reducerFilterKey: reducerFilterKey,
-          reducerParentKey: reducerParentKey,
-          columns: _columns,
-          rows: data,
-          collapsedTableTitle: collapsedTableTitle,
-        }}>
-          <CollapsibleCRUDTable otherColumns={otherColumns} {...props} />
-        </Context.Provider>
-
-        :
-        <Table
-          columns={_columns}
-          rowKey={rowKey}
-          dataSource={data}
-          loading={loading}
-          pagination={false}
-          onRow={(record, rowIndex) => {
-            return {
-              onClick: (e) => {
-                if (e.target?.id !== 'deleteReferal')
-                  onRowClick && onRowClick(record, rowIndex);
-              }, // click row
-              onDoubleClick: (event) => {
-              }, // double click row
-              onContextMenu: (event) => {
-              }, // right button click row
-              onMouseEnter: (event) => {
-              }, // mouse enter row
-              onMouseLeave: (event) => {
-              }, // mouse leave row
-            };
-          }}
-          rowClassName={rowClassNameHandler && rowClassNameHandler}
-          {...props}
-        />
-      }
-
-
-      {pagination && <TablePagination
-        rowsPerPageOptions={[5, 10, 25, 50, 100, 500, 1000]}
-        labelRowsPerPage={'Количество записей на странице'}
-        style={{ alignItems: 'center' }}
-        component='div'
-        count={total}
-        rowsPerPage={take}
-        page={skip / take}
-        onPageChange={(e, page) => {
-          setSkip(page * take);
+      </TableToolbar>
+      <Table
+        columns={_columns}
+        rowKey={rowKey}
+        dataSource={data}
+        loading={loading}
+        pagination={false}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (e) => {
+              if (e.target?.id !== 'deleteReferal')
+                onRowClick && onRowClick(record, rowIndex);
+            }, // click row
+            onDoubleClick: (event) => {
+            }, // double click row
+            onContextMenu: (event) => {
+            }, // right button click row
+            onMouseEnter: (event) => {
+            }, // mouse enter row
+            onMouseLeave: (event) => {
+            }, // mouse leave row
+          };
         }}
-        onRowsPerPageChange={(event) => {
-          setSkip(0);
-          setTake(event.target.value);
-        }}
-      />}
+        rowClassName={rowClassNameHandler && rowClassNameHandler}
+        {...props}
+      />
 
+      {pagination && <Pagination pageSize={5} onChange={(page) => {
+        setPageNumber(page);
+      }} defaultCurrent={1} style={{
+        marginTop: '20px',
+        marginBottom: '20px',
+        display: 'flex',
+        justifyContent: 'flex-end',
+      }}
+                                 current={pageNumber} total={total} />}
     </>
   );
 };

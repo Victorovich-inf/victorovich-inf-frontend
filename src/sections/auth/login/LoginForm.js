@@ -1,28 +1,59 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-// @mui
-import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@mui/material';
+import * as Yup from 'yup';
+import { Stack, IconButton, InputAdornment, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
+import useAuth from '../../../hooks/useAuth';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, RHFTextField } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
-  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleClick = () => {
-    navigate('/dashboard', { replace: true });
+  const LoginSchema = Yup.object().shape({
+    email: Yup.string().email('Это не email').required('Email обязателен'),
+    password: Yup.string().required('Пароль обязателен'),
+  });
+
+  const defaultValues = {
+    email: 'gena@mail.ru',
+    password: '123123123',
   };
 
-  return (
-    <>
-      <Stack spacing={3}>
-        <TextField name="email" label="Email" />
+  const methods = useForm({
+    resolver: yupResolver(LoginSchema),
+    defaultValues,
+  });
 
-        <TextField
+  const {
+    setError,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = methods;
+
+  const onSubmit = async (data) => {
+    try {
+      await login(data.email, data.password);
+    } catch (error) {
+      setError('afterSubmit', { ...error, message: error.message });
+
+    }
+
+  }
+
+  return (
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <Stack spacing={3}>
+        {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
+        <RHFTextField name="email" label="Email" />
+
+        <RHFTextField
           name="password"
           label="Пароль"
           type={showPassword ? 'text' : 'password'}
@@ -38,9 +69,9 @@ export default function LoginForm() {
         />
       </Stack>
 
-      <LoadingButton sx={{ my: 2 }} fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>
+      <LoadingButton sx={{ my: 2 }} fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
         Войти
       </LoadingButton>
-    </>
+    </FormProvider>
   );
 }

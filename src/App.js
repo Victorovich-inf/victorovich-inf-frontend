@@ -1,19 +1,29 @@
-// routes
 import Router from './routes';
-// theme
 import ThemeProvider from './theme';
-// components
+import { SnackbarProvider } from 'notistack';
 import ScrollToTop from './components/scroll-to-top';
 import { StyledChart } from './components/chart';
+import { Provider } from 'react-redux';
+import { store } from './store';
+import { AuthProvider } from './contexts/JWTContext';
+import MotionLazyContainer from './components/animate/MotionLazyContainer';
 
 // ----------------------------------------------------------------------
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <ScrollToTop />
-      <StyledChart />
-      <Router />
-    </ThemeProvider>
+    <Provider store={store}>
+      <SnackbarProvider maxSnack={3}>
+        <ThemeProvider>
+          <AuthProvider>
+            <MotionLazyContainer>
+              <ScrollToTop />
+              <StyledChart />
+              <Router />
+            </MotionLazyContainer>
+          </AuthProvider>
+        </ThemeProvider>
+      </SnackbarProvider>
+    </Provider>
   );
 }

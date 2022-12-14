@@ -1,4 +1,5 @@
-import { $authHost, $host } from './';
+import {  $host } from './';
+import $authHost from '../utils/axios';
 
 export const defaultConfig = {
   headers: { 'Content-Type': 'application/json' },
@@ -10,7 +11,7 @@ export function CRUD(baseUrl) {
   return {
     search: function(params = {}) {
       return parseResponse(
-        $host.post(`${API}/${baseUrl}/query`, params, defaultConfig),
+        $authHost.post(`${API}/${baseUrl}/query`, params, defaultConfig),
       );
     },
     get: function(id) {

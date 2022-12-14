@@ -26,12 +26,12 @@ export default function DashboardAppPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard | Feelifun CRM </title>
+        <title> Дашбоард | Feelifun CRM </title>
       </Helmet>
 
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Привет снова
+          Привет, с возвращением
         </Typography>
 
         <Grid container spacing={3}>

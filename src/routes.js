@@ -6,9 +6,12 @@ import SimpleLayout from './layouts/simple';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
+import CreateUser from './pages/User/CreateOrEdit';
 import DashboardAppPage from './pages/DashboardAppPage';
 import OrderPage from './pages/OrderPage';
 import CertificatePage from './pages/CertificatePage';
+import AuthGuard from './guards/AuthGuard';
+import GuestGuard from './guards/GuestGuard';
 
 // ----------------------------------------------------------------------
 
@@ -16,18 +19,31 @@ export default function Router() {
   const routes = useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: <AuthGuard><DashboardLayout /></AuthGuard>,
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'orders', element: <OrderPage /> },
         { path: 'certificates', element: <CertificatePage /> },
+        { path: 'user/add', element: <CreateUser /> },
+        { path: 'user/:id', element: <CreateUser /> },
+        { path: 'user/:id/view', element: <CreateUser /> },
       ],
     },
     {
-      path: 'login',
-      element: <LoginPage />,
+      path: 'auth',
+      children: [
+        {
+          path: 'login',
+          element: (
+            <GuestGuard>
+              <LoginPage />
+            </GuestGuard>
+          ),
+        },
+        { path: 'login', element: <LoginPage /> },
+      ],
     },
     {
       element: <SimpleLayout />,

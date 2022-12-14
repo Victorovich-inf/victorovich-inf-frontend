@@ -1,33 +1,12 @@
 import { useState } from 'react';
-// @mui
 import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
-// mocks_
+import { Box, Divider, Typography, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 import account from '../../../_mock/account';
-import { useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { getUserData } from '../../../store/reducers/userReducer';
 
-// ----------------------------------------------------------------------
-
-const MENU_OPTIONS = [
-  {
-    label: 'Home',
-    icon: 'eva:home-fill',
-  },
-  {
-    label: 'Profile',
-    icon: 'eva:person-fill',
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
-];
-
-// ----------------------------------------------------------------------
-
-export default function AccountPopover() {
+function AccountPopover({user}) {
   const [open, setOpen] = useState(null);
-  const navigate = useNavigate()
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -35,7 +14,6 @@ export default function AccountPopover() {
 
   const handleClose = () => {
     setOpen(null);
-    navigate('/login')
   };
 
   return (
@@ -81,10 +59,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {user?.firstName} {user?.lastName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {user?.email}
           </Typography>
         </Box>
         <Divider sx={{ borderStyle: 'dashed' }} />
@@ -95,3 +73,9 @@ export default function AccountPopover() {
     </>
   );
 }
+
+export default connect(
+  (state) => ({
+    user: getUserData(state),
+  }),
+)(AccountPopover);
