@@ -1,8 +1,10 @@
 import {useFormContext, Controller} from 'react-hook-form';
 import {TextField} from '@mui/material';
-import {DatePicker} from "@mui/lab";
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
+import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
+
 
 export default function RHFDate({name, label, ...other}) {
   const {control} = useFormContext();

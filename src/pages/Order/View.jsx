@@ -14,7 +14,7 @@ import { oneUserCRUD, usersCRUD } from '../../http';
 import { PATH_DASHBOARD } from '../../paths';
 import { CitySelect } from '../../components/Select/domainSelects';
 
-function CreateOrEdit(props) {
+function View(props) {
   const { loading, start, stop, Preloader } = useLoader(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -43,21 +43,6 @@ function CreateOrEdit(props) {
     name: "city_id",
   });
 
-  const onSubmit = async (state) => {
-    try {
-      if (isEdit) {
-        await usersCRUD.edit({...state, id: params.id})
-        await enqueueSnackbar('Пользователь обновлен', { variant: 'success' });
-      } else  {
-        await usersCRUD.create(state)
-        await enqueueSnackbar('Пользователь добавлен', { variant: 'success' });
-        navigate(PATH_DASHBOARD.user.root)
-      }
-    } catch (e) {
-      await enqueueSnackbar(e, { variant: 'error' });
-    }
-  };
-
   React.useEffect(() => {
     (async function () {
       start()
@@ -77,19 +62,19 @@ function CreateOrEdit(props) {
 
 
   return (
-    <Page title={isEdit ? `Редактирование пользователя ` : `Создание пользователя`}>
+    <Page title={`Просмотр пользователя`}>
       <Box sx={{ paddingLeft: '3rem', paddingRight: '3rem' }}>
         {loading ? Preloader() : <>
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Box sx={{ flexGrow: 1 }}>
                 <Typography variant='h4' gutterBottom>
-                  {isEdit ? `Редактирование пользователя ` : `Создание пользователя`}
+                  Просмотр пользователя
                 </Typography>
               </Box>
             </Box>
           </Box>
-          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+          <FormProvider methods={methods}>
             <Grid container>
               <Grid item xs={12} md={12}>
                 <Card sx={{ p: 3 }}>
@@ -139,10 +124,6 @@ function CreateOrEdit(props) {
                 </Card>
               </Grid>
             </Grid>
-            <LoadingButton sx={{ marginTop: 2, marginLeft: 'auto' }} type='submit' variant='contained' size='large'
-                           loading={isSubmitting}>
-              {isEdit ? "Изменить" : "Создать"}
-            </LoadingButton>
           </FormProvider>
 
         </>}
@@ -151,4 +132,4 @@ function CreateOrEdit(props) {
   );
 }
 
-export default CreateOrEdit;
+export default View;

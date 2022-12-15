@@ -1,5 +1,5 @@
-import { Box, Card, Container, Divider, Grid, Stack, Tab, Tabs } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import { Box, Card, Grid, Stack } from '@mui/material';
+import React, { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
 import Page from '../../components/Page';
@@ -8,20 +8,26 @@ import { FormProvider, RHFTextField } from '../../components/hook-form';
 import { useNavigate, useParams } from 'react-router';
 import { useSnackbar } from 'notistack';
 import Typography from '@mui/material/Typography';
-import RHFDate from '../../components/hook-form/RHFDate';
 import RHFSelect from '../../components/hook-form/RHFSelect';
-import { oneUserCRUD, usersCRUD } from '../../http';
+import { oneOrderCRUD, oneUserCRUD, ordersCRUD, usersCRUD } from '../../http';
 import { PATH_DASHBOARD } from '../../paths';
 import { CitySelect } from '../../components/Select/domainSelects';
+import RHFDate from '../../components/hook-form/RHFDate';
+import { paymentStatusArray, stateArray } from '../../utils/data';
+import UserField from '../../components/Fields/UserField';
 
 function CreateOrEdit(props) {
   const { loading, start, stop, Preloader } = useLoader(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const params = useParams()
+  const params = useParams();
   const [isEdit, setEdit] = React.useState(false);
 
-  const defaultValues = useMemo(() => ({}), []);
+  const defaultValues = useMemo(() => ({
+    dateOfOrder: new Date(),
+    dateOfVisit: new Date(),
+
+  }), []);
 
 
   const methods = useForm({
@@ -34,24 +40,34 @@ function CreateOrEdit(props) {
     setValue,
     control,
     reset,
-    getValues,
     formState: { isSubmitting },
   } = methods;
 
   const cityId = useWatch({
     control,
-    name: "city_id",
+    name: 'city_id',
   });
+
+  const user = useWatch({
+    control,
+    name: 'users',
+  });
+
+  const userId = useWatch({
+    control,
+    name: 'user_id',
+  });
+
 
   const onSubmit = async (state) => {
     try {
       if (isEdit) {
-        await usersCRUD.edit({...state, id: params.id})
-        await enqueueSnackbar('Пользователь обновлен', { variant: 'success' });
-      } else  {
-        await usersCRUD.create(state)
-        await enqueueSnackbar('Пользователь добавлен', { variant: 'success' });
-        navigate(PATH_DASHBOARD.user.root)
+        await ordersCRUD.edit({ ...state, id: params.id });
+        await enqueueSnackbar('Заказ обновлен', { variant: 'success' });
+      } else {
+        await ordersCRUD.create(state);
+        await enqueueSnackbar('Заказ оформлен', { variant: 'success' });
+        navigate(PATH_DASHBOARD.orders.root);
       }
     } catch (e) {
       await enqueueSnackbar(e, { variant: 'error' });
@@ -59,32 +75,31 @@ function CreateOrEdit(props) {
   };
 
   React.useEffect(() => {
-    (async function () {
-      start()
+    (async function() {
+      start();
       if (params?.id) {
-        const res = await oneUserCRUD.search({id: params.id});
+        const res = await oneOrderCRUD.search({ id: params.id });
         if (res) {
           reset({
-            ...res
-          })
+            ...res,
+          });
           setEdit(true);
         }
       }
-      stop()
-    }())
-  }, [])
-
+      stop();
+    }());
+  }, []);
 
 
   return (
-    <Page title={isEdit ? `Редактирование пользователя ` : `Создание пользователя`}>
+    <Page title={isEdit ? `Редактирование заказа ` : `Оформление заказа`}>
       <Box sx={{ paddingLeft: '3rem', paddingRight: '3rem' }}>
         {loading ? Preloader() : <>
           <Box sx={{ mb: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Box sx={{ flexGrow: 1 }}>
                 <Typography variant='h4' gutterBottom>
-                  {isEdit ? `Редактирование пользователя ` : `Создание пользователя`}
+                  {isEdit ? `Редактирование заказа ` : `Оформление заказа`}
                 </Typography>
               </Box>
             </Box>
@@ -96,29 +111,32 @@ function CreateOrEdit(props) {
                   <Stack spacing={3}>
                     <Grid container spacing={3}>
                       <Grid item md={6}>
-                        <RHFTextField name='name' label='Логин' />
+                        <RHFTextField name='number' label='Номер' />
                       </Grid>
                       <Grid item md={6}>
-                        <RHFTextField name='email' label='Email' />
+                        <RHFDate name='dateOfOrder' label='Дата заказа' />
                       </Grid>
                       <Grid item md={6}>
-                        <RHFTextField name='firstName' label='Имя' />
-                      </Grid>
-                      <Grid item md={6}>
-                        <RHFTextField name='lastName' label='Фамилия' />
-                      </Grid>
-                      <Grid item md={6}>
-                        <RHFTextField name='address' label='Адрес' />
-                      </Grid>
-                      <Grid item md={6}>
-                        <RHFTextField name='phone' label='Телефон' />
+                        <RHFDate name='dateOfVisit' label='Дата посещения' />
                       </Grid>
                       <Grid item md={6}>
                         <RHFSelect
-                          options={['male', 'female']}
-                          name={`sex`}
-                          label={'Пол'}
-                          InputLabelProps={{shrink: true}}
+                          options={stateArray}
+                          optionValueKey={'value'}
+                          optionLabelKey={'label'}
+                          name={`state`}
+                          label={'Статус'}
+                          InputLabelProps={{ shrink: true }}
+                        />
+                      </Grid>
+                      <Grid item md={6}>
+                        <RHFSelect
+                          options={paymentStatusArray}
+                          optionValueKey={'value'}
+                          optionLabelKey={'label'}
+                          name={`paymentStatus`}
+                          label={'Статус оплаты'}
+                          InputLabelProps={{ shrink: true }}
                         />
                       </Grid>
                       <Grid item md={6}>
@@ -128,12 +146,18 @@ function CreateOrEdit(props) {
                           onChange={(val) => setValue('city_id', val)}
                         />
                       </Grid>
-                      {!isEdit && <Grid item md={6}>
-                        <RHFTextField name='password' label='Пароль' />
-                      </Grid>}
-                      {/*<Grid item md={6}>*/}
-                      {/*  <RHFDate name='dateOfBirth' label='Дата рождения' />*/}
-                      {/*</Grid>*/}
+                      <Grid item xs={6}>
+                        <UserField
+                          fullWidth
+                          value={userId}
+                          object={user}
+                          label='Пользователь'
+                          onChange={val => {
+                            setValue('user_id', val)
+                          }
+                          }
+                        />
+                      </Grid>
                     </Grid>
                   </Stack>
                 </Card>
@@ -141,7 +165,7 @@ function CreateOrEdit(props) {
             </Grid>
             <LoadingButton sx={{ marginTop: 2, marginLeft: 'auto' }} type='submit' variant='contained' size='large'
                            loading={isSubmitting}>
-              {isEdit ? "Изменить" : "Создать"}
+              {isEdit ? 'Изменить' : 'Оформить'}
             </LoadingButton>
           </FormProvider>
 

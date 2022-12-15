@@ -45,6 +45,7 @@
     "@iconify/react": "^4.0.0",
     "@mui/lab": "^5.0.0-alpha.103",
     "@mui/material": "^5.10.9",
+    "@mui/x-date-pickers": "^5.0.10",
     "@reduxjs/toolkit": "^1.9.1",
     "antd": "^5.0.6",
     "apexcharts": "^3.36.0",

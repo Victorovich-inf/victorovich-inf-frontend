@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useFormContext, Controller } from 'react-hook-form';
 // @mui
 import { TextField } from '@mui/material';
+import { useCallback } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -11,8 +12,15 @@ RHFSelect.propTypes = {
   options: PropTypes.array,
 };
 
-export default function RHFSelect({ name, options, ...other }) {
+export default function RHFSelect({ name, options, optionValueKey, getOptionLabel, optionLabelKey, ...other }) {
   const { control } = useFormContext();
+
+  const _getOptionLabel = useCallback((item) => {
+    if (getOptionLabel) return getOptionLabel(item);
+    if (optionLabelKey) return item[optionLabelKey];
+    return item
+  }, [optionLabelKey, getOptionLabel])
+
 
   return (
     <Controller
@@ -29,8 +37,8 @@ export default function RHFSelect({ name, options, ...other }) {
           {...other}
         >
           {options.map((option) => (
-            <option key={option} value={option}>
-              {option}
+            <option key={optionValueKey ? option[optionValueKey] :  option} value={optionValueKey ? option[optionValueKey] :  option}>
+              {_getOptionLabel(option)}
             </option>
           ))}
         </TextField>
