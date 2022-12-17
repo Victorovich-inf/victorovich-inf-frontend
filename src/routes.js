@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import CreateUser from './pages/User/CreateOrEdit';
 import CreateOrder from './pages/Order/CreateOrEdit';
+import ViewOrder from './pages/Order/View';
 import DashboardAppPage from './pages/DashboardAppPage';
 import OrderPage from './pages/OrderPage';
 import CertificatePage from './pages/CertificatePage';
@@ -32,7 +33,7 @@ export default function Router() {
         { path: 'user/:id/view', element: <CreateUser /> },
         { path: 'orders/add', element: <CreateOrder /> },
         { path: 'orders/:id', element: <CreateOrder /> },
-        { path: 'orders/:id/view', element: <CreateOrder /> },
+        { path: 'orders/:id/view', element: <ViewOrder /> },
       ],
     },
     {

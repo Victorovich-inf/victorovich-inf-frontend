@@ -243,7 +243,7 @@ const CRUDTable = ({
         {...props}
       />
 
-      {pagination && <Pagination pageSize={5} onChange={(page) => {
+      {pagination && <Pagination pageSize={10} onChange={(page) => {
         setPageNumber(page);
       }} defaultCurrent={1} style={{
         marginTop: '20px',
