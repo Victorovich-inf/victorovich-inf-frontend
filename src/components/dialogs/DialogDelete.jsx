@@ -6,25 +6,30 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import create from 'zustand';
+import { Box, TextField } from '@mui/material';
 
 const useConfirmDialogStore = create((set) => ({
     message: '',
     title: '',
+    comment: false,
     onSubmit: undefined,
     close: () => set({onSubmit: undefined}),
 }));
 
 
-export const confirmDialog = (title, message, onSubmit) => {
+export const confirmDialog = (title, message, onSubmit, comment) => {
     useConfirmDialogStore.setState({
         title,
         message,
         onSubmit,
+        comment
     });
 };
 
 const DialogDelete = () => {
-    const {title, message, onSubmit, close} = useConfirmDialogStore();
+    const {title, message, onSubmit, comment, close} = useConfirmDialogStore();
+    const [text, setText] = React.useState('');
+
     return (
         <Dialog
             open={Boolean(onSubmit)}
@@ -35,6 +40,12 @@ const DialogDelete = () => {
                 <DialogContentText id="alert-dialog-slide-description">
                     {message}
                 </DialogContentText>
+                {comment ? <Box sx={{ mt: 2 }}>
+                    <TextField value={text} onChange={(e) => {
+                        setText(e.target.value);
+                    }
+                    } fullWidth label='Комментарий (не обязательно)' />
+                </Box> : null}
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => close()} color="error" variant="contained">
@@ -42,7 +53,7 @@ const DialogDelete = () => {
                 </Button>
                 <Button onClick={() => {
                     if (onSubmit) {
-                        onSubmit();
+                        onSubmit(text);
                     }
                     close();
                 }} color="primary" variant="contained">

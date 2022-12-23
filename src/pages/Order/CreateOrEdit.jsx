@@ -42,6 +42,8 @@ function CreateOrEdit(props) {
   const defaultValues = useMemo(() => ({
     dateOfOrder: new Date(),
     dateOfVisit: new Date(),
+    state: 'new',
+    paymentStatus: 'paid'
 
   }), []);
 
@@ -243,7 +245,6 @@ function CreateOrEdit(props) {
                       }}
                       onChange={val => {
                         append({...val, optionId: val.id});
-                        console.log(val);
                       }
                       }
                     />

@@ -1,9 +1,9 @@
-import { Box, Button, Card, Divider, Stack, Tab } from '@mui/material';
-import React, {  useState } from 'react';
+import { Box, Button, Card, Divider, Stack, Tab, TextField } from '@mui/material';
+import React, { useState } from 'react';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import Page from '../../components/Page';
 import useLoader from '../../hooks/useLoader';
-import {  useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import Typography from '@mui/material/Typography';
 import {
   Table,
@@ -11,32 +11,42 @@ import {
   TableRow,
   TableCell,
 } from '@mui/material';
-import { oneOrderCRUD } from '../../http';
+import { oneOrderCRUD, ordersCRUD, ordersHistoryCRUD } from '../../http';
 import { paymentStatusArray, stateArray } from '../../utils/data';
 import Iconify from '../../components/iconify';
-import { teal } from '@mui/material/colors';
+import useReload from '../../hooks/useReload';
+import { connect } from 'react-redux';
+import { getUserData } from '../../store/reducers/userReducer';
+import { BasicTable } from '../../components/BasicTable';
+import { confirmDialog } from '../../components/dialogs/DialogDelete';
 
-function View(props) {
+function View({ user }) {
   const { loading, start, stop, Preloader } = useLoader(false);
   const [data, setData] = React.useState({});
+  const [history, setHistory] = React.useState([]);
   const params = useParams();
-  const [isEdit, setEdit] = React.useState(false);
+  const navigate = useNavigate();
+  const { reload, reloadValue } = useReload();
   const [value, setValue] = useState('1');
-  const color = teal[500];
 
   React.useEffect(() => {
     (async function() {
       start();
       if (params?.id) {
         const res = await oneOrderCRUD.search({ id: params.id });
+        const histories = await ordersHistoryCRUD.search({ filter: { order: params.id } });
         if (res) {
           setData({ ...res });
-          setEdit(true);
         }
+        console.log(histories);
+        setHistory(histories.map(el => {
+          let label = stateArray?.find(_ => _.value === el.state).label;
+          return { ...el, state: label, user: el.user?.email };
+        }));
       }
       stop();
     }());
-  }, []);
+  }, [params.id, reloadValue]);
 
   const RenderTableRow = React.useCallback((selected = false, text, data) => {
     return <TableRow selected={selected}>
@@ -44,9 +54,21 @@ function View(props) {
       <TableCell>
         {data}
       </TableCell>
-    </TableRow>
-  }, [])
+    </TableRow>;
+  }, []);
 
+  const handleChangeState = async state => {
+    let label = stateArray?.find(el => el.value === state).label;
+    return confirmDialog('Смена статуса', `Вы действительно хотите сменить статус на ${label}`, async (comment) => {
+      try {
+        await ordersCRUD.edit({ id: params?.id, state });
+        await ordersHistoryCRUD.create({ comment: comment ? comment : `Переход на статус`, user_id: user.id, state, order_id: params?.id });
+        reload();
+      } catch (e) {
+        console.log(e);
+      }
+    }, true);
+  };
 
   return (
     <Page title={`Просмотр заказа`}>
@@ -54,19 +76,24 @@ function View(props) {
         {loading ? Preloader() : <>
           <Box sx={{ mb: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Stack alignItems="center" direction="row" justifyContent="space-between" sx={{ flexGrow: 1 }}>
+              <Stack alignItems='center' direction='row' justifyContent='space-between' sx={{ flexGrow: 1 }}>
                 <Typography variant='h4' gutterBottom>
                   Просмотр заказа #{data?.number}
                 </Typography>
-                <Button variant="outlined">
+                <Button onClick={() => navigate(-1)} variant='outlined'>
                   Назад
                 </Button>
               </Stack>
             </Box>
           </Box>
-          <Stack alignItems="center" spacing={2} direction="row" sx={{ flexGrow: 1, mb: 2 }}>
-            <Button startIcon={<Iconify icon={'ic:sharp-fiber-new'} />} variant="outlined">Новый заказ</Button>
-            <Button startIcon={<Iconify icon={'carbon:task-approved'} />} color="info" variant="outlined">Одобрен</Button>
+          <Stack alignItems='center' spacing={2} direction='row' sx={{ flexGrow: 1, mb: 2 }}>
+            {stateArray?.map(el => {
+              return <Button onClick={() => {
+                handleChangeState(el.value);
+              }
+              } startIcon={<Iconify icon={el.icon} />} color={el.color}
+                             variant={data?.state === el.value && 'contained'}>{el.label}</Button>;
+            })}
           </Stack>
           <Card>
             <TabContext value={value}>
@@ -82,6 +109,16 @@ function View(props) {
                     disableRipple
                     value='3'
                     label={`Подуслуга`}
+                  />
+                  <Tab
+                    disableRipple
+                    value='4'
+                    label={`Опции`}
+                  />
+                  <Tab
+                    disableRipple
+                    value='5'
+                    label={`Лог`}
                     sx={{ '& .MuiTab-wrapper': { whiteSpace: 'nowrap' } }}
                   />
                 </TabList>
@@ -164,10 +201,61 @@ function View(props) {
                       {RenderTableRow(true, 'Кол-во до', data?.sub_services?.count2)}
                       {RenderTableRow(false, 'Цена', data?.sub_services?.newPrice)}
                       {RenderTableRow(true, 'URL', data?.sub_services?.url)}
-
                     </TableBody>
                   </Table>
                 </Box>
+              </TabPanel>
+              <TabPanel value='4'>
+                <BasicTable
+                  disabled
+                  cells={[
+                    {
+                      label: '№ n/n',
+                      id: 'id',
+                    },
+                    {
+                      label: 'Название',
+                      id: 'optionsName',
+                    },
+                    {
+                      label: 'Кол-во чел. от',
+                      id: 'optionsCount1',
+                    },
+                    {
+                      label: 'Кол-во чел. до',
+                      id: 'optionsCount2',
+                    },
+                    {
+                      label: 'Длительность',
+                      id: 'duration',
+                    },
+                    {
+                      label: 'Цена',
+                      id: 'optionsNewPrice',
+                    },
+                  ]}
+                  rows={data?.options}
+                />
+              </TabPanel>
+              <TabPanel value='5'>
+                <BasicTable
+                  disabled
+                  cells={[
+                    {
+                      label: 'Комментарий',
+                      id: 'comment',
+                    },
+                    {
+                      label: 'Статус',
+                      id: 'state',
+                    },
+                    {
+                      label: 'Автор',
+                      id: 'user',
+                    },
+                  ]}
+                  rows={history}
+                />
               </TabPanel>
             </TabContext>
           </Card>
@@ -178,4 +266,8 @@ function View(props) {
   );
 }
 
-export default View;
+export default connect(
+  (state) => ({
+    user: getUserData(state),
+  }),
+)(View);
