@@ -1,0 +1,13 @@
+docker:
+  registry: cr.yandex/crpu311m497t82hrsi9t
+  path: /feelifun-prod/docker-compose.yml
+
+services:
+  name:
+    admin_backend: "admin-backend"
+    admin_lk: "admin-lk"
+    admin_crm: "admin-crm"
+  regex:
+    admin_backend: "admin-backend:?[A-Za-z0-9]+-[A-Za-z0-9]+"
+    admin_lk: "admin-lk:?[A-Za-z0-9]+-[A-Za-z0-9]+"
+    admin_crm: "admin-crm:?[A-Za-z0-9]+-[A-Za-z0-9]+"

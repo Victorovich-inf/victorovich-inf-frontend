@@ -1,0 +1,9 @@
+all:
+  children:
+    web:
+      hosts:
+        feelifun:
+          ansible_host: 185.119.57.171
+          ansible_port: 22
+          ansible_user: root
+          ansible_python_interpreter: /usr/bin/python3

@@ -1,0 +1,20 @@
+- name: Change admin-backend tag
+  replace:
+    path: "{{ docker.path }}"
+    regexp: "{{ services.regex.admin_backend }}"
+    replace: "{{ services.name.admin_backend }}:{{ lookup('env', 'IMAGE_VERSION') }}"
+  when: service == 'admin-backend'
+
+- name: Change admin-lk tag
+  replace:
+    path: "{{ docker.path }}"
+    regexp: "{{ services.regex.admin_lk }}"
+    replace: "{{ services.name.admin_lk }}:{{ lookup('env', 'IMAGE_VERSION') }}"
+  when: service == 'admin-lk'
+
+- name: Change admin-crm tag
+  replace:
+    path: "{{ docker.path }}"
+    regexp: "{{ services.regex.admin_crm }}"
+    replace: "{{ services.name.admin_crm }}:{{ lookup('env', 'IMAGE_VERSION') }}"
+  when: service == 'admin-crm'

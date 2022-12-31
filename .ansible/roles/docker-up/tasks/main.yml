@@ -1,0 +1,4 @@
+- name: Restart docker
+  shell:
+    cmd: /bin/bash prod_update.sh
+    chdir: /root

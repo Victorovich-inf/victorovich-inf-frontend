@@ -1,0 +1,9 @@
+- name: Update admin-lk tag
+  hosts: feelifun
+
+  vars:
+    service: admin-crm
+
+  roles:
+    - { role: change-tag, become: yes }
+    - { role: docker-up, become: yes }
