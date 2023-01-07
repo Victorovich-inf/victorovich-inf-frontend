@@ -12,7 +12,7 @@ import { PATH_DASHBOARD } from '../paths';
 import { confirmDialog } from '../components/dialogs/DialogDelete';
 import { stateArray } from '../utils/data';
 import useTabs from '../hooks/useTabs';
-import { ordersStateCRUD } from '../http';
+import { ordersCRUD, ordersStateCRUD } from '../http';
 import { useEffect, useState } from 'react';
 import useLoader from '../hooks/useLoader';
 import LoadingScreen from '../components/LoadingScreen';
@@ -42,12 +42,12 @@ export default function OrderPage() {
     ordersStateCRUD.search().then(res => {
       setOrdersState(res);
     }).finally(stop)
-  }, []);
+  }, [reloadValue]);
 
   const deleteHandler = async (id) => {
-    return confirmDialog('Удаление заказа', 'Удалить заказ?', async () => {
+    return confirmDialog('Удаление', 'Удалить заказ?', async () => {
       try {
-
+        await ordersCRUD.delete(id).then(reload)
       } catch (e) {
         console.log(e);
       }

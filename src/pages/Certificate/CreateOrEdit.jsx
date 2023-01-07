@@ -14,17 +14,14 @@ import { FormProvider, RHFTextField } from '../../components/hook-form';
 import { useNavigate, useParams } from 'react-router';
 import { useSnackbar } from 'notistack';
 import Typography from '@mui/material/Typography';
-import RHFSelect from '../../components/hook-form/RHFSelect';
-import { oneOrderCRUD, ordersCRUD } from '../../http';
+import { certificatesCRUD, oneCertificateCRUD } from '../../http';
 import { PATH_DASHBOARD } from '../../paths';
-import { CitySelect } from '../../components/Select/domainSelects';
 import RHFDate from '../../components/hook-form/RHFDate';
-import { paymentStatusArray, stateArray } from '../../utils/data';
 import UserField from '../../components/Fields/UserField';
 import ServicesField from '../../components/Fields/ServicesField';
 import SubServicesField from '../../components/Fields/SubServicesField';
-import { orderSchema } from '../../schemas/orderSchema';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
+import { certificateSchema } from '../../schemas/certificateSchema';
 import RHFOptions from '../../components/hook-form/RHFOptions';
 
 function CreateOrEdit() {
@@ -32,19 +29,15 @@ function CreateOrEdit() {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const params = useParams();
-  const [isEdit, setEdit] = React.useState(false);
+  const [isEdit, setIsEdit] = React.useState(false);
 
   const defaultValues = useMemo(() => ({
-    dateOfOrder: new Date(),
-    dateOfVisit: new Date(),
-    state: 'new',
-    paymentStatus: 'paid',
-
+    dateEnd: new Date(),
   }), []);
 
 
   const methods = useForm({
-    defaultValues, resolver: yupResolver(orderSchema),
+    defaultValues, resolver: yupResolver(certificateSchema),
   });
 
 
@@ -53,13 +46,8 @@ function CreateOrEdit() {
     setValue,
     control,
     reset,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting },
   } = methods;
-
-  const cityId = useWatch({
-    control,
-    name: 'city_id',
-  });
 
   const user = useWatch({
     control,
@@ -86,12 +74,12 @@ function CreateOrEdit() {
       if (isEdit) {
         let data = { ...state };
         delete data['users'];
-        await ordersCRUD.edit({ ...data, id: params.id });
-        await enqueueSnackbar('Заказ обновлен', { variant: 'success' });
+        await certificatesCRUD.edit({ ...data, id: params.id });
+        await enqueueSnackbar('Сертификат обновлен', { variant: 'success' });
       } else {
-        await ordersCRUD.create(state);
-        await enqueueSnackbar('Заказ оформлен', { variant: 'success' });
-        navigate(PATH_DASHBOARD.orders.root);
+        await certificatesCRUD.create({ ...state, used: false });
+        await enqueueSnackbar('Сертификат оформлен', { variant: 'success' });
+        navigate(PATH_DASHBOARD.certificates.root);
       }
     } catch (e) {
       await enqueueSnackbar(e, { variant: 'error' });
@@ -102,37 +90,35 @@ function CreateOrEdit() {
     (async function() {
       start();
       if (params?.id) {
-        const res = await oneOrderCRUD.search({ id: params.id });
+        const res = await oneCertificateCRUD.search({ id: params.id });
         if (res) {
           reset({
             ...res,
-            options: res.options.map(el => {
-              return { ...el, optionId: el.id };
-            }),
           });
-          setEdit(true);
+          setIsEdit(true);
         }
       }
       stop();
     }());
-  }, [params.id, reset, start, stop]);
+  }, []);
 
 
   return (
-    <Page title={isEdit ? `Редактирование заказа ` : `Оформление заказа`}>
+    <Page title={isEdit ? `Редактирование сертификата ` : `Оформление сертификата`}>
       <Box sx={{ paddingLeft: '3rem', paddingRight: '3rem' }}>
         {loading ? Preloader() : <>
           <Box sx={{ mb: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Stack alignItems='center' direction='row' justifyContent='space-between' sx={{ flexGrow: 1 }}>
                 <Typography variant='h4' gutterBottom>
-                  {isEdit ? `Редактирование заказа ` : `Оформление заказа`}
+                  {isEdit ? `Редактирование сертификата ` : `Оформление сертификата`}
                 </Typography>
                 <Stack direction='row' alignItems='center' spacing={2}>
-                  {isEdit && <Button onClick={() => navigate(PATH_DASHBOARD.orders.detail(params.id))} color='info'
-                          variant='contained'>
-                    Просмотр
-                  </Button>}
+                  {isEdit &&
+                    <Button onClick={() => navigate(PATH_DASHBOARD.certificates.detail(params.id))} color='info'
+                            variant='contained'>
+                      Просмотр
+                    </Button>}
                   <Button onClick={() => navigate(-1)} variant='outlined'>
                     Назад
                   </Button>
@@ -147,41 +133,19 @@ function CreateOrEdit() {
                   <Stack spacing={3}>
                     <Grid container spacing={3}>
                       <Grid item md={6}>
-                        <RHFTextField name='number' label='Номер' />
+                        <RHFTextField name='number' label='Номер сертификата' />
                       </Grid>
                       <Grid item md={6}>
-                        <RHFDate name='dateOfOrder' label='Дата заказа' />
+                        <RHFTextField name='code' label='Код сертификата' />
                       </Grid>
                       <Grid item md={6}>
-                        <RHFDate name='dateOfVisit' label='Дата посещения' />
+                        <RHFTextField name='confirmationCode' label='Код подтверждения сертификата' />
                       </Grid>
                       <Grid item md={6}>
-                        <RHFSelect
-                          options={stateArray}
-                          optionValueKey={'value'}
-                          optionLabelKey={'label'}
-                          name={`state`}
-                          label={'Статус'}
-                          InputLabelProps={{ shrink: true }}
-                        />
+                        <RHFTextField name='balance' label='Баланс (номинал)' />
                       </Grid>
                       <Grid item md={6}>
-                        <RHFSelect
-                          options={paymentStatusArray}
-                          optionValueKey={'value'}
-                          optionLabelKey={'label'}
-                          name={`paymentStatus`}
-                          label={'Статус оплаты'}
-                          InputLabelProps={{ shrink: true }}
-                        />
-                      </Grid>
-                      <Grid item md={6}>
-                        <CitySelect
-                          fullWidth
-                          controller="city_id"
-                          value={cityId}
-                          onChange={(val) => setValue('city_id', val)}
-                        />
+                        <RHFDate name='dateEnd' label='Дата окончания' />
                       </Grid>
                       <Grid item xs={6}>
                         <UserField
@@ -225,8 +189,7 @@ function CreateOrEdit() {
                 </Card>
               </Grid>
             </Grid>
-            <RHFOptions label="Опции" subServiceId={subServiceId}/>
-
+            <RHFOptions label='Опции' subServiceId={subServiceId} />
             <LoadingButton sx={{ marginTop: 2, marginLeft: 'auto' }} type='submit' variant='contained' size='large'
                            loading={isSubmitting}>
               {isEdit ? 'Изменить' : 'Оформить'}

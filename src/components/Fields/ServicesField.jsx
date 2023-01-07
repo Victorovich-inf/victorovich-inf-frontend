@@ -1,9 +1,10 @@
-import { Button, Dialog, DialogContent, Divider, Stack } from '@mui/material';
+import { Button, Dialog, DialogContent, Divider, FormHelperText, Stack } from '@mui/material';
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
 import ServicesCRUDTable from '../CRUD/table/ServicesCRUDTable';
+import { useController } from 'react-hook-form';
 
 export default function ServicesField({
                                           label,
@@ -16,7 +17,11 @@ export default function ServicesField({
                                       }) {
     const [open, setOpen] = useState(false);
     const [name, setName] = useState('')
-    return (
+
+  const { fieldState: { error } } = useController({ name: 'service_id' });
+
+
+  return (
         <>
           <Stack direction="row" alignItems="center">
             <Typography style={{ fontWeight: "bold", width: "50%" }}>
@@ -58,6 +63,9 @@ export default function ServicesField({
                     </Button>
                 </DialogActions>
             </Dialog>
+          {error?.message ? <FormHelperText error sx={{p: 2}}>
+            {error?.message ? error?.message : null}
+          </FormHelperText> : null}
         </>
     );
 }

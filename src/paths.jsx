@@ -32,6 +32,12 @@ export const PATH_DASHBOARD = {
     edit: (id) => path(ROOTS_DASHBOARD, `/orders/${id}/`),
     detail: (id) => path(ROOTS_DASHBOARD, `/orders/${id}/view`),
   },
+  certificates: {
+    root: path(ROOTS_DASHBOARD, `/certificates`),
+    add: path(ROOTS_DASHBOARD, `/certificates/add`),
+    edit: (id) => path(ROOTS_DASHBOARD, `/certificates/${id}/`),
+    detail: (id) => path(ROOTS_DASHBOARD, `/certificates/${id}/view`),
+  },
   lang: {
     root: path(ROOTS_DASHBOARD, `/two`),
     edit: (id) => path(ROOTS_DASHBOARD, `/${id}/edit`),
