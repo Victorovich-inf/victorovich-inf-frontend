@@ -59,6 +59,7 @@ jobs:
       - name: Build and push docker container
         uses: docker/build-push-action@v2
         with:
+          provenance: false
           push: true
           file: ${{ env.DOCKERFILE }}
           context: ${{ env.DOCKER_BUILD_PATH }}
