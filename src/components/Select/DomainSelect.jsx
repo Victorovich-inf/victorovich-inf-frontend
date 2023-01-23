@@ -3,6 +3,8 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Select from "./Select";
+import { useController } from 'react-hook-form';
+import { FormHelperText } from '@mui/material';
 
 const DomainSelect = ({
                           reducerArrayKey,
@@ -10,6 +12,7 @@ const DomainSelect = ({
                           reducerAction,
                           isNullable,
                           filter,
+                        controller,
                           ...props
                       }) => {
     const dispatch = useDispatch();
@@ -34,8 +37,17 @@ const DomainSelect = ({
         emptyOption[props.optionLabelKey] = 'Не указано';
         options = [emptyOption, ...options];
     }
-    return (
-            <Select options={options} {...props} />
+
+  const {fieldState: {error}} = useController({name: controller});
+
+
+  return (
+      <>
+        <Select options={options} {...props} />
+        {error?.message ? <FormHelperText error sx={{p: 2}}>
+          {error?.message ? error?.message : null}
+        </FormHelperText> : null}
+      </>
     );
 };
 

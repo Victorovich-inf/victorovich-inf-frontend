@@ -21,10 +21,10 @@ export default function AuthGuard({ children }) {
   }
 
   if (!isAuthenticated) {
-    // if (pathname !== requestedLocation) {
-    //   setRequestedLocation(pathname);
-    // }
-    // return <Navigate to={PATH_AUTH.login} />;
+    if (pathname !== requestedLocation) {
+      setRequestedLocation(pathname);
+    }
+    return <Navigate to={PATH_AUTH.login} />;
   }
 
   if (requestedLocation && pathname !== requestedLocation) {
