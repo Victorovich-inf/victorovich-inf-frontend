@@ -4,9 +4,11 @@ import { Box, Divider, Typography, MenuItem, Avatar, IconButton, Popover } from 
 import account from '../../../_mock/account';
 import { connect } from 'react-redux';
 import { getUserData } from '../../../store/reducers/userReducer';
+import useAuth from '../../../hooks/useAuth';
 
 function AccountPopover({user}) {
   const [open, setOpen] = useState(null);
+  const { logout } = useAuth();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -14,6 +16,7 @@ function AccountPopover({user}) {
 
   const handleClose = () => {
     setOpen(null);
+    logout()
   };
 
   return (

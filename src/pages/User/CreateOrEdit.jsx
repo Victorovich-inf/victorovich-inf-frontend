@@ -123,6 +123,7 @@ function CreateOrEdit(props) {
                       </Grid>
                       <Grid item md={6}>
                         <CitySelect
+                          controller="city_id"
                           fullWidth
                           value={cityId}
                           onChange={(val) => setValue('city_id', val)}
@@ -131,9 +132,9 @@ function CreateOrEdit(props) {
                       {!isEdit && <Grid item md={6}>
                         <RHFTextField name='password' label='Пароль' />
                       </Grid>}
-                      {/*<Grid item md={6}>*/}
-                      {/*  <RHFDate name='dateOfBirth' label='Дата рождения' />*/}
-                      {/*</Grid>*/}
+                      <Grid item md={6}>
+                        <RHFDate name='dateOfBirth' label='Дата рождения' />
+                      </Grid>
                     </Grid>
                   </Stack>
                 </Card>

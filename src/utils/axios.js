@@ -6,6 +6,12 @@ const $authHost = axios.create({
     baseURL: `${HOST_API}/api`,
 });
 
+const authIntterceptor = (config) => {
+    config.headers.authorization = `Bearer ${localStorage.getItem("accessToken")}`;
+    return config;
+};
+
+$authHost.interceptors.request.use(authIntterceptor);
 
 $authHost.interceptors.response.use(
     (response) => response,
