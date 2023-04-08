@@ -22,8 +22,8 @@ export default function LoginForm() {
   });
 
   const defaultValues = {
-    email: 'gena@mail.ru',
-    password: '123123123',
+    email: 'beleberdek@yandex.ru',
+    password: '123123',
   };
 
   const methods = useForm({
@@ -42,9 +42,7 @@ export default function LoginForm() {
       await login(data.email, data.password);
     } catch (error) {
       setError('afterSubmit', { ...error, message: error.message });
-
     }
-
   }
 
   return (

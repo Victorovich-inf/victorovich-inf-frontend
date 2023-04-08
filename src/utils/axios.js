@@ -3,7 +3,7 @@ import { HOST_API } from '../config';
 
 
 const $authHost = axios.create({
-    baseURL: `${HOST_API}/api`,
+    baseURL: `${HOST_API}`,
 });
 
 const authIntterceptor = (config) => {

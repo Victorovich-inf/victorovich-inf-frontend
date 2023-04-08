@@ -17,16 +17,6 @@ const navConfig = [
     path: '/dashboard/user',
     icon: icon('ic_user'),
   },
-  {
-    title: 'Заказы',
-    path: '/dashboard/orders',
-    icon: <Iconify icon="icon-park-outline:transaction-order"/>,
-  },
-  {
-    title: 'Сертификаты',
-    path: '/dashboard/certificates',
-    icon: <Iconify icon="carbon:folder-details"/>,
-  },
 ];
 
 export default navConfig;

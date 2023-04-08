@@ -6,7 +6,7 @@ const {dispatch} = store
 
 
 export const loginAction = async (data) => {
-    await $authHost.post('/loginCRM', data).then(async (res) => {
+    await $authHost.post('/auth/admin/login', data).then(async (res) => {
         if (res.data?.token) {
             await localStorage.setItem('accessToken', res.data.token);
             await dispatch(setUser(res.data.user))
@@ -22,10 +22,10 @@ export const logoutAction = async () => {
 
 export const getMy = async () => {
     return new Promise((resolve, reject) => {
-        $authHost.get('/checkCRM').then(async (res) => {
+        $authHost.get('/auth/check').then(async (res) => {
             resolve({
                 user: res?.data?.user
             })
-        })
+        }).catch(reject)
     })
 }

@@ -1,9 +1,0 @@
-- name: Update admin-backend tag
-  hosts: feelifun
-
-  vars:
-    service: admin-backend
-
-  roles:
-    - { role: change-tag, become: yes }
-    - { role: docker-up, become: yes }

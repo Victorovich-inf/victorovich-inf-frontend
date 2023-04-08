@@ -31,10 +31,10 @@ function AuthProvider({ children }) {
     const initialize = async () => {
       try {
         const accessToken = window.localStorage.getItem('accessToken');
-        console.log(accessToken);
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
           const response = await getMy();
+          console.log(response);
           const { user } = response;
           await dispatch(setUser(user));
 
@@ -45,7 +45,6 @@ function AuthProvider({ children }) {
           dispatch(init())
         }
       } catch (err) {
-        console.log(err);
         await logoutFunc();
         dispatch(init())
       }

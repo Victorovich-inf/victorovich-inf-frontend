@@ -12,10 +12,10 @@ const isValidToken = (accessToken) => {
 const setSession = (accessToken) => {
   if (accessToken) {
     localStorage.setItem('accessToken', accessToken);
-    axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+    axios.defaults.headers.common.token = accessToken;
   } else {
     localStorage.removeItem('accessToken');
-    delete axios.defaults.headers.common.Authorization;
+    delete axios.defaults.headers.common.token;
   }
 };
 
