@@ -39,7 +39,7 @@ export const userSlice = createSlice({
     }
     })
 
-export const {RELOAD, auth, setUser, init, logout, authAdmin, logoutAdmin, setBalance} = userSlice.actions
+export const {RELOAD, auth, setUser, init, logout} = userSlice.actions
 
 export const getUserData = (state) => state.user.user;
 

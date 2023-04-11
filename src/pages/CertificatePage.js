@@ -42,7 +42,7 @@ export default function CertificatePage() {
   return (
     <>
       <Helmet>
-        <title> Сертификаты | Feelifun CRM </title>
+        <title> Сертификаты | Victorovich-inf </title>
       </Helmet>
 
       <Box sx={{paddingLeft: '3rem', paddingRight: '3rem'}}>

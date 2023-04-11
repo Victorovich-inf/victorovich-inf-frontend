@@ -22,7 +22,7 @@ export default function Page404() {
   return (
     <>
       <Helmet>
-        <title> 404 Page Not Found | Feelifun CRM </title>
+        <title> 404 Page Not Found | Victorovich-inf </title>
       </Helmet>
 
       <Container>

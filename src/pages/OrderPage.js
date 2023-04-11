@@ -62,7 +62,7 @@ export default function OrderPage() {
   return (
     <>
       <Helmet>
-        <title> Заказы | Feelifun CRM </title>
+        <title> Заказы | Victorovich-inf </title>
       </Helmet>
 
       <Box sx={{paddingLeft: '3rem', paddingRight: '3rem'}}>

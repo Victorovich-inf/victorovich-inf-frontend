@@ -26,7 +26,7 @@ export default function DashboardAppPage() {
   return (
     <>
       <Helmet>
-        <title> Дашбоард | Feelifun CRM </title>
+        <title> Дашбоард | Victorovich-inf </title>
       </Helmet>
 
       <Container maxWidth="xl">

@@ -6,7 +6,27 @@ const {dispatch} = store
 
 
 export const loginAction = async (data) => {
-    await $authHost.post('/auth/admin/login', data).then(async (res) => {
+    await $authHost.post('/auth/login', data).then(async (res) => {
+        if (res.data?.token) {
+            await localStorage.setItem('accessToken', res.data.token);
+            await dispatch(setUser(res.data.user))
+            await dispatch(auth());
+        }
+    })
+}
+
+export const register = async (data) => {
+    await $authHost.post('/auth/complete', data).then(async (res) => {
+        if (res.data?.token) {
+            await localStorage.setItem('accessToken', res.data.token);
+            await dispatch(setUser(res.data.user))
+            await dispatch(auth());
+        }
+    })
+}
+
+export const loginVK = async (data) => {
+    await $authHost.get('/auth/vkontakte', data).then(async (res) => {
         if (res.data?.token) {
             await localStorage.setItem('accessToken', res.data.token);
             await dispatch(setUser(res.data.user))

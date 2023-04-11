@@ -4,9 +4,9 @@ import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
 import UserPage from './pages/UserPage';
-import LoginPage from './pages/LoginPage';
+import LoginPage from './pages/auth/LoginPage';
 import Page404 from './pages/Page404';
-import CreateUser from './pages/User/CreateOrEdit';
+import CreateUser from './pages/User/Create';
 import CreateOrder from './pages/Order/CreateOrEdit';
 import ViewOrder from './pages/Order/View';
 import ViewCertificate from './pages/Certificate/View';
@@ -16,6 +16,7 @@ import OrderPage from './pages/OrderPage';
 import CertificatePage from './pages/CertificatePage';
 import AuthGuard from './guards/AuthGuard';
 import GuestGuard from './guards/GuestGuard';
+import RegisterPage from './pages/auth/RegisterPage';
 
 // ----------------------------------------------------------------------
 
@@ -49,6 +50,14 @@ export default function Router() {
           element: (
             <GuestGuard>
               <LoginPage />
+            </GuestGuard>
+          ),
+        },
+        {
+          path: 'register',
+          element: (
+            <GuestGuard>
+              <RegisterPage />
             </GuestGuard>
           ),
         },

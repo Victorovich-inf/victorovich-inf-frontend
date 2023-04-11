@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-// @mui
 import { styled } from '@mui/material/styles';
-//
 import Header from './header';
 import Nav from './nav';
-
-// ----------------------------------------------------------------------
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -44,6 +42,7 @@ export default function DashboardLayout() {
       <Main>
         <Outlet />
       </Main>
+      <ToastContainer/>
     </StyledRoot>
   );
 }

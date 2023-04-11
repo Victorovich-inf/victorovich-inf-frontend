@@ -16,7 +16,6 @@ function AccountPopover({user}) {
 
   const handleClose = () => {
     setOpen(null);
-    logout()
   };
 
   return (
@@ -69,7 +68,10 @@ function AccountPopover({user}) {
           </Typography>
         </Box>
         <Divider sx={{ borderStyle: 'dashed' }} />
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={async () => {
+          setOpen(false)
+          await logout()
+        }} sx={{ m: 1 }}>
           Выйти
         </MenuItem>
       </Popover>

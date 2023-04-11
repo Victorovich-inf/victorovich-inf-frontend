@@ -3,15 +3,22 @@ import {
   Card,
   Stack,
   Typography,
-  Box,
+  Box, Button,
 } from '@mui/material';
-import UsersCRUDTable from '../components/CRUD/table/UsersCRUDTable';
 import { useNavigate } from 'react-router-dom';
 import { PATH_DASHBOARD } from '../paths';
 import { confirmDialog } from '../components/dialogs/DialogDelete';
+import AdminTable from '../components/admins/table/AdminTable';
+import { userColumns } from '../components/admins/table/columns/UserColumns';
+import { useDeleteUserMutation, useGetAllQuery } from '../store/api/admin/userApi';
+import React from 'react';
+import useReload from '../hooks/useReload';
+import Page from '../components/Page';
 
 export default function UserPage() {
   const navigate = useNavigate()
+  const [deleteUser] = useDeleteUserMutation()
+  const { reload, reloadValue } = useReload();
 
   const handleAdd = () => {
     navigate(PATH_DASHBOARD.user.add)
@@ -23,13 +30,12 @@ export default function UserPage() {
 
   const viewPage = (id) => {
     navigate(PATH_DASHBOARD.user.detail(id))
-
   }
 
   const deleteHandler = async (id) => {
     return confirmDialog('Удаление пользователя', 'Удалить пользователя?', async () => {
       try {
-
+        await deleteUser(id);
       } catch (e) {
         console.log(e);
       }
@@ -37,12 +43,7 @@ export default function UserPage() {
   }
 
   return (
-    <>
-      <Helmet>
-        <title> Пользователи | Feelifun CRM </title>
-      </Helmet>
-
-      <Box sx={{paddingLeft: '3rem', paddingRight: '3rem'}}>
+      <Page title={'Пользователи | Victorovich-inf'}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Пользователи
@@ -50,9 +51,13 @@ export default function UserPage() {
         </Stack>
 
         <Card>
-            <UsersCRUDTable onClickDetailsButton={viewPage} onClickDeleteButton={deleteHandler} onClickCreateButton={handleAdd} onClickEditButton={handleEdit}/>
+          <AdminTable Button={<>
+            <Box sx={{display: 'flex', columnGap: '20px', justifyContent: 'flex-end', padding: 2}}>
+              <Button onClick={handleAdd} variant="contained">Добавить пользователя</Button>
+              <Button variant="outlined">Импортировать csv</Button>
+            </Box>
+          </>} onClickDeleteButton={deleteHandler} columns={userColumns} query={useGetAllQuery}/>
         </Card>
-      </Box>
-    </>
+      </Page>
   );
 }

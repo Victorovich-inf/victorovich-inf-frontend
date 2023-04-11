@@ -2,7 +2,7 @@ import { createContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {useDispatch} from "react-redux";
 import { isValidToken, setSession } from '../utils/jwt';
-import {getMy, loginAction} from "../store/actions/authActions";
+import { getMy, loginAction, register } from '../store/actions/authActions';
 import {auth, init, logout, RELOAD, setUser} from "../store/reducers/userReducer";
 
 
@@ -34,7 +34,6 @@ function AuthProvider({ children }) {
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
           const response = await getMy();
-          console.log(response);
           const { user } = response;
           await dispatch(setUser(user));
 
