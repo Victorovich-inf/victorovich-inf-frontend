@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async';
 import {
   Card,
   Stack,
@@ -14,6 +13,7 @@ import { useDeleteUserMutation, useGetAllQuery } from '../store/api/admin/userAp
 import React from 'react';
 import useReload from '../hooks/useReload';
 import Page from '../components/Page';
+import XLSXButton from '../components/admins/XLSXButton';
 
 export default function UserPage() {
   const navigate = useNavigate()
@@ -54,7 +54,7 @@ export default function UserPage() {
           <AdminTable Button={<>
             <Box sx={{display: 'flex', columnGap: '20px', justifyContent: 'flex-end', padding: 2}}>
               <Button onClick={handleAdd} variant="contained">Добавить пользователя</Button>
-              <Button variant="outlined">Импортировать csv</Button>
+              <XLSXButton/>
             </Box>
           </>} onClickDeleteButton={deleteHandler} columns={userColumns} query={useGetAllQuery}/>
         </Card>

@@ -75,7 +75,7 @@ const AdminTable = ({
     }
 
     return columns;
-  }, [columns, onClickDeleteButton, onClickEditButton, onClickDetailsButton]);
+  }, [columns, onClickDeleteButton, onClickEditButton, onClickDetailsButton, user]);
 
     const {
         getTableProps,

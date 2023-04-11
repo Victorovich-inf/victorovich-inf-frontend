@@ -37,9 +37,15 @@ export default function RegisterForm() {
   };
 
   useEffect(() => {
-    window.addEventListener('message', ({ data, origin }) => {
+    window.addEventListener('message', async ({ data, origin }) => {
       const user = data;
-      console.log(user);
+      if (typeof user === 'string') {
+        const profile = JSON.parse(user);
+        if (profile?.data) {
+          const query = new URLSearchParams(search);
+          await register({ ...profile.data, token: query.get('t'), vkId: profile?.data.id, password: (Math.random() + 1).toString(36).substring(7) + '123123' })
+        }
+      }
     });
   }, []);
 

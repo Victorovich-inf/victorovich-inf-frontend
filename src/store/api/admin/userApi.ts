@@ -1,6 +1,6 @@
 import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { BodyFilter, MessageResponse } from '../../../@types/schema';
-import { PaginationUserData, UserCreateData } from '../../../@types/user';
+import { PaginationUserData, ParseXLSXData, UserCreateData } from '../../../@types/user';
 import { ErrorValidation, showErrors, showMessage } from '../../../utils/errors';
 
 const apiBase =
@@ -44,6 +44,18 @@ export const userApi = createApi({
       query: (id) => ({
         url: `/user/admin/${id}`,
         method: "DELETE",
+      }),
+      invalidatesTags: ['User']
+    }),
+    parseXLSX: builder.mutation<MessageResponse, ParseXLSXData>({
+      query: (data) => ({
+        url: `/user/admin/parse-xlsx`,
+        method: "POST",
+        body: data,
+        headers: {
+          Accept: 'multipart/form-data',
+          token: `${localStorage.getItem('accessToken')}`
+        }
       }),
       invalidatesTags: ['User']
     }),
@@ -94,5 +106,6 @@ export const {
   useBanMutation,
   useUnbanMutation,
   useMakeСuratorMutation,
-  useRemoveСuratorMutation
+  useRemoveСuratorMutation,
+  useParseXLSXMutation
 } = userApi

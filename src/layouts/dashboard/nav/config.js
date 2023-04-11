@@ -11,11 +11,13 @@ const navConfig = [
     title: 'Дашбоард',
     path: '/dashboard/app',
     icon: icon('ic_analytics'),
+    role: [0, 1, 2]
   },
   {
     title: 'Пользователи',
     path: '/dashboard/user',
     icon: icon('ic_user'),
+    role: [1]
   },
 ];
 

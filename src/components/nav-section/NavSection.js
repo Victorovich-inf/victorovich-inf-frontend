@@ -2,24 +2,35 @@ import PropTypes from 'prop-types';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { Box, List, ListItemText } from '@mui/material';
 import { StyledNavItem, StyledNavItemIcon } from './styles';
+import { connect } from 'react-redux';
+import { getUserData } from '../../store/reducers/userReducer';
+import { useMemo } from 'react';
 
 NavSection.propTypes = {
   data: PropTypes.array,
 };
 
-export default function NavSection({ data = [], ...other }) {
+function NavSection({ data = [], user, ...other }) {
+
+  const _data = useMemo(() => {
+    return data.filter(el => el.role.includes(user.role))
+  }, [data, user])
+
   return (
     <Box sx={{mt: 5}} {...other}>
       <List disablePadding sx={{ p: 1 }}>
-        {data.map((item) => (
+        {_data.map((item) => (
           <NavItem key={item.title} item={item} />
         ))}
       </List>
     </Box>
   );
 }
-
-// ----------------------------------------------------------------------
+export default connect(
+  (state) => ({
+    user: getUserData(state),
+  }),
+)(NavSection);
 
 NavItem.propTypes = {
   item: PropTypes.object,

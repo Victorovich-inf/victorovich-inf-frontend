@@ -10,6 +10,10 @@ export interface UserRegisterData {
   password: string;
 }
 
+export interface ParseXLSXData {
+  file: File;
+}
+
 export interface UserData {
   id: number,
   firstName: string,

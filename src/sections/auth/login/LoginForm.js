@@ -8,6 +8,8 @@ import useAuth from '../../../hooks/useAuth';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { auth, setUser } from '../../../store/reducers/userReducer';
+import { useDispatch } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
@@ -22,10 +24,19 @@ export default function LoginForm() {
     );
   };
 
+  const dispatch = useDispatch()
+
   useEffect(() => {
-    window.addEventListener('message', ({ data, origin }) => {
+    window.addEventListener('message', async ({ data, origin }) => {
       const user = data;
-      console.log(user);
+      if (typeof user === 'string') {
+        const answer = JSON.parse(user);
+        if (answer?.data) {
+          await localStorage.setItem('accessToken', answer.token);
+          await dispatch(setUser(answer.data))
+          await dispatch(auth());
+        }
+      }
     });
   }, []);
 
