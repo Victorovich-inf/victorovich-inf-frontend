@@ -11,25 +11,15 @@ import AdminTable from '../components/admins/table/AdminTable';
 import { userColumns } from '../components/admins/table/columns/UserColumns';
 import { useDeleteUserMutation, useGetAllQuery } from '../store/api/admin/userApi';
 import React from 'react';
-import useReload from '../hooks/useReload';
 import Page from '../components/Page';
 import XLSXButton from '../components/admins/XLSXButton';
 
 export default function UserPage() {
   const navigate = useNavigate()
   const [deleteUser] = useDeleteUserMutation()
-  const { reload, reloadValue } = useReload();
 
   const handleAdd = () => {
     navigate(PATH_DASHBOARD.user.add)
-  }
-
-  const handleEdit = (id) => {
-    navigate(PATH_DASHBOARD.user.edit(id))
-  }
-
-  const viewPage = (id) => {
-    navigate(PATH_DASHBOARD.user.detail(id))
   }
 
   const deleteHandler = async (id) => {

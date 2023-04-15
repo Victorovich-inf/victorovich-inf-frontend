@@ -18,6 +18,10 @@ export const PATH_DASHBOARD = {
   app: {
     root: path(ROOTS_DASHBOARD, `/app`),
   },
+  courses: {
+    root: path(ROOTS_DASHBOARD, `/courses`),
+    add: path(ROOTS_DASHBOARD, `/courses/add`),
+  },
   user: {
     root: path(ROOTS_DASHBOARD, `/user`),
     add: path(ROOTS_DASHBOARD, `/user/add`),

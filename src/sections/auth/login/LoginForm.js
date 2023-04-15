@@ -75,7 +75,7 @@ export default function LoginForm() {
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
-        {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
+        {!!errors.afterSubmit && <Alert severity="error">Неправильный логин или пароль</Alert>}
         <RHFTextField name="email" label="Email" />
 
         <RHFTextField

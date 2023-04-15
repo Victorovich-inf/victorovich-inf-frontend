@@ -19,6 +19,12 @@ const navConfig = [
     icon: icon('ic_user'),
     role: [1]
   },
+  {
+    title: 'Курсы (админ.)',
+    path: '/dashboard/courses',
+    icon: icon('ic_courses-admin'),
+    role: [1]
+  },
 ];
 
 export default navConfig;

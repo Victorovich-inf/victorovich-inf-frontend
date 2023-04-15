@@ -1,24 +1,17 @@
 import { Navigate, useRoutes } from 'react-router-dom';
-// layouts
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
-//
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/auth/LoginPage';
 import Page404 from './pages/Page404';
 import CreateUser from './pages/User/Create';
-import CreateOrder from './pages/Order/CreateOrEdit';
-import ViewOrder from './pages/Order/View';
-import ViewCertificate from './pages/Certificate/View';
-import CreateOrderCertificate from './pages/Certificate/CreateOrEdit';
+import CreateCourse from './pages/Courses/Create';
 import DashboardAppPage from './pages/DashboardAppPage';
 import OrderPage from './pages/OrderPage';
-import CertificatePage from './pages/CertificatePage';
 import AuthGuard from './guards/AuthGuard';
 import GuestGuard from './guards/GuestGuard';
 import RegisterPage from './pages/auth/RegisterPage';
-
-// ----------------------------------------------------------------------
+import CoursesPageAdmin from './pages/Courses/CoursesPageAdmin';
 
 export default function Router() {
   const routes = useRoutes([
@@ -29,17 +22,12 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
+        { path: 'courses', element: <CoursesPageAdmin /> },
+        { path: 'courses/add', element: <CreateCourse /> },
         { path: 'orders', element: <OrderPage /> },
-        { path: 'certificates', element: <CertificatePage /> },
-        { path: 'certificates/add', element: <CreateOrderCertificate /> },
-        { path: 'certificates/:id', element: <CreateOrderCertificate /> },
-        { path: 'certificates/:id/:view', element: <ViewCertificate /> },
         { path: 'user/add', element: <CreateUser /> },
         { path: 'user/:id', element: <CreateUser /> },
         { path: 'user/:id/view', element: <CreateUser /> },
-        { path: 'orders/add', element: <CreateOrder /> },
-        { path: 'orders/:id', element: <CreateOrder /> },
-        { path: 'orders/:id/view', element: <ViewOrder /> },
       ],
     },
     {

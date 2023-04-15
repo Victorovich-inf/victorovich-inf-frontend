@@ -39,7 +39,7 @@ export const userColumns: Column<UserData>[] = [
         }
     },
     {
-        Header: 'Аккаунт подтвержден',
+        Header: 'Рег. завершена',
         accessor: 'confirmationCode',
         disableSortBy: true,
         Cell: ({value}) => {
