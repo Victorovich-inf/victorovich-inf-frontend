@@ -6,6 +6,7 @@ import LoginPage from './pages/auth/LoginPage';
 import Page404 from './pages/Page404';
 import CreateUser from './pages/User/Create';
 import CreateCourse from './pages/Courses/Create';
+import EditCourse from './pages/Courses/Edit';
 import DashboardAppPage from './pages/DashboardAppPage';
 import OrderPage from './pages/OrderPage';
 import AuthGuard from './guards/AuthGuard';
@@ -24,6 +25,7 @@ export default function Router() {
         { path: 'user', element: <UserPage /> },
         { path: 'courses', element: <CoursesPageAdmin /> },
         { path: 'courses/add', element: <CreateCourse /> },
+        { path: 'courses/:id/edit', element: <EditCourse /> },
         { path: 'orders', element: <OrderPage /> },
         { path: 'user/add', element: <CreateUser /> },
         { path: 'user/:id', element: <CreateUser /> },

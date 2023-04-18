@@ -82,6 +82,7 @@
     "@babel/core": "^7.19.3",
     "@babel/eslint-parser": "^7.19.1",
     "@svgr/webpack": "^6.5.0",
+    "@types/react-dropzone": "^5.1.0",
     "@types/react-table": "^7.7.14",
     "eslint": "^8.25.0",
     "eslint-config-airbnb": "^19.0.4",

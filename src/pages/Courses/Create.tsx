@@ -1,32 +1,31 @@
 import { Box, Card, Grid, Stack } from '@mui/material';
 import React, { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
 import Page from '../../components/Page';
 import useLoader from '../../hooks/useLoader';
 import { FormProvider, RHFCheckbox, RHFTextField } from '../../components/hook-form';
-import { useParams } from 'react-router';
 import Typography from '@mui/material/Typography';
-import { oneUserCRUD } from '../../http';
-import { PATH_DASHBOARD } from '../../paths';
-import { useRegisterMutation } from '../../store/api/admin/userApi';
-import { useStableNavigate } from '../../contexts/StableNavigateContext';
 import { CourseCreateData } from '../../@types/course';
 import { fData } from '../../utils/formatNumber';
 import { RHFUpload } from '../../components/hook-form/RHFUpload';
 import RHFDate from '../../components/hook-form/RHFDate';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { courseSchema } from '../../schemas/courseSchema';
+import { useCreateMutation } from '../../store/api/admin/courseApi';
+import { useStableNavigate } from '../../contexts/StableNavigateContext';
+import { PATH_DASHBOARD } from '../../paths';
 
 function CreateOrEdit() {
-  const { loading, start, stop, Preloader } = useLoader(false);
-  const navigate = useStableNavigate();
-  const params = useParams();
-  const [isEdit, setEdit] = React.useState(false);
-  const [register] = useRegisterMutation();
+  const { loading, Preloader } = useLoader(false);
+  const navigate = useStableNavigate()
+
+  const [create] = useCreateMutation()
 
   const defaultValues = useMemo(() => ({
     name: '',
     description: '',
-    logo: null,
+    file: null,
     dateStart: new Date(),
     cost: 0,
     free: false,
@@ -34,16 +33,33 @@ function CreateOrEdit() {
 
   const methods = useForm({
     defaultValues,
+    resolver: yupResolver(courseSchema)
   });
 
   const {
     handleSubmit,
     setValue,
-    formState: { isSubmitting },
+    control,
+    formState: { isSubmitting, errors },
   } = methods;
 
+  const free = useWatch({
+    control,
+    name: "free",
+  });
 
   const onSubmit = async (state: CourseCreateData) => {
+    let formData = new FormData()
+    state.file && formData.append('file', state.file)
+    state.name && formData.append('name', state.name)
+    state.description && formData.append('description', state.description)
+    state.dateStart && formData.append('dateStart', state.dateStart.toString())
+    state.cost && formData.append('cost', state.cost.toString())
+    state.free && formData.append('free', state.free ? '1' : '0')
+
+    const {data} = await create(formData as unknown as CourseCreateData).unwrap();
+
+    navigate(PATH_DASHBOARD.courses.edit(data.id))
   };
 
   const handleDrop = React.useCallback(
@@ -55,7 +71,7 @@ function CreateOrEdit() {
       });
 
       if (newFile) {
-        setValue('logo', newFile, { shouldValidate: true });
+        setValue('file', newFile, { shouldValidate: true });
       }
     },
     [],
@@ -82,12 +98,12 @@ function CreateOrEdit() {
                     <Grid item xs={12} md={12}>
                       <RHFTextField name='name' label='Название курса' />
                     </Grid>
-                    <Grid item xs={6} md={6}>
+                    <Grid item xs={12} md={6}>
                       <RHFUpload
-                        name='logo'
+                        name='file'
                         maxSize={3145728}
                         onDrop={handleDrop}
-                        onDelete={() => setValue('logo', null, { shouldValidate: true })}
+                        onDelete={() => setValue('file', null, { shouldValidate: true })}
                         helperText={<Typography
                           variant='caption'
                           sx={{
@@ -102,17 +118,17 @@ function CreateOrEdit() {
                           <br /> максимальный размер {fData(3145728)}
                         </Typography>} multiple={false} />
                     </Grid>
-                    <Grid item xs={6} md={6}>
+                    <Grid item xs={12} md={6}>
                       <RHFTextField name='description' label='Описание' multiline
                                     rows={5} />
                     </Grid>
-                    <Grid item md={6}>
+                    <Grid item xs={12} md={6}>
                       <RHFDate name='dateStart' label='Дата начала' />
                     </Grid>
-                    <Grid item md={6}>
-                      <RHFTextField name='cost' type='number' label='Стоимость' />
+                    <Grid item xs={12} md={6}>
+                      <RHFTextField disabled={free} name='cost' type='number' label='Стоимость' />
                     </Grid>
-                    <Grid item md={6}>
+                    <Grid item xs={12} md={6}>
                       <RHFCheckbox name='free' label='Бесплатно' />
                     </Grid>
                   </Grid>
@@ -122,7 +138,7 @@ function CreateOrEdit() {
           </Grid>
           <LoadingButton sx={{ marginTop: 2, marginLeft: 'auto' }} type='submit' variant='contained' size='large'
                          loading={isSubmitting}>
-            {isEdit ? 'Изменить' : 'Сохранить и продолжить'}
+            {'Сохранить и продолжить'}
           </LoadingButton>
         </FormProvider>
 

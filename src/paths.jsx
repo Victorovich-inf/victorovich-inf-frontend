@@ -21,6 +21,7 @@ export const PATH_DASHBOARD = {
   courses: {
     root: path(ROOTS_DASHBOARD, `/courses`),
     add: path(ROOTS_DASHBOARD, `/courses/add`),
+    edit: (id) => path(ROOTS_DASHBOARD, `/courses/${id}/edit`),
   },
   user: {
     root: path(ROOTS_DASHBOARD, `/user`),

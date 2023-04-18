@@ -1,26 +1,42 @@
 import React from 'react';
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
+import { CourseData } from '../../../@types/course';
+import { useStableNavigate } from '../../../contexts/StableNavigateContext';
+import { PATH_DASHBOARD } from '../../../paths';
 
-const CourseCard = () => {
+interface CourseCardProps {
+  data: CourseData,
+  onDelete: (id: number) => void
+}
+
+const CourseCard = ({data, onDelete}: CourseCardProps) => {
+
+  const navigate = useStableNavigate()
+
+  const handleEdit = () => {
+    navigate(PATH_DASHBOARD.courses.edit(data.id))
+  }
+
+  const handleDelete = () => {
+    onDelete(data.id)
+  }
+
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card>
       <CardMedia
-        sx={{ height: 140 }}
-        image="/static/images/cards/contemplative-reptile.jpg"
+        sx={{ height: 200 }}
+        image={`${process.env.REACT_APP_API_URL}/${data.logo}`}
         title="green iguana"
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          Lizard
+          {data.name}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
+        <Typography variant="body2" color="text.secondary">{data.description}</Typography>
       </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
+      <CardActions sx={{padding: '12px'}}>
+        <Button onClick={handleEdit} size="small">Редактировать</Button>
+        <Button onClick={handleDelete} size="small" color="error">Удалить</Button>
       </CardActions>
     </Card>
   );

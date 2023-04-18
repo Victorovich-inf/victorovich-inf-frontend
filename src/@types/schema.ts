@@ -1,5 +1,12 @@
+import { CourseData } from './course';
+
 type MessageResponse = {
   message: string,
+}
+
+type MessageResponseCourse = {
+  message: string,
+  data: CourseData
 }
 
 type BodyFilter = {
@@ -9,4 +16,4 @@ type BodyFilter = {
   }
 }
 
-export type {MessageResponse, BodyFilter}
+export type {MessageResponse, BodyFilter, MessageResponseCourse}

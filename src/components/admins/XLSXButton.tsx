@@ -8,7 +8,7 @@ const XLSXButton = () => {
 
   const {getRootProps, getInputProps} = useDropzone({
     maxFiles: 1, multiple: false,
-    onDrop: async acceptedFiles1 => {
+    onDrop: async (acceptedFiles1: File[]) => {
       if (acceptedFiles1[0]) {
         let formData = new FormData()
         formData.append('file', acceptedFiles1[0])

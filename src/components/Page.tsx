@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { forwardRef, ReactNode } from 'react';
-import { Box } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 
 interface PageInterface {
   children: ReactNode,
@@ -15,7 +15,7 @@ const Page = forwardRef(({ children, title = '', meta = '', ...other }: PageInte
       {meta}
     </Helmet>
 
-    <Box sx={{ paddingLeft: {
+    <Stack direction="column" sx={{ height: '100%', paddingLeft: {
         xs: '1.5rem',
         md: '3rem',
       }, paddingRight: {
@@ -23,7 +23,7 @@ const Page = forwardRef(({ children, title = '', meta = '', ...other }: PageInte
         md: '3rem',
       } }} ref={ref} {...other}>
       {children}
-    </Box>
+    </Stack>
   </>
 ));
 
