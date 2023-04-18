@@ -15,8 +15,6 @@ const CoursesPageAdmin = () => {
   const {data} = useGetAllQuery({paging: {skip: skip, take: take}})
   const [deleteCourse] = useDeleteCourseMutation()
 
-  console.log(data);
-
   const navigate = useNavigate()
 
   const handleAdd = () => {

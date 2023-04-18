@@ -6,14 +6,30 @@ import { useForm } from 'react-hook-form';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
 import Iconify from '../../iconify';
 import AddItem from './AddItem';
+import RowElement from '../editor/RowElement';
 
 const CourseLesson = () => {
 
-  const {selected} = useCourseEditContext()
+  const {selected, content} = useCourseEditContext()
 
   const defaultValues = useMemo(() => ({
     name: '',
   }), []);
+
+  const elements = useMemo(() => {
+    if (selected?.id && Object.keys(content)?.length) {
+      let key;
+
+      if ('courseId' in selected) {
+        key = `${selected?.id}_lesson`
+      } else {
+        key = `${selected?.id}_task`
+      }
+
+      return content[key]?.elements || []
+    }
+    return []
+  }, [selected, content])
 
   const methods = useForm({
     defaultValues,
@@ -34,22 +50,18 @@ const CourseLesson = () => {
   }, [selected])
 
   const onSubmit = async (state: { name: string }) => {
-
+    console.log(selected);
   }
 
   return (
     <FormProvider style={{flex: 1}}
                   methods={methods} onSubmit={handleSubmit(onSubmit)}>
       {selected ? <Stack direction="column" spacing={2} sx={{flex: 1}}>
+        {elements ? elements.map(el => {
+          return <RowElement data={el}/>
+        }) : null}
         <AddItem/>
       </Stack>: <Box sx={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Урок/задание не выбран</Box>}
-      {selected ? <Stack sx={{ marginTop: 2, marginLeft: 'auto' }} spacing={2} direction="row">
-        <Button sx={{alignSelf: 'flex-end'}} variant="outlined">Опубликовать</Button>
-        <LoadingButton type='submit' variant='contained'
-                       loading={isSubmitting}>
-          {'Сохранить'}
-        </LoadingButton>
-      </Stack> : null}
     </FormProvider>
   );
 };

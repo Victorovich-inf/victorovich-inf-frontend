@@ -23,7 +23,7 @@ const XLSXButton = () => {
   return (
     <Button variant="outlined" {...getRootProps()}>
       <input {...getInputProps()} />
-      Импортировать csv
+      Импортировать excel
     </Button>
   );
 };

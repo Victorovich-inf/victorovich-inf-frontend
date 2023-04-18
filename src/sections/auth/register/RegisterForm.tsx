@@ -15,7 +15,6 @@ export default function RegisterForm() {
 
   const {search} = useLocation()
 
-  console.log(search);
 
   useEffect(() => {
     if (search.split('?')[1]) {

@@ -49,7 +49,6 @@ export default function OrderPage() {
       try {
         await ordersCRUD.delete(id).then(reload)
       } catch (e) {
-        console.log(e);
       }
     })
   }

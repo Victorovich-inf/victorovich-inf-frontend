@@ -4,6 +4,7 @@ import { ErrorValidation, showErrors, showMessage } from '../../../utils/errors'
 import { CourseCreateData, CourseData, PaginationCourseData } from '../../../@types/course';
 import { LessonCreateData } from '../../../@types/lesson';
 import { TaskCreateData } from '../../../@types/task';
+import { Content } from '../../../@types/editor';
 
 const apiBase =
   async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: {}) => {
@@ -97,13 +98,19 @@ export const courseApi = createApi({
         method: "DELETE",
       }),
       invalidatesTags: ['Course']
+    }),
+    savePage: builder.mutation<MessageResponse, { data: Content, id: number }>({
+      query: (data) => ({
+        url: `/course/admin/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
     })
-
   }),
   baseQuery: apiBase
 })
 
 export const {
   useCreateMutation, useGetAllQuery, useGetOneQuery, useDeleteCourseMutation, useCreateLessonMutation,
-  useCreateTaskMutation, useDeleteTaskMutation, useDeleteLessonMutation
+  useCreateTaskMutation, useDeleteTaskMutation, useDeleteLessonMutation, useSavePageMutation
 } = courseApi

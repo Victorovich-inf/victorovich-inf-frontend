@@ -1,12 +1,31 @@
 import React from 'react';
 import { Box, Grid, IconButton, Paper, Popover, Typography } from '@mui/material';
 import Iconify from '../../iconify';
+import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
+import { Position, TypeContent } from '../../../@types/editor';
+import { v4 as uuidv4 } from 'uuid';
 
 const AddItem = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const { handleSetContent } = useCourseEditContext();
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleAddContent = (type: TypeContent) => () => {
+    if (type === TypeContent.IMAGE) {
+      handleSetContent({
+        id: uuidv4(),
+        element: {
+          src: 'https://mobimg.b-cdn.net/v3/fetch/d4/d4ec5adfdc356c0aab7ee5406a8756fa.jpeg'
+        },
+        settings: {
+          justifyContent: Position.Center
+        }
+      });
+    }
+    handleClose()
   };
 
   const handleClose = () => {
@@ -23,16 +42,23 @@ const AddItem = () => {
     borderColor: 'transparent',
     borderStyle: 'solid',
     cursor: 'pointer',
-    "&:hover": {
-      borderColor: "#1565c0",
+    '&:hover': {
+      borderColor: '#1565c0',
     },
   };
 
   return (
     <>
-      <Box sx={{boxShadow: 2, borderRadius: '16px', minHeight: 120, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+      <Box sx={{
+        boxShadow: 2,
+        borderRadius: '16px',
+        minHeight: 80,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
         <IconButton onClick={handleClick}>
-          <Iconify width={40} icon="material-symbols:add"/>
+          <Iconify width={40} icon='material-symbols:add' />
         </IconButton>
       </Box>
       <Popover
@@ -49,36 +75,36 @@ const AddItem = () => {
           horizontal: 'center',
         }}
       >
-        <Paper sx={{p: 3}} elevation={3} >
+        <Paper sx={{ p: 3 }} elevation={3}>
           <Grid container spacing={2}>
             <Grid item xs={4}>
-              <Box sx={buttonSX}>
-                <Iconify icon="material-symbols:image-rounded" width={60}/>
-                <Typography variant="body2" sx={{textAlign: 'center'}}>
+              <Box onClick={handleAddContent(TypeContent.IMAGE)} sx={buttonSX}>
+                <Iconify icon='material-symbols:image-rounded' width={60} />
+                <Typography variant='body2' sx={{ textAlign: 'center' }}>
                   Картинка
                 </Typography>
               </Box>
             </Grid>
             <Grid item xs={4}>
               <Box sx={buttonSX}>
-                <Iconify icon="simple-icons:youtube" width={60}/>
-                <Typography variant="body2" sx={{textAlign: 'center'}}>
+                <Iconify icon='simple-icons:youtube' width={60} />
+                <Typography variant='body2' sx={{ textAlign: 'center' }}>
                   Видео
                 </Typography>
               </Box>
             </Grid>
             <Grid item xs={4}>
               <Box sx={buttonSX}>
-                <Iconify icon="ph:file-html" width={60}/>
-                <Typography  variant="body2" sx={{textAlign: 'center'}}>
+                <Iconify icon='ph:file-html' width={60} />
+                <Typography variant='body2' sx={{ textAlign: 'center' }}>
                   HTML код
                 </Typography>
               </Box>
             </Grid>
             <Grid item xs={4}>
               <Box sx={buttonSX}>
-                <Iconify icon="material-symbols:file-open-sharp" width={60}/>
-                <Typography  variant="body2" sx={{textAlign: 'center'}}>
+                <Iconify icon='material-symbols:file-open-sharp' width={60} />
+                <Typography variant='body2' sx={{ textAlign: 'center' }}>
                   Файл
                 </Typography>
               </Box>

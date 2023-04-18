@@ -39,7 +39,6 @@ function View({ user }) {
         if (res) {
           setData({ ...res });
         }
-        console.log(histories);
         setHistory(histories.map(el => {
           let label = stateArray?.find(_ => _.value === el.state).label;
           return { ...el, state: label, user: el.user?.email };
@@ -66,7 +65,6 @@ function View({ user }) {
         await ordersHistoryCRUD.create({ comment: comment ? comment : `Переход на статус`, user_id: user.id, state, order_id: params?.id });
         reload();
       } catch (e) {
-        console.log(e);
       }
     }, true);
   };
