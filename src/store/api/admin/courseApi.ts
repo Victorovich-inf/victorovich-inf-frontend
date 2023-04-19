@@ -1,7 +1,12 @@
 import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { BodyFilter, MessageResponse, MessageResponseCourse } from '../../../@types/schema';
+import {
+  BodyFilter,
+  MessageResponse,
+  MessageResponseCourse,
+  MessageResponseCourseUpload,
+} from '../../../@types/schema';
 import { ErrorValidation, showErrors, showMessage } from '../../../utils/errors';
-import { CourseCreateData, CourseData, PaginationCourseData } from '../../../@types/course';
+import { CourseCreateData, CourseData, PaginationCourseData, UploadData } from '../../../@types/course';
 import { LessonCreateData } from '../../../@types/lesson';
 import { TaskCreateData } from '../../../@types/task';
 import { Content } from '../../../@types/editor';
@@ -99,6 +104,13 @@ export const courseApi = createApi({
       }),
       invalidatesTags: ['Course']
     }),
+    uploadImage: builder.mutation<MessageResponseCourseUpload, UploadData>({
+      query: (data) => ({
+        url: `/course/admin/upload`,
+        method: "POST",
+        body: data,
+      })
+    }),
     savePage: builder.mutation<MessageResponse, { data: Content, id: number }>({
       query: (data) => ({
         url: `/course/admin/${data.id}`,
@@ -112,5 +124,5 @@ export const courseApi = createApi({
 
 export const {
   useCreateMutation, useGetAllQuery, useGetOneQuery, useDeleteCourseMutation, useCreateLessonMutation,
-  useCreateTaskMutation, useDeleteTaskMutation, useDeleteLessonMutation, useSavePageMutation
+  useCreateTaskMutation, useDeleteTaskMutation, useDeleteLessonMutation, useSavePageMutation, useUploadImageMutation
 } = courseApi

@@ -4,9 +4,12 @@ import { makeStyles } from '@mui/styles';
 import { ContentData } from '../../../@types/editor';
 import Iconify from '../../iconify';
 import SettingsImage from './SettingsImage';
+import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
+import { confirmDialog } from '../../dialogs/DialogDelete';
 
 interface RowElementProps {
   data: ContentData;
+  idx: number
 }
 
 const useStyles = makeStyles({
@@ -30,9 +33,17 @@ const useStyles = makeStyles({
   }
 });
 
-const RowElement = ({data}: RowElementProps) => {
+const RowElement = ({data, idx}: RowElementProps) => {
   const [hover, setHover] = React.useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const {handleDeleteElement, handleMoveUp, handleMoveDown} = useCourseEditContext()
+
+  const handleDelete = () => {
+    return confirmDialog('Удаление элемента', `Вы действительно хотите удалить этот элемент`, async () => {
+      handleDeleteElement(data.id.toString())
+    })
+  }
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -75,18 +86,26 @@ const RowElement = ({data}: RowElementProps) => {
     }
   }
 
+  const handleMoveDownElement = () => {
+    handleMoveDown(idx);
+  }
+
+  const handleMoveUpElement = () => {
+    handleMoveUp(idx);
+  }
+
   return (
     <>
       <Box onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} className={classes.row}>
         {renderRow(type)}
         <Stack className={classes.settings} direction="row">
-          <IconButton>
+          <IconButton onClick={handleMoveUpElement}>
             <Iconify icon="material-symbols:arrow-circle-up"/>
           </IconButton>
-          <IconButton>
+          <IconButton onClick={handleMoveDownElement}>
             <Iconify icon="material-symbols:arrow-circle-down"/>
           </IconButton>
-          <IconButton >
+          <IconButton onClick={handleDelete}>
             <Iconify icon="material-symbols:delete-forever-rounded"/>
           </IconButton>
           <IconButton onClick={handleClick}>

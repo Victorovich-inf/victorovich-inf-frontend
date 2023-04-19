@@ -9,6 +9,11 @@ type MessageResponseCourse = {
   data: CourseData
 }
 
+type MessageResponseCourseUpload = {
+  message: string,
+  filePath: string
+}
+
 type BodyFilter = {
   paging: {
     skip: number,
@@ -16,4 +21,4 @@ type BodyFilter = {
   }
 }
 
-export type {MessageResponse, BodyFilter, MessageResponseCourse}
+export type {MessageResponse, BodyFilter, MessageResponseCourse, MessageResponseCourseUpload}

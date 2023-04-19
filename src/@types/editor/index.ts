@@ -29,7 +29,6 @@ export interface ContentData {
 
 export interface Content {
   [key: string]: {
-    public: boolean;
     elements: ContentData[]
   }
 }

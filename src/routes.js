@@ -13,6 +13,7 @@ import AuthGuard from './guards/AuthGuard';
 import GuestGuard from './guards/GuestGuard';
 import RegisterPage from './pages/auth/RegisterPage';
 import CoursesPageAdmin from './pages/Courses/CoursesPageAdmin';
+import EditorLayout from './layouts/dashboard/EditorLayout';
 
 export default function Router() {
   const routes = useRoutes([
@@ -25,11 +26,18 @@ export default function Router() {
         { path: 'user', element: <UserPage /> },
         { path: 'courses', element: <CoursesPageAdmin /> },
         { path: 'courses/add', element: <CreateCourse /> },
-        { path: 'courses/:id/edit', element: <EditCourse /> },
         { path: 'orders', element: <OrderPage /> },
         { path: 'user/add', element: <CreateUser /> },
         { path: 'user/:id', element: <CreateUser /> },
         { path: 'user/:id/view', element: <CreateUser /> },
+      ],
+    },
+    {
+      path: '/dashboard',
+      element: <AuthGuard><EditorLayout /></AuthGuard>,
+      children: [
+        { element: <Navigate to="/dashboard/app" />, index: true },
+        { path: 'courses/:id/edit', element: <EditCourse /> },
       ],
     },
     {

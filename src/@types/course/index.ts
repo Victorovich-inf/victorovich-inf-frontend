@@ -21,6 +21,10 @@ export interface CourseData {
   Lessons: LessonData[]
 }
 
+export interface UploadData {
+  file: File
+}
+
 export interface PaginationCourseData {
   count: number,
   rows: CourseData[]

@@ -1,3 +1,4 @@
+import { Content } from '../content';
 import { TaskData } from '../task';
 
 export interface LessonData {
@@ -6,7 +7,8 @@ export interface LessonData {
   id: number
   name: string
   updatedAt: string;
-  Tasks: TaskData[]
+  Tasks: TaskData[];
+  Content: Content
 }
 
 export interface LessonCreateData {

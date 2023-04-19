@@ -8,6 +8,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { settingsImage } from '../../../schemas/editorSchema';
 import { ContentData } from '../../../@types/editor';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
+import { useUploadImageMutation } from '../../../store/api/admin/courseApi';
+import { UploadData } from '../../../@types/course';
 
 const useStyles = makeStyles({
   root: {
@@ -27,6 +29,7 @@ interface SettingsImageProps {
 const SettingsImage = ({data}: SettingsImageProps) => {
 
   const {handleChangeContent} = useCourseEditContext()
+  const [uploadImage] = useUploadImageMutation()
 
   const {getRootProps, getInputProps} = useDropzone({
     maxFiles: 1, multiple: false,
@@ -34,7 +37,16 @@ const SettingsImage = ({data}: SettingsImageProps) => {
       if (acceptedFiles1[0]) {
         let formData = new FormData()
         formData.append('file', acceptedFiles1[0])
-        console.log(acceptedFiles1[0]);
+        const { filePath } = await uploadImage(formData as unknown as UploadData).unwrap();
+
+        const link = `${process.env.REACT_APP_API_URL}/${filePath}`
+
+        let newData = JSON.parse(JSON.stringify(data))
+        if ('src' in newData.element) {
+          newData.element.src = link;
+        }
+
+        handleChangeContent(newData);
       }
     },
     accept: {

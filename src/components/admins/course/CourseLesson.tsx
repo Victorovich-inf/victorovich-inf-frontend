@@ -57,8 +57,8 @@ const CourseLesson = () => {
     <FormProvider style={{flex: 1}}
                   methods={methods} onSubmit={handleSubmit(onSubmit)}>
       {selected ? <Stack direction="column" spacing={2} sx={{flex: 1}}>
-        {elements ? elements.map(el => {
-          return <RowElement data={el}/>
+        {elements ? elements.map((el, idx) => {
+          return <RowElement key={idx} idx={idx} data={el}/>
         }) : null}
         <AddItem/>
       </Stack>: <Box sx={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Урок/задание не выбран</Box>}

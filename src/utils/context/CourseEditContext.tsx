@@ -9,6 +9,9 @@ interface CourseEditContextProps {
     content: Content;
     handleSetContent: (data: ContentData) => void;
     handleChangeContent: (data: ContentData) => void;
+    handleDeleteElement: (id: string) => void;
+    handleMoveDown: (index: number) => void;
+    handleMoveUp: (index: number) => void;
 }
 
 const CourseEditContext = React.createContext<CourseEditContextProps | null>(null);
