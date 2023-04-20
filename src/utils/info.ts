@@ -1,0 +1,5 @@
+const checkType = () => {
+
+}
+
+export {checkType}

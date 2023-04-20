@@ -60,7 +60,7 @@ const CourseLesson = () => {
         {elements ? elements.map((el, idx) => {
           return <RowElement key={idx} idx={idx} data={el}/>
         }) : null}
-        <AddItem/>
+        <AddItem hasElements={!!elements?.length}/>
       </Stack>: <Box sx={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Урок/задание не выбран</Box>}
     </FormProvider>
   );

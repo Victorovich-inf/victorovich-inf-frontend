@@ -20,6 +20,7 @@ import { Content, ContentData } from '../../@types/editor';
 import { LoadingButton } from '@mui/lab';
 import { CourseData } from '../../@types/course';
 import { swapElements } from '../../utils/utils';
+import Iconify from '../../components/iconify';
 
 const dataToContent = (data: CourseData) => {
   const content = {} as Content;
@@ -248,6 +249,9 @@ function Edit() {
                     Редактирование курса "{data.name}"
                   </Typography>
                   <Stack sx={{ marginTop: 2, marginLeft: 'auto' }} spacing={2} direction='row'>
+                    <Button color="warning" variant="outlined" startIcon={<Iconify icon="material-symbols:settings-b-roll-rounded"/>}>
+                      Редактировать
+                    </Button>
                     <Button sx={{ alignSelf: 'flex-end' }} variant='outlined'>Опубликовать</Button>
                     <LoadingButton onClick={handleSave} type='submit' variant='contained'>
                       {'Сохранить'}

@@ -4,10 +4,27 @@ import Iconify from '../../iconify';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
 import { Position, TypeContent } from '../../../@types/editor';
 import { v4 as uuidv4 } from 'uuid';
+import { makeStyles } from '@mui/styles';
 
-const AddItem = () => {
+interface AddItemProps {
+  hasElements?: boolean
+}
+
+const useStyles = makeStyles({
+  root: {
+    minHeight: 40,
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '16px',
+  },
+});
+
+const AddItem = ({hasElements = false}: AddItemProps) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const { handleSetContent } = useCourseEditContext();
+  const classes = useStyles();
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -49,7 +66,11 @@ const AddItem = () => {
 
   return (
     <>
-      <Box sx={{
+      {hasElements ? <Box className={classes.root} sx={{boxShadow: 2}}>
+        <IconButton onClick={handleClick}>
+          <Iconify width={40} icon='material-symbols:add' />
+        </IconButton>
+      </Box> : <Box sx={{
         boxShadow: 2,
         borderRadius: '16px',
         minHeight: 80,
@@ -60,7 +81,7 @@ const AddItem = () => {
         <IconButton onClick={handleClick}>
           <Iconify width={40} icon='material-symbols:add' />
         </IconButton>
-      </Box>
+      </Box>}
       <Popover
         id={id}
         open={open}
