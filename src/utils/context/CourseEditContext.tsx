@@ -12,6 +12,8 @@ interface CourseEditContextProps {
     handleDeleteElement: (id: string) => void;
     handleMoveDown: (index: number) => void;
     handleMoveUp: (index: number) => void;
+    isLesson: (selected: LessonData | TaskData | null) => boolean
+    isTask: (selected: LessonData | TaskData | null) => boolean
 }
 
 const CourseEditContext = React.createContext<CourseEditContextProps | null>(null);

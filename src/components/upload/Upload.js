@@ -177,7 +177,7 @@ function Placeholder({ sx, ...other }) {
 
       <div>
         <Typography gutterBottom variant="h5">
-          Лого
+          Картинка
         </Typography>
 
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>

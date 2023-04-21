@@ -1,0 +1,16 @@
+.ck.ck-editor {
+    padding: 30px;
+}
+
+@media (max-width: 900px) {
+    .ck.ck-editor {
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .player {
+        max-width: 95% !important;
+        padding-top: 20px !important;
+        max-height: 300px !important
+    }
+}

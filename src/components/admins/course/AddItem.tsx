@@ -42,6 +42,40 @@ const AddItem = ({hasElements = false}: AddItemProps) => {
         }
       });
     }
+    if (type === TypeContent.VIDEO) {
+      handleSetContent({
+        id: uuidv4(),
+        element: {
+          video: 'https://www.youtube.com/watch?v=1JkOdpQ2LAQ'
+        },
+        settings: {
+          justifyContent: Position.Center
+        }
+      });
+    }
+    if (type === TypeContent.HTML) {
+      handleSetContent({
+        id: uuidv4(),
+        element: {
+          html: `<p></p>`
+        },
+        settings: {
+          justifyContent: Position.Center
+        }
+      });
+    }
+    if (type === TypeContent.FILE) {
+      handleSetContent({
+        id: uuidv4(),
+        element: {
+          file: ``,
+          name: ''
+        },
+        settings: {
+          justifyContent: Position.Center
+        }
+      });
+    }
     handleClose()
   };
 
@@ -107,7 +141,7 @@ const AddItem = ({hasElements = false}: AddItemProps) => {
               </Box>
             </Grid>
             <Grid item xs={4}>
-              <Box sx={buttonSX}>
+              <Box onClick={handleAddContent(TypeContent.VIDEO)} sx={buttonSX}>
                 <Iconify icon='simple-icons:youtube' width={60} />
                 <Typography variant='body2' sx={{ textAlign: 'center' }}>
                   Видео
@@ -115,7 +149,7 @@ const AddItem = ({hasElements = false}: AddItemProps) => {
               </Box>
             </Grid>
             <Grid item xs={4}>
-              <Box sx={buttonSX}>
+              <Box onClick={handleAddContent(TypeContent.HTML)} sx={buttonSX}>
                 <Iconify icon='ph:file-html' width={60} />
                 <Typography variant='body2' sx={{ textAlign: 'center' }}>
                   HTML код
@@ -123,7 +157,7 @@ const AddItem = ({hasElements = false}: AddItemProps) => {
               </Box>
             </Grid>
             <Grid item xs={4}>
-              <Box sx={buttonSX}>
+              <Box onClick={handleAddContent(TypeContent.FILE)} sx={buttonSX}>
                 <Iconify icon='material-symbols:file-open-sharp' width={60} />
                 <Typography variant='body2' sx={{ textAlign: 'center' }}>
                   Файл

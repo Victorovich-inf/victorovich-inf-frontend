@@ -19,9 +19,18 @@ export interface Image {
   src: string;
 }
 
+export interface Html {
+  html: any;
+}
+
+export interface File {
+  file: string;
+  name: string;
+}
+
 export interface ContentData {
   id: string;
-  element: Video | Image,
+  element: Video | Image | Html | File,
   settings: {
     justifyContent: Position
   }
@@ -31,4 +40,19 @@ export interface Content {
   [key: string]: {
     elements: ContentData[]
   }
+}
+
+export interface DialogLesson {
+  name: string;
+  public: boolean;
+}
+
+export interface DialogTask {
+  name: string;
+  answer: string;
+  prompt: string;
+  taskSolutionText: string;
+  public: boolean;
+  answerFile: boolean;
+  file: File | null;
 }

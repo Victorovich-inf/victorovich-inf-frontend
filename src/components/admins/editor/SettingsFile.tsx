@@ -5,12 +5,11 @@ import { useForm } from 'react-hook-form';
 import { FormProvider, RHFTextField } from '../../hook-form';
 import { useDropzone } from 'react-dropzone';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { settingsImage } from '../../../schemas/editorSchema';
+import { settingsFile, settingsImage } from '../../../schemas/editorSchema';
 import { ContentData } from '../../../@types/editor';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
 import { useUploadImageMutation } from '../../../store/api/admin/courseApi';
 import { UploadData } from '../../../@types/course';
-import useResponsive from '../../../hooks/useResponsive';
 
 const useStyles = makeStyles({
   root: {
@@ -23,11 +22,11 @@ const useStyles = makeStyles({
   }
 });
 
-interface SettingsImageProps {
+interface SettingsFileProps {
   data: ContentData;
 }
 
-const SettingsImage = ({data}: SettingsImageProps) => {
+const SettingsFile = ({data}: SettingsFileProps) => {
 
   const {handleChangeContent} = useCourseEditContext()
   const [uploadImage] = useUploadImageMutation()
@@ -43,25 +42,23 @@ const SettingsImage = ({data}: SettingsImageProps) => {
         const link = `${process.env.REACT_APP_API_URL}/${filePath}`
 
         let newData = JSON.parse(JSON.stringify(data))
-        if ('src' in newData.element) {
-          newData.element.src = link;
+        if ('file' in newData.element) {
+          newData.element.file = link;
         }
 
         handleChangeContent(newData);
       }
     },
-    accept: {
-      'image/*': []
-    }
   });
 
   const defaultValues = useMemo(() => ({
-    src: ''
+    file: '',
+    name: ''
   }), []);
 
   const methods = useForm({
     defaultValues,
-    resolver: yupResolver(settingsImage)
+    resolver: yupResolver(settingsFile)
   });
 
   const {
@@ -70,38 +67,44 @@ const SettingsImage = ({data}: SettingsImageProps) => {
   } = methods;
 
   const classes = useStyles();
-  const isMobile = useResponsive('down', 'sm');
 
-  const onSubmit = (state: {src: string}) => {
+  const onSubmit = (state: {file: string, name: string}) => {
     let newData = JSON.parse(JSON.stringify(data))
-    if ('src' in newData.element) {
-      newData.element.src = state.src;
+    if ('file' in newData.element) {
+      newData.element.file = state.file;
+    }
+    if ('name' in newData.element) {
+      newData.element.name = state.name;
     }
     handleChangeContent(newData);
   }
 
   React.useEffect(() => {
     if (data) {
-      if ('src' in data.element) {
-        setValue('src', data.element.src);
+      if ('file' in data.element) {
+        setValue('file', data.element.file);
+      }
+      if ('name' in data.element) {
+        setValue('name', data.element.name);
       }
     }
   }, [data])
 
   return (
-    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+    <FormProvider  methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Box className={classes.root}>
         <Typography variant="h6" gutterBottom>
-          Настройка изображения
+          Настройка файла
         </Typography>
-        <RHFTextField size="small" name='src' label='Ссылка' />
+        <RHFTextField size="small" name='file' label='Ссылка' />
+        <RHFTextField size="small" name='name' label='Название файла' />
         <Stack spacing={1} className={classes.button} direction="row">
-          <Button type="submit" variant="contained" size="small" >{isMobile ? 'Применить' : 'Применить ссылку'}</Button>
-          <Button {...getRootProps()} color="secondary" variant="contained" size="small" ><input {...getInputProps()} />{isMobile ? 'Загрузить' : 'Загрузить с устройства'}</Button>
+          <Button type="submit" variant="contained" size="small" >Применить</Button>
+          <Button type="button" {...getRootProps()} color="secondary" variant="contained" size="small" ><input {...getInputProps()} /> Загрузить файл с устройства</Button>
         </Stack>
       </Box>
     </FormProvider>
   );
 };
 
-export default SettingsImage;
+export default SettingsFile;
