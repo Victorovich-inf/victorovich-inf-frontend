@@ -1,5 +1,15 @@
 import React from 'react';
-import { Collapse, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material';
+import {
+  Chip,
+  Collapse,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Stack,
+} from '@mui/material';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Iconify from '../../iconify';
@@ -10,11 +20,12 @@ import { confirmDialog } from '../../dialogs/DialogDelete';
 import { useDeleteLessonMutation, useDeleteTaskMutation } from '../../../store/api/admin/courseApi';
 
 interface CourseListItemProps {
-  data: LessonData
+  data: LessonData,
+  detailsMode?: boolean;
 }
 
 
-const CourseListItem = ({data}: CourseListItemProps) => {
+const CourseListItem = ({data, detailsMode = false}: CourseListItemProps) => {
   const [open, setOpen] = React.useState(false);
   const [deleteLesson] = useDeleteLessonMutation()
   const [deleteTask] = useDeleteTaskMutation()
@@ -50,10 +61,13 @@ const CourseListItem = ({data}: CourseListItemProps) => {
           <Iconify icon="material-symbols:play-lesson-outline"/>
         </ListItemIcon>
         <ListItemText primary={data.name} />
-        <Stack direction="row">
-          <IconButton onClick={() => handleDelete(data.id, 'lesson')}>
-            <Iconify icon="material-symbols:delete-forever-rounded"/>
-          </IconButton>
+        <Stack direction="row" alignItems="center">
+          {!detailsMode ? <>
+            <Chip size="small" label={data.public ? 'Опуб.' : 'Не опуб.'} color={data.public ? 'success': 'error'} />
+            <IconButton onClick={() => handleDelete(data.id, 'lesson')}>
+              <Iconify icon="material-symbols:delete-forever-rounded"/>
+            </IconButton>
+          </> : null}
           <IconButton onClick={handleClick}>
             {open ? <ExpandLess /> : <ExpandMore/>}
           </IconButton>
@@ -61,7 +75,12 @@ const CourseListItem = ({data}: CourseListItemProps) => {
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          {data.Tasks?.map(task => {
+          {data.Tasks?.filter(task => {
+            if (detailsMode) {
+              return task.public
+            }
+            return task
+          }).map(task => {
             return <ListItemButton onClick={(e) => {
               handleSetSelected(task)
             }
@@ -70,12 +89,19 @@ const CourseListItem = ({data}: CourseListItemProps) => {
                 <Iconify icon="material-symbols:task"/>
               </ListItemIcon>
               <ListItemText primary={task.name} />
-              <IconButton onClick={() => handleDelete(task.id, 'task')}>
-                <Iconify icon="material-symbols:delete-forever-rounded"/>
-              </IconButton>
+              {!detailsMode ? <Stack direction="row" alignItems="center">
+                <Chip size="small" label={task.public ? 'Опуб.' : 'Не опуб.'} color={task.public ? 'success': 'error'} />
+                <IconButton onClick={(e) => {
+                  e.stopPropagation()
+                  e.preventDefault()
+                  handleDelete(task.id, 'task')
+                }}>
+                  <Iconify icon="material-symbols:delete-forever-rounded"/>
+                </IconButton>
+              </Stack> : null}
             </ListItemButton>
           }) }
-          <CourseAdd id={data.id} label="Добавить задачу" type="task"/>
+          {!detailsMode ? <CourseAdd id={data.id} label='Добавить задачу' type='task' /> : null}
         </List>
       </Collapse>
     </>

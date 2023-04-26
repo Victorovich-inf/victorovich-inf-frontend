@@ -7,8 +7,8 @@ import {
 } from '../../../@types/schema';
 import { ErrorValidation, showErrors, showMessage } from '../../../utils/errors';
 import { CourseCreateData, CourseData, PaginationCourseData, UploadData } from '../../../@types/course';
-import { LessonCreateData } from '../../../@types/lesson';
-import { TaskCreateData } from '../../../@types/task';
+import { LessonCreateData, LessonEditData } from '../../../@types/lesson';
+import { TaskCreateData, TaskEditData, TaskEditFormData } from '../../../@types/task';
 import { Content } from '../../../@types/editor';
 
 const apiBase =
@@ -60,6 +60,14 @@ export const courseApi = createApi({
       }),
       invalidatesTags: ['OneCourse']
     }),
+    editLesson: builder.mutation<MessageResponse, LessonEditData>({
+      query: (data) => ({
+        url: `/lesson/admin/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ['OneCourse']
+    }),
     deleteLesson: builder.mutation<MessageResponse, number>({
       query: (id) => ({
         url: `/lesson/admin/${id}`,
@@ -72,6 +80,18 @@ export const courseApi = createApi({
         url: "/task/admin/",
         method: "POST",
         body: data
+      }),
+      invalidatesTags: ['OneCourse']
+    }),
+    editTask: builder.mutation<MessageResponse, TaskEditFormData>({
+      query: (data) => ({
+        url: `/task/admin/${data.id}`,
+        method: "PUT",
+        body: data.data,
+        headers: {
+          Accept: 'multipart/form-data',
+          token: `${localStorage.getItem('accessToken')}`
+        }
       }),
       invalidatesTags: ['OneCourse']
     }),
@@ -113,10 +133,18 @@ export const courseApi = createApi({
     }),
     savePage: builder.mutation<MessageResponse, { data: Content, id: number }>({
       query: (data) => ({
+        url: `/course/admin/${data.id}/save`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
+    editCourse: builder.mutation<MessageResponse, LessonEditData>({
+      query: (data) => ({
         url: `/course/admin/${data.id}`,
         method: "PUT",
         body: data,
       }),
+      invalidatesTags: ['OneCourse']
     })
   }),
   baseQuery: apiBase
@@ -124,5 +152,6 @@ export const courseApi = createApi({
 
 export const {
   useCreateMutation, useGetAllQuery, useGetOneQuery, useDeleteCourseMutation, useCreateLessonMutation,
-  useCreateTaskMutation, useDeleteTaskMutation, useDeleteLessonMutation, useSavePageMutation, useUploadImageMutation
+  useCreateTaskMutation, useDeleteTaskMutation, useDeleteLessonMutation, useSavePageMutation, useUploadImageMutation,
+  useEditTaskMutation, useEditLessonMutation, useEditCourseMutation
 } = courseApi

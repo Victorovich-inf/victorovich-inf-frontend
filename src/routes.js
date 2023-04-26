@@ -13,10 +13,12 @@ import AuthGuard from './guards/AuthGuard';
 import GuestGuard from './guards/GuestGuard';
 import RegisterPage from './pages/auth/RegisterPage';
 import CoursesPageAdmin from './pages/Courses/CoursesPageAdmin';
+import CoursesPage from './pages/Courses/CoursesPage';
+import CoursesDetailsPage from './pages/Courses/Details';
 import EditorLayout from './layouts/dashboard/EditorLayout';
 
 export default function Router() {
-  const routes = useRoutes([
+  return useRoutes([
     {
       path: '/dashboard',
       element: <AuthGuard><DashboardLayout /></AuthGuard>,
@@ -24,8 +26,9 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
-        { path: 'courses', element: <CoursesPageAdmin /> },
-        { path: 'courses/add', element: <CreateCourse /> },
+        { path: 'courses-admin', element: <CoursesPageAdmin /> },
+        { path: 'courses', element: <CoursesPage /> },
+        { path: 'courses-admin/add', element: <CreateCourse /> },
         { path: 'orders', element: <OrderPage /> },
         { path: 'user/add', element: <CreateUser /> },
         { path: 'user/:id', element: <CreateUser /> },
@@ -37,7 +40,8 @@ export default function Router() {
       element: <AuthGuard><EditorLayout /></AuthGuard>,
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
-        { path: 'courses/:id/edit', element: <EditCourse /> },
+        { path: 'courses-admin/:id/edit', element: <EditCourse /> },
+        { path: 'courses/:id/details', element: <CoursesDetailsPage /> },
       ],
     },
     {
@@ -75,6 +79,4 @@ export default function Router() {
       element: <Navigate to="/404" replace />,
     },
   ]);
-
-  return routes;
 }

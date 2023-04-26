@@ -7,6 +7,7 @@ export interface LessonData {
   id: number
   name: string
   updatedAt: string;
+  public: boolean;
   Tasks: TaskData[];
   Content: Content
 }
@@ -14,5 +15,11 @@ export interface LessonData {
 export interface LessonCreateData {
   name: string;
   courseId: number;
+}
+
+export interface LessonEditData {
+  id?: string;
+  name: string;
+  public: boolean;
 }
 

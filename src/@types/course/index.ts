@@ -16,6 +16,8 @@ export interface CourseData {
   description: string
   id: number
   logo: string
+  public: boolean
+  free: boolean
   name: string
   updatedAt: string
   Lessons: LessonData[]
@@ -28,4 +30,14 @@ export interface UploadData {
 export interface PaginationCourseData {
   count: number,
   rows: CourseData[]
+}
+
+export interface CourseEditData {
+  id?: string;
+  name: string;
+  description: string;
+  dateStart: Date;
+  cost: number;
+  public: boolean;
+  free: boolean;
 }

@@ -18,7 +18,8 @@ type BodyFilter = {
   paging: {
     skip: number,
     take: number
-  }
+  },
+  filter?: any
 }
 
 export type {MessageResponse, BodyFilter, MessageResponseCourse, MessageResponseCourseUpload}

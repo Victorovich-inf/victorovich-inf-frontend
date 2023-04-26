@@ -21,9 +21,15 @@ const navConfig = [
   },
   {
     title: 'Курсы (админ.)',
-    path: '/dashboard/courses',
+    path: '/dashboard/courses-admin',
     icon: icon('ic_courses-admin'),
     role: [1]
+  },,
+  {
+    title: 'Курсы',
+    path: '/dashboard/courses',
+    icon: icon('ic_courses-admin'),
+    role: [0, 1, 2]
   },
 ];
 

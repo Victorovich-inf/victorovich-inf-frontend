@@ -1,21 +1,23 @@
 import React, { useMemo } from 'react';
 import { DialogContent, Grid } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { FormProvider, RHFCheckbox, RHFTextField } from '../../hook-form';
+import { FormProvider, RHFTextField } from '../../hook-form';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import { DialogLesson } from '../../../@types/editor';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { editorLessonDialogSchema } from '../../../schemas/editor/dialog/editorDialogSchema';
+import RHFSwitch from '../../hook-form/RHFSwitch';
+import { useEditLessonMutation } from '../../../store/api/admin/courseApi';
+import { LessonEditData } from '../../../@types/lesson';
 
 const DialogContentLesson = () => {
 
   const { selected } = useCourseEditContext();
-
+  const [editLesson] = useEditLessonMutation()
 
   const defaultValues = useMemo(() => ({
-    name: selected?.name || '',
+    name: '',
     public: false
   }), []);
 
@@ -26,14 +28,20 @@ const DialogContentLesson = () => {
 
   const {
     handleSubmit,
-    setValue,
-    formState: { isSubmitting },
+    reset,
   } = methods;
 
+  React.useEffect(() => {
+    if (selected) {
+      if ('public' in selected) {
+        reset({ name: selected?.name, public: selected?.public });
+      }
+    }
+  }, [selected])
 
-  const onSubmit = (state: DialogLesson) => {
-    console.log(state);
 
+  const onSubmit = async (state: LessonEditData) => {
+    await editLesson({ ...state, id: selected?.id.toString() });
   }
 
   return (
@@ -45,7 +53,7 @@ const DialogContentLesson = () => {
             <RHFTextField name='name' label='Название' />
           </Grid>
           <Grid item xs={12} md={12}>
-            <RHFCheckbox name='public' label='Опубликовано' />
+            <RHFSwitch name='public' label='Опубликовано' helperText={null} />
           </Grid>
         </Grid>
       </DialogContent>

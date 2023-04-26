@@ -1,43 +1,39 @@
 import React from 'react';
-import { Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
+import {  Card, CardContent, CardMedia, Stack, Typography } from '@mui/material';
 import { CourseData } from '../../../@types/course';
 import { useStableNavigate } from '../../../contexts/StableNavigateContext';
 import { PATH_DASHBOARD } from '../../../paths';
 
 interface CourseCardProps {
   data: CourseData,
-  onDelete: (id: number) => void
 }
 
-const CourseCard = ({data, onDelete}: CourseCardProps) => {
+const CourseCard = ({data}: CourseCardProps) => {
 
   const navigate = useStableNavigate()
 
-  const handleEdit = () => {
-    navigate(PATH_DASHBOARD.courses.edit(data.id))
-  }
-
-  const handleDelete = () => {
-    onDelete(data.id)
+  const handleGoToDetails = () => {
+    navigate(PATH_DASHBOARD.courses.details(data.id))
   }
 
   return (
-    <Card>
+    <Card onClick={handleGoToDetails} sx={{flex: 1, display: 'flex', flexDirection: 'column', cursor: 'pointer'}}>
       <CardMedia
         sx={{ height: 200 }}
-        image={`${process.env.REACT_APP_API_URL}/${data.logo}`}
+        image={`${process.env.REACT_APP_API_URL}/${data.logo.replace('\\', '/')}`}
         title="green iguana"
       />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          {data.name}
-        </Typography>
+      <CardContent sx={{display: 'flex', flexDirection: 'column'}}>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <Typography gutterBottom variant="h5" component="div">
+            {data.name}
+          </Typography>
+        </Stack>
         <Typography variant="body2" color="text.secondary">{data.description}</Typography>
+        <Typography sx={{mt: 2, alignSelf: 'flex-end'}} variant="h5" component="div" >
+          {data?.free ? 'Бесплатно' : `${data.cost}₽`}
+        </Typography>
       </CardContent>
-      <CardActions sx={{padding: '12px'}}>
-        <Button onClick={handleEdit} size="small">Редактировать</Button>
-        <Button onClick={handleDelete} size="small" color="error">Удалить</Button>
-      </CardActions>
     </Card>
   );
 };

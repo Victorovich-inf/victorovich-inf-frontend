@@ -19,9 +19,11 @@ export const PATH_DASHBOARD = {
     root: path(ROOTS_DASHBOARD, `/app`),
   },
   courses: {
-    root: path(ROOTS_DASHBOARD, `/courses`),
-    add: path(ROOTS_DASHBOARD, `/courses/add`),
-    edit: (id) => path(ROOTS_DASHBOARD, `/courses/${id}/edit`),
+    root: path(ROOTS_DASHBOARD, `/courses-admin`),
+    rootUser: path(ROOTS_DASHBOARD, `/courses`),
+    add: path(ROOTS_DASHBOARD, `/courses-admin/add`),
+    edit: (id) => path(ROOTS_DASHBOARD, `/courses-admin/${id}/edit`),
+    details: (id) => path(ROOTS_DASHBOARD, `/courses/${id}/details`),
   },
   user: {
     root: path(ROOTS_DASHBOARD, `/user`),

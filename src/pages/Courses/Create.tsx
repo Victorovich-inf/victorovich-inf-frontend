@@ -15,6 +15,7 @@ import { courseSchema } from '../../schemas/courseSchema';
 import { useCreateMutation } from '../../store/api/admin/courseApi';
 import { useStableNavigate } from '../../contexts/StableNavigateContext';
 import { PATH_DASHBOARD } from '../../paths';
+import RHFSwitch from '../../components/hook-form/RHFSwitch';
 
 function CreateOrEdit() {
   const { loading, Preloader } = useLoader(false);
@@ -129,7 +130,7 @@ function CreateOrEdit() {
                       <RHFTextField disabled={free} name='cost' type='number' label='Стоимость' />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                      <RHFCheckbox name='free' label='Бесплатно' />
+                      <RHFSwitch name='free' label='Бесплатно' helperText={null} />
                     </Grid>
                   </Grid>
                 </Stack>

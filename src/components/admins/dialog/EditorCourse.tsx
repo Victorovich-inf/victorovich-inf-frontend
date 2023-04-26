@@ -5,9 +5,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
-import DialogContentTask from './DialogContentTask';
-import DialogContentLesson from './DialogContentLesson';
 import useResponsive from '../../../hooks/useResponsive';
+import DialogContentCourse from './DialogContentCourse';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -48,28 +47,15 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
   );
 }
 
-interface EditorDialogProps {
+interface EditorCourseProps {
   open: boolean;
   handleClose: () => void;
 }
 
-const EditorDialog = ({ open, handleClose }: EditorDialogProps) => {
+const EditorCourse = ({ open, handleClose }: EditorCourseProps) => {
 
-  const { selected, isTask, isLesson } = useCourseEditContext();
+  const { course } = useCourseEditContext();
   const isMobile = useResponsive('down', 'sm');
-
-  const isTaskSettings = isTask(selected)
-
-  const renderContent = (isTask: boolean) => {
-    switch (isTask) {
-      case true: {
-        return <DialogContentTask/>
-      }
-      case false: {
-        return <DialogContentLesson/>
-      }
-    }
-  }
 
   return (
     <BootstrapDialog
@@ -80,11 +66,11 @@ const EditorDialog = ({ open, handleClose }: EditorDialogProps) => {
       open={open}
     >
       <BootstrapDialogTitle id='customized-dialog-title' onClose={handleClose}>
-        Редактирование {selected ? isLesson(selected) ? `урока "${selected.name}"` : `задания "${selected.name}"` : null}
+        Редактирование курса "{course?.name || ''}"
       </BootstrapDialogTitle>
-      {renderContent(isTaskSettings)}
+      <DialogContentCourse/>
     </BootstrapDialog>
   );
 };
 
-export default EditorDialog;
+export default EditorCourse;

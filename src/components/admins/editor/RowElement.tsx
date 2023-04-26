@@ -1,17 +1,11 @@
 import React, { useMemo } from 'react';
-import { Box, IconButton, Paper, Popover, Stack, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { ContentData } from '../../../@types/editor';
 import Iconify from '../../iconify';
-import SettingsImage from './SettingsImage';
-import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
-import { confirmDialog } from '../../dialogs/DialogDelete';
 import ReactPlayer from 'react-player';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import SettingsFile from './SettingsFile';
 import clsx from 'clsx';
-import SettingsVideo from './SettingsVideo';
+import './RowElement.css'
 
 interface RowElementProps {
   data: ContentData;
@@ -28,19 +22,16 @@ const useStyles = makeStyles({
     position: 'relative',
   },
   image: {
-    maxWidth: '70%',
     objectFit: 'cover',
-    maxHeight: 450,
     '@media (max-width: 900px)': {
       maxWidth: '95%',
       paddingTop: 20,
       maxHeight: 300,
+    },
+    '&.player': {
+      width: '100%',
+      height: 450
     }
-  },
-  settings: {
-    position: 'absolute',
-    top: -10,
-    right: 10,
   },
   file: {
     objectFit: 'cover',
@@ -52,27 +43,6 @@ const useStyles = makeStyles({
 });
 
 const RowElement = ({ data, idx }: RowElementProps) => {
-  const [hover, setHover] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const { handleDeleteElement, handleMoveUp, handleMoveDown, handleChangeContent } = useCourseEditContext();
-
-  const handleDelete = () => {
-    return confirmDialog('Удаление элемента', `Вы действительно хотите удалить этот элемент`, async () => {
-      handleDeleteElement(data.id.toString());
-    });
-  };
-
-  const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
   const classes = useStyles();
 
   const type = useMemo(() => {
@@ -97,29 +67,20 @@ const RowElement = ({ data, idx }: RowElementProps) => {
         return <img className={classes.image} src={'src' in data.element ? data.element?.src : ''} alt='image' />;
       }
       case 'video': {
-        return <ReactPlayer  className={clsx(classes.image, 'player')} url={'video' in data.element ? data.element?.video : ''} />;
+        return <ReactPlayer  className={clsx(classes.image, 'player-details')} url={'video' in data.element ? data.element?.video : ''} />;
       }
       case 'html': {
-        return <CKEditor
-          editor={ ClassicEditor }
-          data={'html' in data.element ? data.element?.html : ''}
-          onChange={ ( event, editor ) => {
-            const contentEditor = editor.getData();
-            let newData = JSON.parse(JSON.stringify(data))
-            if ('html' in newData.element) {
-              newData.element.html = contentEditor;
-            }
-            handleChangeContent(newData);
-          } }
-        />;
+        return <div className="html-details" dangerouslySetInnerHTML={{ __html: 'html' in data.element ? data.element?.html : ''}}  />;
       }
       case 'file': {
-        return <div className={classes.file}>
-          <Iconify icon="material-symbols:file-present" width={60}/>
-          <Stack spacing={1}>
-            <Typography  variant="h6" > {'file' in data.element && data.element?.file ? 'Файл загружен' : 'Файл не выбран'}</Typography>
-            {'name' in data.element && data.element?.name ? <Typography  variant="subtitle1" >{data.element?.name}</Typography> : null}
-          </Stack>
+        return <div className="file-details">
+          <div className='file-details-content'>
+            <div className='file-details-info'>
+              <div className='file-details-top'>Установка Python.docx</div>
+              <span>525.31 Кб</span>
+            </div>
+            <Iconify sx={{cursor: 'pointer'}} icon="material-symbols:download"/>
+          </div>
         </div>;
       }
 
@@ -129,67 +90,10 @@ const RowElement = ({ data, idx }: RowElementProps) => {
     }
   };
 
-  const renderSettings = (type: string) => {
-    switch (type) {
-      case 'image': {
-        return <SettingsImage data={data} />;
-      }
-      case 'video': {
-        return <SettingsVideo data={data} />;
-      }
-      case 'file': {
-        return <SettingsFile data={data} />;
-      }
-      default: {
-        return <div></div>;
-      }
-    }
-  };
-
-  const handleMoveDownElement = () => {
-    handleMoveDown(idx);
-  };
-
-  const handleMoveUpElement = () => {
-    handleMoveUp(idx);
-  };
-
   return (
     <>
-      <Box onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} className={classes.row}>
+      <Box  className={classes.row}>
         {renderRow(type)}
-        <Stack className={classes.settings} direction='row'>
-          <IconButton onClick={handleMoveUpElement}>
-            <Iconify icon='material-symbols:arrow-circle-up' />
-          </IconButton>
-          <IconButton onClick={handleMoveDownElement}>
-            <Iconify icon='material-symbols:arrow-circle-down' />
-          </IconButton>
-          <IconButton onClick={handleDelete}>
-            <Iconify icon='material-symbols:delete-forever-rounded' />
-          </IconButton>
-          {type === 'video' || type === 'image' || type === 'file' ? <IconButton onClick={handleClick}>
-            <Iconify icon='material-symbols:settings' />
-          </IconButton> : null}
-        </Stack>
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={anchorEl}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: 'center',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-        >
-          <Paper sx={{ p: 3 }} elevation={3}>
-            {renderSettings(type)}
-          </Paper>
-        </Popover>
       </Box>
     </>
   );

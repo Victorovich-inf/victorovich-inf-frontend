@@ -25,6 +25,7 @@ import { PATH_DASHBOARD } from '../../paths';
 import EditorDialog from '../../components/admins/dialog/EditorDialog';
 import useResponsive from '../../hooks/useResponsive';
 import EditorCourse from '../../components/admins/dialog/EditorCourse';
+import CourseLesson from '../../components/admins/course/CourseLesson';
 
 const dataToContent = (data: CourseData) => {
   const content = {} as Content;
@@ -46,7 +47,7 @@ const dataToContent = (data: CourseData) => {
   return content;
 };
 
-function Edit() {
+function Details() {
   const { loading, Preloader } = useLoader(false);
   const [content, setContent] = React.useState<Content>({});
   const [savePage] = useSavePageMutation();
@@ -271,7 +272,7 @@ function Edit() {
   const isMobile = useResponsive('down', 'sm');
 
   return (
-    <Page title={'Добавление курса'}>
+    <Page title={`Просмотр курса "${data ? data.name : ''}"`}>
       <CourseEditProvider value={{
         selected,
         handleMoveUp,
@@ -296,25 +297,13 @@ function Edit() {
               }}>
                 <Stack direction="row" spacing={2} alignItems="center">
                   <Typography variant={isMobile ? 'h4' : 'h6'}>
-                    Редактирование курса "{data.name}"
+                    {data.name}
                   </Typography>
-                  <Chip size="small" label={data.public ? 'Опубликован' : 'Не опубликован'} color={data.public ? 'success': 'error'} />
                 </Stack>
                 <Stack sx={{ marginTop: 2, marginLeft: !isMobile ? 'auto' : 0, width: { xs: '100%', md: 'auto' } }} spacing={2}
                        direction={isMobile ? 'column' : 'row'}>
-                  {data ? <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={handleClickOpen2}  variant='outlined'
-                                  startIcon={<Iconify icon='ep:setting' />}>
-                      Курса
-                  </Button> : null}
-                  {selected ? <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={handleClickOpen}  variant='outlined'
-                                      startIcon={<Iconify icon='ep:setting' />}>
-                    {isLesson(selected) ? 'Урока' : 'Задания'}
-                  </Button> : null}
-                  <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={() => navigate(PATH_DASHBOARD.courses.root)}
+                  <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={() => navigate(PATH_DASHBOARD.courses.rootUser)}
                           variant='outlined'>Назад</Button>
-                  <LoadingButton size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={handleSave} type='submit' variant='contained'>
-                    {'Сохранить'}
-                  </LoadingButton>
                 </Stack>
               </Box>
             </Box>
@@ -342,12 +331,13 @@ function Edit() {
                 </ListSubheader>
               }
             >
-              {data.Lessons.map(lesson => {
-                return <CourseListItem key={lesson.id} data={lesson} />;
+              {data.Lessons.filter(lesson => {
+                return lesson.public
+              }).map(lesson => {
+                return <CourseListItem detailsMode key={lesson.id} data={lesson} />;
               })}
-              <CourseAdd id={data.id} label='Добавить урок' type='lesson' />
             </List>
-            <CourseLessonAdmin />
+            <CourseLesson />
           </Stack>
           <EditorDialog open={open} handleClose={handleClose} />
           <EditorCourse open={open2} handleClose={handleClose2} />
@@ -357,4 +347,4 @@ function Edit() {
   );
 };
 
-export default Edit;
+export default Details;

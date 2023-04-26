@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Grid, Stack, Typography } from '@mui/material';
 import Page from '../../components/Page';
-import CourseCard from '../../components/admins/cards/CourseCard';
+import CourseCardAdmin from '../../components/admins/cards/CourseCardAdmin';
 import { useNavigate } from 'react-router';
 import { PATH_DASHBOARD } from '../../paths';
 import { useDeleteCourseMutation, useGetAllQuery } from '../../store/api/admin/courseApi';
@@ -12,40 +12,40 @@ const CoursesPageAdmin = () => {
   const [skip, setSkip] = useState<number>(0);
   const [take, setTake] = useState<number>(10);
 
-  const {data} = useGetAllQuery({paging: {skip: skip, take: take}})
-  const [deleteCourse] = useDeleteCourseMutation()
+  const { data } = useGetAllQuery({ paging: { skip: skip, take: take } });
+  const [deleteCourse] = useDeleteCourseMutation();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleAdd = () => {
-    navigate(PATH_DASHBOARD.courses.add)
-  }
+    navigate(PATH_DASHBOARD.courses.add);
+  };
 
   const handleDelete = async (id: number) => {
     return confirmDialog('Удаление курса', 'Удалить курс?', async () => {
       try {
-        await deleteCourse(id)
+        await deleteCourse(id);
       } catch (e) {
         console.log(e);
       }
-    })
-  }
+    });
+  };
 
   return (
     <Page title={'Курсы (администрирование) | Victorovich-inf'}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4" gutterBottom>
+      <Stack direction='row' alignItems='center' justifyContent='space-between' mb={5}>
+        <Typography variant='h4' gutterBottom>
           Курсы (админ.)
         </Typography>
-        <Button onClick={handleAdd} variant="outlined">Добавить курс</Button>
+        <Button onClick={handleAdd} variant='outlined'>Добавить курс</Button>
       </Stack>
-      {(data && data.rows?.length) ? <Stack direction="row" alignItems="center" flexWrap="wrap">
-        <Grid container spacing={3}>
+      {(data && data.rows?.length) ? <Stack direction='row' alignItems='center' flexWrap='wrap'>
+        <Grid container spacing={2}>
           {data.rows.map(el => {
-            return <Grid item xs={12} sm={6} md={4}><CourseCard onDelete={handleDelete} data={el}/></Grid>
+            return <Grid sx={{display: 'flex', flex: 1, flexDirection: 'column'}} item xs={12} sm={6} md={4}><CourseCardAdmin onDelete={handleDelete} data={el} /></Grid>;
           })}
         </Grid>
-      </Stack> : <Empty/>}
+      </Stack> : <Empty />}
     </Page>
   );
 };
