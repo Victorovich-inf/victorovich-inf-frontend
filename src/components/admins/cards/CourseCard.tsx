@@ -3,17 +3,33 @@ import {  Card, CardContent, CardMedia, Stack, Typography } from '@mui/material'
 import { CourseData } from '../../../@types/course';
 import { useStableNavigate } from '../../../contexts/StableNavigateContext';
 import { PATH_DASHBOARD } from '../../../paths';
+import { confirmDialog } from '../../dialogs/DialogDelete';
+import { useBuyCourseMutation } from '../../../store/api/admin/courseApi';
+import { connect } from 'react-redux';
+import { getUserData } from '../../../store/reducers/userReducer';
+import { UserData } from '../../../@types/user';
 
 interface CourseCardProps {
   data: CourseData,
+  user: UserData
 }
 
-const CourseCard = ({data}: CourseCardProps) => {
+const CourseCard = ({data, user}: CourseCardProps) => {
+
+  const [buyCourse] = useBuyCourseMutation()
 
   const navigate = useStableNavigate()
 
   const handleGoToDetails = () => {
-    navigate(PATH_DASHBOARD.courses.details(data.id))
+
+    if (data.CourseUsers.find(el => el.userId === user.id)) {
+      navigate(PATH_DASHBOARD.courses.details(data.id))
+    } else {
+      confirmDialog('Приобретение курса', `Вы действительно хотите приобрести этот курс? Стоимость: ${data?.free ? 'Бесплатно': `${data.cost}₽`}`,
+        async () => {
+          await buyCourse(data.id.toString()).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)))
+        })
+    }
   }
 
   return (
@@ -38,4 +54,8 @@ const CourseCard = ({data}: CourseCardProps) => {
   );
 };
 
-export default CourseCard;
+export default connect(
+  (state) => ({
+    user: getUserData(state),
+  }),
+)(CourseCard);

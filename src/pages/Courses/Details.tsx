@@ -1,5 +1,5 @@
 import {
-  Box, Button, Chip,
+  Box, Button, Chip, CircularProgress,
   List,
   ListSubheader,
   Stack,
@@ -26,6 +26,7 @@ import EditorDialog from '../../components/admins/dialog/EditorDialog';
 import useResponsive from '../../hooks/useResponsive';
 import EditorCourse from '../../components/admins/dialog/EditorCourse';
 import CourseLesson from '../../components/admins/course/CourseLesson';
+import ProgressWithLabel from '../../components/admins/editor/ProgressWithLabel';
 
 const dataToContent = (data: CourseData) => {
   const content = {} as Content;
@@ -79,6 +80,7 @@ function Details() {
   React.useEffect(() => {
     if (data) {
       const content = dataToContent(data);
+      console.log(content);
       setContent(content);
     }
   }, [data]);
@@ -299,6 +301,7 @@ function Details() {
                   <Typography variant={isMobile ? 'h4' : 'h6'}>
                     {data.name}
                   </Typography>
+                  <ProgressWithLabel value={50}/>
                 </Stack>
                 <Stack sx={{ marginTop: 2, marginLeft: !isMobile ? 'auto' : 0, width: { xs: '100%', md: 'auto' } }} spacing={2}
                        direction={isMobile ? 'column' : 'row'}>
@@ -314,7 +317,7 @@ function Details() {
                 width: '100%',
                 maxWidth: {
                   xs: '100%',
-                  sm: 380
+                  sm: 300
                 },
                 bgcolor: 'background.paper',
                 alignSelf: 'flex-start',

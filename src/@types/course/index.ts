@@ -9,6 +9,14 @@ export interface CourseCreateData {
   file: File | null;
 }
 
+export interface CourseUser {
+  courseId: number
+  createdAt: string
+  id: number
+  updatedAt: string
+  userId: number
+}
+
 export interface CourseData {
   cost: string
   createdAt: string
@@ -16,6 +24,7 @@ export interface CourseData {
   description: string
   id: number
   logo: string
+  CourseUsers: CourseUser[];
   public: boolean
   free: boolean
   name: string

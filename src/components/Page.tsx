@@ -17,10 +17,10 @@ const Page = forwardRef(({ children, title = '', meta = '', ...other }: PageInte
 
     <Stack direction="column" sx={{ height: '100%', paddingLeft: {
         xs: '1.5rem',
-        md: '3rem',
+        md: '1.5rem',
       }, paddingRight: {
         xs: '1.5rem',
-        md: '3rem',
+        md: '1.5rem',
       } }} ref={ref} {...other}>
       {children}
     </Stack>

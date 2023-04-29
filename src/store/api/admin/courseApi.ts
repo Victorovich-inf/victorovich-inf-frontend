@@ -145,6 +145,13 @@ export const courseApi = createApi({
         body: data,
       }),
       invalidatesTags: ['OneCourse']
+    }),
+    buyCourse: builder.mutation<MessageResponse, string>({
+      query: (id) => ({
+        url: `/buy-course/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ['Course']
     })
   }),
   baseQuery: apiBase
@@ -153,5 +160,5 @@ export const courseApi = createApi({
 export const {
   useCreateMutation, useGetAllQuery, useGetOneQuery, useDeleteCourseMutation, useCreateLessonMutation,
   useCreateTaskMutation, useDeleteTaskMutation, useDeleteLessonMutation, useSavePageMutation, useUploadImageMutation,
-  useEditTaskMutation, useEditLessonMutation, useEditCourseMutation
+  useEditTaskMutation, useEditLessonMutation, useEditCourseMutation, useBuyCourseMutation
 } = courseApi

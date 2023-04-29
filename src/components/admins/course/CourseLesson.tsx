@@ -3,6 +3,8 @@ import { Box, Card, CardContent, CardHeader, Stack } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
 import RowElement from '../editor/RowElement';
+import TaskContent from '../editor/TaskContent';
+import LessonContent from '../editor/LessonContent';
 
 const CourseLesson = () => {
 
@@ -45,8 +47,6 @@ const CourseLesson = () => {
     }
   }, [selected])
 
-  console.log(selected);
-
   return (
     <>
       {selected ? <Stack direction="column" spacing={2} sx={{flex: 1}}>
@@ -58,6 +58,7 @@ const CourseLesson = () => {
           {elements ? elements.map((el, idx) => {
             return <RowElement key={idx} idx={idx} data={el}/>
           }) : null}
+          {'lessonId' in selected ? <TaskContent/> : <LessonContent/>}
         </CardContent>
       </Card>
       </Stack>: <Box sx={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Урок/задание не выбран</Box>}
