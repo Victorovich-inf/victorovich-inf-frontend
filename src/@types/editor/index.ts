@@ -38,7 +38,8 @@ export interface ContentData {
 
 export interface Content {
   [key: string]: {
-    elements: ContentData[]
+    elements: ContentData[],
+    public?: boolean;
   }
 }
 

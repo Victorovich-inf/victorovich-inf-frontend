@@ -102,7 +102,15 @@ export const courseApi = createApi({
       }),
       invalidatesTags: ['OneCourse']
     }),
-    getAll: builder.query<PaginationCourseData, BodyFilter>({
+    getAllForUser: builder.query<PaginationCourseData, BodyFilter>({
+      query: (data) => ({
+        url: "/course/query",
+        method: "POST",
+        body: data,
+      }),
+      providesTags: ['Course'],
+    }),
+    getAllForAdmin: builder.query<PaginationCourseData, BodyFilter>({
       query: (data) => ({
         url: "/course/admin/query",
         method: "POST",
@@ -152,13 +160,28 @@ export const courseApi = createApi({
         method: "POST",
       }),
       invalidatesTags: ['Course']
+    }),
+    deleteFromCourse: builder.mutation<MessageResponse, string>({
+      query: (id) => ({
+        url: `/curator/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ['OneCourse']
+    }),
+    addToCourse: builder.mutation<MessageResponse, { courseId: string, userId: string }>({
+      query: (data) => ({
+        url: `/curator/${data.courseId}`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ['OneCourse']
     })
   }),
   baseQuery: apiBase
 })
 
 export const {
-  useCreateMutation, useGetAllQuery, useGetOneQuery, useDeleteCourseMutation, useCreateLessonMutation,
+  useCreateMutation, useGetAllForAdminQuery, useGetAllForUserQuery, useGetOneQuery, useDeleteCourseMutation, useCreateLessonMutation,
   useCreateTaskMutation, useDeleteTaskMutation, useDeleteLessonMutation, useSavePageMutation, useUploadImageMutation,
-  useEditTaskMutation, useEditLessonMutation, useEditCourseMutation, useBuyCourseMutation
+  useEditTaskMutation, useEditLessonMutation, useEditCourseMutation, useBuyCourseMutation, useAddToCourseMutation, useDeleteFromCourseMutation
 } = courseApi

@@ -2,7 +2,7 @@ import React from "react";
 import { LessonData } from '../../@types/lesson';
 import { TaskData } from '../../@types/task';
 import { Content, ContentData } from '../../@types/editor';
-import { CourseData } from '../../@types/course';
+import { AnswerData, CourseData } from '../../@types/course';
 
 interface CourseEditContextProps {
     handleSetSelected: (data: LessonData | TaskData) => void;
@@ -15,7 +15,10 @@ interface CourseEditContextProps {
     handleMoveUp: (index: number) => void;
     isLesson: (selected: LessonData | TaskData | null) => boolean
     isTask: (selected: LessonData | TaskData | null) => boolean
-    course?: CourseData
+    course?: CourseData;
+    answerData?: AnswerData;
+    isCurator?: boolean;
+    updateProgressLesson?: (lesson: string, task?: string, answer?: string) => void;
 }
 
 const CourseEditContext = React.createContext<CourseEditContextProps | null>(null);

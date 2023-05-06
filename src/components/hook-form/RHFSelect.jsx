@@ -1,11 +1,7 @@
 import PropTypes from 'prop-types';
-// form
 import { useFormContext, Controller } from 'react-hook-form';
-// @mui
-import { TextField } from '@mui/material';
+import { Divider, MenuItem, TextField } from '@mui/material';
 import { useCallback } from 'react';
-
-// ----------------------------------------------------------------------
 
 RHFSelect.propTypes = {
   name: PropTypes.string,
@@ -31,15 +27,32 @@ export default function RHFSelect({ name, options, optionValueKey, getOptionLabe
           {...field}
           select
           fullWidth
-          SelectProps={{ native: true }}
+          SelectProps={{
+            MenuProps: {
+              PaperProps: {
+                sx: {
+                  px: 1,
+                  '& .MuiMenuItem-root': {
+                    px: 1,
+                    borderRadius: 0.75,
+                    typography: 'body2',
+                    textTransform: 'capitalize',
+                  },
+                },
+              },
+            },
+            sx: { textTransform: 'capitalize' },
+          }}
           error={!!error}
-          helperText={error?.message}
+          helperText={error ? error?.message : null}
           {...other}
         >
+          <MenuItem value="">Пусто</MenuItem>
+          <Divider sx={{ borderStyle: 'dashed' }} />
           {options.map((option) => (
-            <option key={optionValueKey ? option[optionValueKey] :  option} value={optionValueKey ? option[optionValueKey] :  option}>
+            <MenuItem key={optionValueKey ? option[optionValueKey] :  option} value={optionValueKey ? option[optionValueKey] :  option}>
               {_getOptionLabel(option)}
-            </option>
+            </MenuItem>
           ))}
         </TextField>
       )}

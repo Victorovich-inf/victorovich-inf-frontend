@@ -29,6 +29,13 @@
     min-width: 50%;
 }
 
+@media (max-width: 900px) {
+    .file-details-content {
+        min-width: 100%;
+    }
+}
+
+
 .file-details-info {}
 .file-details-info span {
     color: #8F9BA7;

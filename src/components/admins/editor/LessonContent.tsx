@@ -1,43 +1,55 @@
 import React, { useMemo } from 'react';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { editorTaskSchema } from '../../../schemas/editor/editorSchema';
-import { FormProvider, RHFTextField } from '../../hook-form';
-import { Grid, Stack, Typography } from '@mui/material';
+import { FormProvider } from '../../hook-form';
 import { LoadingButton } from '@mui/lab';
+import Iconify from '../../iconify';
 
 const LessonContent = () => {
-  const { selected } = useCourseEditContext();
+  const { selected, updateProgressLesson, answerData, isCurator } = useCourseEditContext();
 
-  const [showPrompt, setShowPrompt] = React.useState(false)
+  const viewed = useMemo(() => {
+    if (selected && answerData) {
+      const hasKey = Object.keys(answerData).includes(`${selected.id}_lesson`);
 
-  const defaultValues = useMemo(() => ({
-    answer: '',
-  }), []);
+      if (hasKey) {
+        return !!answerData[`${selected.id}_lesson`]?.viewed;
+      } else {
+        return false;
+      }
+
+    }
+  }, [answerData, selected]);
+
+  const defaultValues = useMemo(() => ({}), []);
 
   const methods = useForm({
     defaultValues,
-    resolver: yupResolver(editorTaskSchema),
   });
 
   const {
     handleSubmit,
-    setValue,
-    reset,
   } = methods;
 
-  const onSubmit = (state: {answer: string}) => {
+  const onSubmit = () => {
+    if (updateProgressLesson) {
+      updateProgressLesson(`${selected?.id}_lesson`);
+    }
+  };
 
-  }
 
   return (
-    <FormProvider
-      methods={methods} onSubmit={handleSubmit(onSubmit)}>
-      <LoadingButton sx={{ marginTop: 2, alignSelf: 'flex-start' }} type='submit' variant='contained'>
+    <>
+      {viewed ? <LoadingButton startIcon={<Iconify icon='material-symbols:check-circle' />}
+                               sx={{ marginTop: 2, alignSelf: 'flex-start' }} variant='contained'>
         Просмотрено
-      </LoadingButton>
-    </FormProvider>
+      </LoadingButton> : <FormProvider
+        methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        {!isCurator ? <LoadingButton sx={{ marginTop: 2, alignSelf: 'flex-start' }} type='submit' variant='contained'>
+          Просмотрел
+        </LoadingButton> : null}
+      </FormProvider>}
+    </>
   );
 };
 

@@ -4,15 +4,15 @@ import Page from '../../components/Page';
 import CourseCardAdmin from '../../components/admins/cards/CourseCardAdmin';
 import { useNavigate } from 'react-router';
 import { PATH_DASHBOARD } from '../../paths';
-import { useDeleteCourseMutation, useGetAllQuery } from '../../store/api/admin/courseApi';
+import { useDeleteCourseMutation, useGetAllForAdminQuery } from '../../store/api/admin/courseApi';
 import { confirmDialog } from '../../components/dialogs/DialogDelete';
 import Empty from '../../components/Empty';
 
 const CoursesPageAdmin = () => {
   const [skip, setSkip] = useState<number>(0);
-  const [take, setTake] = useState<number>(10);
+  const [take, setTake] = useState<number>(30);
 
-  const { data } = useGetAllQuery({ paging: { skip: skip, take: take } });
+  const { data } = useGetAllForAdminQuery({ paging: { skip: skip, take: take } });
   const [deleteCourse] = useDeleteCourseMutation();
 
   const navigate = useNavigate();
@@ -40,9 +40,9 @@ const CoursesPageAdmin = () => {
         <Button onClick={handleAdd} variant='outlined'>Добавить курс</Button>
       </Stack>
       {(data && data.rows?.length) ? <Stack direction='row' alignItems='center' flexWrap='wrap'>
-        <Grid container spacing={2}>
+        <Grid container spacing={1}>
           {data.rows.map(el => {
-            return <Grid sx={{display: 'flex', flex: 1, flexDirection: 'column'}} item xs={12} sm={6} md={3}><CourseCardAdmin onDelete={handleDelete} data={el} /></Grid>;
+            return <Grid sx={{display: 'flex', flex: 1, flexDirection: 'column'}} item xs={12} sm={6} md={4}><CourseCardAdmin onDelete={handleDelete} data={el} /></Grid>;
           })}
         </Grid>
       </Stack> : <Empty />}

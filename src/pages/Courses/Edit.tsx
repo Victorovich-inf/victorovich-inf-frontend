@@ -2,7 +2,7 @@ import {
   Box, Button, Chip,
   List,
   ListSubheader,
-  Stack,
+  Stack, ToggleButton, ToggleButtonGroup,
 } from '@mui/material';
 import React from 'react';
 import Page from '../../components/Page';
@@ -25,6 +25,10 @@ import { PATH_DASHBOARD } from '../../paths';
 import EditorDialog from '../../components/admins/dialog/EditorDialog';
 import useResponsive from '../../hooks/useResponsive';
 import EditorCourse from '../../components/admins/dialog/EditorCourse';
+import CourseContent from '../../components/admins/course/Content/CourseContent';
+import CuratorContent from '../../components/admins/course/Content/CuratorContent';
+
+type Mode = 'course' | 'curator'
 
 const dataToContent = (data: CourseData) => {
   const content = {} as Content;
@@ -49,8 +53,8 @@ const dataToContent = (data: CourseData) => {
 function Edit() {
   const { loading, Preloader } = useLoader(false);
   const [content, setContent] = React.useState<Content>({});
+  const [mode, setMode] = React.useState<Mode>('course')
   const [savePage] = useSavePageMutation();
-  const navigate = useNavigate();
 
   const { id } = useParams();
 
@@ -75,6 +79,10 @@ function Edit() {
 
   const { data } = useGetOneQuery(id || '');
 
+  const navigate = useNavigate();
+
+  const isMobile = useResponsive('down', 'sm');
+
   React.useEffect(() => {
     if (data) {
       const content = dataToContent(data);
@@ -84,6 +92,11 @@ function Edit() {
 
   const handleSetSelected = (data: LessonData | TaskData) => {
     setSelected(data);
+  };
+
+  const handleChangeMode = ( event: React.MouseEvent<HTMLElement>,
+                             newAlignment: string) => {
+    setMode(newAlignment as Mode)
   };
 
   const handleSave = () => {
@@ -268,7 +281,24 @@ function Edit() {
     return false;
   };
 
-  const isMobile = useResponsive('down', 'sm');
+  const renderContent = (mode: Mode) => {
+    switch (mode) {
+      case 'course': {
+        if (data) {
+          return <CourseContent data={data}/>
+        } else {
+          return <></>
+        }
+      }
+      case 'curator': {
+        if (data) {
+          return <CuratorContent />
+        } else {
+          return <></>
+        }
+      }
+    }
+  }
 
   return (
     <Page title={'Добавление курса'}>
@@ -302,14 +332,25 @@ function Edit() {
                 </Stack>
                 <Stack sx={{ marginTop: 2, marginLeft: !isMobile ? 'auto' : 0, width: { xs: '100%', md: 'auto' } }} spacing={2}
                        direction={isMobile ? 'column' : 'row'}>
+                  <ToggleButtonGroup
+                    color="primary"
+                    value={mode}
+                    size="small"
+                    exclusive
+                    onChange={handleChangeMode}
+                  >
+                    <ToggleButton value="course">Контент</ToggleButton>
+                    <ToggleButton value="curator">Кураторы</ToggleButton>
+                  </ToggleButtonGroup>
                   {data ? <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={handleClickOpen2}  variant='outlined'
                                   startIcon={<Iconify icon='ep:setting' />}>
-                      Курса
+                    Курса
                   </Button> : null}
                   {selected ? <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={handleClickOpen}  variant='outlined'
                                       startIcon={<Iconify icon='ep:setting' />}>
                     {isLesson(selected) ? 'Урока' : 'Задания'}
                   </Button> : null}
+
                   <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={() => navigate(PATH_DASHBOARD.courses.root)}
                           variant='outlined'>Назад</Button>
                   <LoadingButton size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={handleSave} type='submit' variant='contained'>
@@ -319,36 +360,7 @@ function Edit() {
               </Box>
             </Box>
           </Box>
-          <Stack spacing={2} direction={isMobile ? 'column' : 'row'} justifyContent='space-between' sx={{ flex: 1 }}>
-            <List
-              sx={{
-                width: '100%',
-                maxWidth: {
-                  xs: '100%',
-                  sm: 380
-                },
-                bgcolor: 'background.paper',
-                alignSelf: 'flex-start',
-                minHeight: {
-                  xs: 250,
-                  sm: 500
-                },
-              }}
-              component='nav'
-              aria-labelledby='nested-list-subheader'
-              subheader={
-                <ListSubheader component='div' id='nested-list-subheader'>
-                  Уроки и задания
-                </ListSubheader>
-              }
-            >
-              {data.Lessons.map(lesson => {
-                return <CourseListItem key={lesson.id} data={lesson} />;
-              })}
-              <CourseAdd id={data.id} label='Добавить урок' type='lesson' />
-            </List>
-            <CourseLessonAdmin />
-          </Stack>
+          {renderContent(mode)}
           <EditorDialog open={open} handleClose={handleClose} />
           <EditorCourse open={open2} handleClose={handleClose2} />
         </> : null}

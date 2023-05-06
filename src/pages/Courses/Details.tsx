@@ -1,5 +1,5 @@
 import {
-  Box, Button, Chip, CircularProgress,
+  Box, Button,
   List,
   ListSubheader,
   Stack,
@@ -11,22 +11,22 @@ import Typography from '@mui/material/Typography';
 import { useGetOneQuery, useSavePageMutation } from '../../store/api/admin/courseApi';
 import { useNavigate, useParams } from 'react-router';
 import CourseListItem from '../../components/admins/course/CourseListItem';
-import CourseLessonAdmin from '../../components/admins/course/CourseLessonAdmin';
-import CourseAdd from '../../components/admins/course/CourseAdd';
 import { LessonData } from '../../@types/lesson';
 import { TaskData } from '../../@types/task';
 import { CourseEditProvider } from '../../utils/context/CourseEditContext';
 import { Content, ContentData } from '../../@types/editor';
-import { LoadingButton } from '@mui/lab';
-import { CourseData } from '../../@types/course';
+import { AnswerData, CourseData } from '../../@types/course';
 import { swapElements } from '../../utils/utils';
-import Iconify from '../../components/iconify';
 import { PATH_DASHBOARD } from '../../paths';
 import EditorDialog from '../../components/admins/dialog/EditorDialog';
 import useResponsive from '../../hooks/useResponsive';
 import EditorCourse from '../../components/admins/dialog/EditorCourse';
 import CourseLesson from '../../components/admins/course/CourseLesson';
 import ProgressWithLabel from '../../components/admins/editor/ProgressWithLabel';
+import { useGetOnePaidQuery, useUpdateProgressMutation } from '../../store/api/admin/paidCourseApi';
+import { showToast } from '../../utils/toast';
+import { connect } from 'react-redux';
+import { getIsCurator, getUserData } from '../../store/reducers/userReducer';
 
 const dataToContent = (data: CourseData) => {
   const content = {} as Content;
@@ -36,11 +36,13 @@ const dataToContent = (data: CourseData) => {
       el.Tasks?.map(task => {
         content[`${task.id}_task`] = {
           elements: task.Content.content,
+          public: task.public,
         };
       });
 
       content[`${el.id}_lesson`] = {
         elements: el.Content.content,
+        public: el.public,
       };
     }
   });
@@ -48,11 +50,34 @@ const dataToContent = (data: CourseData) => {
   return content;
 };
 
-function Details() {
+const calculateProgress = (data: AnswerData, all: number) => {
+  let percent = 0;
+  let count = 0;
+
+  Object.keys(data).map(el => {
+    if (data[el].viewed) {
+      count = count + 1;
+      data[el].Tasks.map(el => {
+        if (el.correctly) {
+          count = count + 1;
+        }
+      });
+    }
+  });
+
+  percent = +(count / all * 100).toFixed(0);
+
+  return percent;
+};
+
+function Details({isCurator}: {isCurator: boolean}) {
+
   const { loading, Preloader } = useLoader(false);
   const [content, setContent] = React.useState<Content>({});
-  const [savePage] = useSavePageMutation();
+  const [answerData, setAnswerData] = React.useState<AnswerData>({});
+  const [percent, setPercent] = React.useState<number>(0);
   const navigate = useNavigate();
+  const [updateProgress] = useUpdateProgressMutation();
 
   const { id } = useParams();
 
@@ -61,37 +86,167 @@ function Details() {
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
   const handleClose = () => {
     setOpen(false);
   };
 
-  const handleClickOpen2 = () => {
-    setOpen2(true);
-  };
   const handleClose2 = () => {
     setOpen2(false);
   };
 
-  const { data } = useGetOneQuery(id || '');
+  const { data } = useGetOnePaidQuery(id || '');
+
+  React.useEffect(() => {
+    if (Object.keys(content).length) {
+      let all = Object.keys(content).filter(el => content[el].public).length;
+      const percent = calculateProgress(answerData, all);
+      setPercent(percent);
+    }
+  }, [answerData, content]);
 
   React.useEffect(() => {
     if (data) {
+      const answer = data.CourseUsers[0]?.ProgressCourseUsers[0]?.data
+
       const content = dataToContent(data);
-      console.log(content);
       setContent(content);
+      setAnswerData(JSON.parse(answer) || {})
     }
   }, [data]);
 
-  const handleSetSelected = (data: LessonData | TaskData) => {
-    setSelected(data);
+  const updateProgressLesson = (lesson: string, task?: string, answer?: string) => {
+    const hasKey = Object.keys(answerData).includes(lesson);
+
+    if (selected && answer && 'answer' in selected) {
+      if (selected.answer.toLowerCase() !== answer.toLowerCase()) {
+        return showToast({ variant: 'close', content: 'Неправильный ответ' });
+      }
+    }
+
+    if (task && answer && selected) {
+      if (hasKey) {
+        setAnswerData((prev) => {
+          let tasks: any[] = [];
+
+          if (Object.values(prev[lesson].Tasks).length) {
+            tasks = [...prev[lesson].Tasks];
+          }
+
+          tasks.push(
+            { answer, correctly: true, id: selected.id.toString() },
+          );
+
+          return {
+            ...prev, [lesson]: {
+              viewed: prev[lesson].viewed,
+              Tasks: tasks,
+            },
+          };
+        });
+        if (id) {
+          let tasks: any[] = [];
+
+          if (Object.values(answerData[lesson].Tasks).length) {
+            tasks = [...answerData[lesson].Tasks];
+          }
+
+          tasks.push(
+            { answer, correctly: true, id: selected.id.toString() },
+          );
+
+          const data = {
+            ...answerData, [lesson]: {
+              viewed: true,
+              Tasks: tasks,
+            },
+          };
+          updateProgress({ id: id.toString(), data: JSON.stringify(data) });
+        }
+      } else {
+        setAnswerData((prev) => {
+          let tasks: any[] = [];
+
+          tasks.push(
+            { answer, correctly: true, id: selected.id.toString() },
+          );
+
+          return {
+            ...prev, [lesson]: {
+              viewed: true,
+              Tasks: tasks,
+            },
+          };
+        });
+        if (id) {
+            let tasks: any[] = [];
+
+            tasks.push(
+              { answer, correctly: true, id: selected.id.toString() },
+            );
+            const data = {
+              ...answerData, [lesson]: {
+                viewed: true,
+                Tasks: tasks,
+              },
+            };
+            updateProgress({ id: id.toString(), data: JSON.stringify(data) });
+        }
+      }
+    } else {
+      if (hasKey) {
+        setAnswerData((prev) => {
+          let tasks: any[] = [];
+
+          if (Object.values(prev[lesson].Tasks).length) {
+            tasks = [...prev[lesson].Tasks];
+          }
+
+          return {
+            ...prev, [lesson]: {
+              viewed: prev[lesson].viewed,
+              Tasks: tasks,
+            },
+          };
+        });
+        if (id) {
+          let tasks: any[] = [];
+
+          if (Object.values(answerData[lesson].Tasks).length) {
+            tasks = [...answerData[lesson].Tasks];
+          }
+          const data = {
+            ...answerData, [lesson]: {
+              viewed: answerData[lesson].viewed,
+              Tasks: tasks,
+            },
+          };
+          updateProgress({ id: id.toString(), data: JSON.stringify(data) });
+        }
+      } else {
+        setAnswerData((prev) => {
+          return {
+            ...prev, [lesson]: {
+              viewed: true,
+              Tasks: [],
+            },
+          };
+        });
+        if (id) {
+          const data = {
+            ...answerData, [lesson]: {
+              viewed: true,
+              Tasks: [],
+            },
+          };
+          updateProgress({ id: id.toString(), data: JSON.stringify(data) });
+        }
+      }
+    }
+
   };
 
-  const handleSave = () => {
-    if (id)
-      savePage({ id: +id, data: content });
+  const handleSetSelected = (data: LessonData | TaskData) => {
+    setSelected(data);
   };
 
   const handleMoveUp = (index: number) => {
@@ -276,6 +431,7 @@ function Details() {
   return (
     <Page title={`Просмотр курса "${data ? data.name : ''}"`}>
       <CourseEditProvider value={{
+        updateProgressLesson,
         selected,
         handleMoveUp,
         handleSetSelected,
@@ -286,7 +442,9 @@ function Details() {
         handleMoveDown,
         isLesson,
         isTask,
-        course: data
+        course: data,
+        answerData: answerData,
+        isCurator: isCurator ? isCurator : false
       }}>
         {loading ? Preloader() : data ? <>
           <Box sx={{ mb: 3 }}>
@@ -297,15 +455,20 @@ function Details() {
                   sm: 'row',
                 },
               }}>
-                <Stack direction="row" spacing={2} alignItems="center">
+                <Stack direction='row' spacing={2} alignItems='center'>
                   <Typography variant={isMobile ? 'h4' : 'h6'}>
                     {data.name}
                   </Typography>
-                  <ProgressWithLabel value={50}/>
+                  <ProgressWithLabel value={percent} />
                 </Stack>
-                <Stack sx={{ marginTop: 2, marginLeft: !isMobile ? 'auto' : 0, width: { xs: '100%', md: 'auto' } }} spacing={2}
+                <Stack sx={{ marginTop: 2, marginLeft: !isMobile ? 'auto' : 0, width: { xs: '100%', md: 'auto' } }}
+                       spacing={2}
                        direction={isMobile ? 'column' : 'row'}>
-                  <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={() => navigate(PATH_DASHBOARD.courses.rootUser)}
+                  {!isCurator ? <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
+                          onClick={() => navigate(PATH_DASHBOARD.courses.rootUser)}
+                          variant='outlined' color='warning'>В чат с куратором</Button> : null}
+                  <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
+                          onClick={() => navigate(PATH_DASHBOARD.courses.rootUser)}
                           variant='outlined'>Назад</Button>
                 </Stack>
               </Box>
@@ -317,13 +480,13 @@ function Details() {
                 width: '100%',
                 maxWidth: {
                   xs: '100%',
-                  sm: 300
+                  sm: 300,
                 },
                 bgcolor: 'background.paper',
                 alignSelf: 'flex-start',
                 minHeight: {
                   xs: 250,
-                  sm: 500
+                  sm: 500,
                 },
               }}
               component='nav'
@@ -335,7 +498,7 @@ function Details() {
               }
             >
               {data.Lessons.filter(lesson => {
-                return lesson.public
+                return lesson.public;
               }).map(lesson => {
                 return <CourseListItem detailsMode key={lesson.id} data={lesson} />;
               })}
@@ -350,4 +513,8 @@ function Details() {
   );
 };
 
-export default Details;
+export default connect(
+  (state) => ({
+    isCurator: getIsCurator(state),
+  }),
+)(Details);

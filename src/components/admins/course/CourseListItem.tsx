@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Chip,
   Collapse,
   IconButton,
   List,
-  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -18,6 +17,7 @@ import CourseAdd from './CourseAdd';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
 import { confirmDialog } from '../../dialogs/DialogDelete';
 import { useDeleteLessonMutation, useDeleteTaskMutation } from '../../../store/api/admin/courseApi';
+import { TaskData } from '../../../@types/task';
 
 interface CourseListItemProps {
   data: LessonData,
@@ -29,7 +29,7 @@ const CourseListItem = ({data, detailsMode = false}: CourseListItemProps) => {
   const [open, setOpen] = React.useState(false);
   const [deleteLesson] = useDeleteLessonMutation()
   const [deleteTask] = useDeleteTaskMutation()
-  const {selected, handleSetSelected} = useCourseEditContext()
+  const { handleSetSelected, answerData} = useCourseEditContext()
 
   const handleDelete = async (id: number, type: 'lesson' | 'task')  => {
     return confirmDialog(type === 'lesson' ? 'Удаление урока' : 'Удаление задачи',
@@ -52,6 +52,23 @@ const CourseListItem = ({data, detailsMode = false}: CourseListItemProps) => {
     setOpen(!open);
   };
 
+  const hasChildPublic = (tasks: TaskData[]) => {
+    return tasks.find(el => el.public)
+  };
+
+  const viewed = useMemo(() => {
+    if (data && answerData) {
+      const hasKey = Object.keys(answerData).includes(`${data.id}_lesson`);
+
+      if (hasKey) {
+        return !!answerData[`${data.id}_lesson`]?.viewed;
+      } else {
+        return false;
+      }
+
+    }
+  }, [answerData, data]);
+
   return (
     <>
       <ListItemButton onClick={(e) => {
@@ -62,15 +79,19 @@ const CourseListItem = ({data, detailsMode = false}: CourseListItemProps) => {
         </ListItemIcon>
         <ListItemText primary={data.name} />
         <Stack direction="row" alignItems="center">
-          {!detailsMode ? <>
+              {!detailsMode ? <>
             <Chip size="small" label={data.public ? 'Опуб.' : 'Не опуб.'} color={data.public ? 'success': 'error'} />
             <IconButton onClick={() => handleDelete(data.id, 'lesson')}>
               <Iconify icon="material-symbols:delete-forever-rounded"/>
             </IconButton>
           </> : null}
-          <IconButton onClick={handleClick}>
+          {viewed ? <Iconify sx={{color: '#54D62C'}} icon="material-symbols:check-circle"/> : null}
+          {(detailsMode && hasChildPublic(data?.Tasks)) ? <IconButton onClick={handleClick}>
             {open ? <ExpandLess /> : <ExpandMore/>}
-          </IconButton>
+          </IconButton> : null}
+          {!detailsMode ? <IconButton onClick={handleClick}>
+            {open ? <ExpandLess /> : <ExpandMore/>}
+          </IconButton> : null}
         </Stack>
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
@@ -81,6 +102,21 @@ const CourseListItem = ({data, detailsMode = false}: CourseListItemProps) => {
             }
             return task
           }).map(task => {
+
+            const correctly = () => {
+              if (task && answerData && 'Lesson' in task) {
+                const hasKey = Object.keys(answerData).includes(`${task.Lesson.id}_lesson`);
+
+                if (hasKey) {
+                  let answer = answerData[`${task.Lesson.id}_lesson`]?.Tasks?.find(el => el.id === task.id.toString())?.correctly;
+                  return !!answer;
+                } else {
+                  return false;
+                }
+
+              }
+            };
+
             return <ListItemButton onClick={(e) => {
               handleSetSelected(task)
             }
@@ -89,6 +125,7 @@ const CourseListItem = ({data, detailsMode = false}: CourseListItemProps) => {
                 <Iconify icon="material-symbols:task"/>
               </ListItemIcon>
               <ListItemText primary={task.name} />
+              {correctly() ? <Iconify sx={{color: '#54D62C'}} icon="material-symbols:check-circle"/> : null}
               {!detailsMode ? <Stack direction="row" alignItems="center">
                 <Chip size="small" label={task.public ? 'Опуб.' : 'Не опуб.'} color={task.public ? 'success': 'error'} />
                 <IconButton onClick={(e) => {

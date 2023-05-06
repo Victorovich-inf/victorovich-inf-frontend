@@ -51,6 +51,7 @@ function CreateOrEdit() {
 
   const onSubmit = async (state: CourseCreateData) => {
     let formData = new FormData()
+    // @ts-ignore
     state.file && formData.append('file', state.file)
     state.name && formData.append('name', state.name)
     state.description && formData.append('description', state.description)
