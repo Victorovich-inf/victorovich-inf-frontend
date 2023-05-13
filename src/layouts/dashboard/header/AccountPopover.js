@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
+import { Box, Divider, Typography, MenuItem, Avatar, IconButton, Popover, Button } from '@mui/material';
 import account from '../../../_mock/account';
 import { connect } from 'react-redux';
 import { getUserData } from '../../../store/reducers/userReducer';
@@ -20,6 +20,8 @@ function AccountPopover({user}) {
 
   return (
     <>
+      <Button size="small" variant="contained" color="info">Купить подписку</Button>
+
       <IconButton
         onClick={handleOpen}
         sx={{
@@ -39,7 +41,6 @@ function AccountPopover({user}) {
       >
         <Avatar src={account.photoURL} alt="photoURL" />
       </IconButton>
-
       <Popover
         open={Boolean(open)}
         anchorEl={open}

@@ -1,6 +1,6 @@
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Card, Link, Stack, Fab } from '@mui/material';
-import { fCurrency } from '../../utils/formatNumber';
+import { fCurrency, fShortenNumber } from '../../utils/formatNumber';
 import { CourseData } from '../../@types/course';
 import { UserData } from '../../@types/user';
 import { PATH_DASHBOARD } from '../../paths';
@@ -15,6 +15,10 @@ interface ShopProductCardProps {
 }
 
 const ShopProductCard  = ({ data, user }: ShopProductCardProps) => {
+
+  const POST_INFO = [
+    { id: 'view', value: 3, icon: 'eva:eye-fill' },
+  ];
 
   const linkTo = PATH_DASHBOARD.courses.details(data.id);
 
@@ -89,6 +93,27 @@ const ShopProductCard  = ({ data, user }: ShopProductCardProps) => {
             {/*)}*/}
 
             <Box component="span">{data?.free ? 'Бесплатно' : `${fCurrency(data.cost)}₽`}</Box>
+        </Stack>
+        <Stack
+          flexWrap="wrap"
+          direction="row"
+          justifyContent="flex-end"
+          sx={{
+            mt: 3,
+            color: 'text.disabled',
+          }}
+        >
+          {POST_INFO.map((info) => (
+            <Stack
+              key={info.id}
+              direction="row"
+              alignItems="center"
+              sx={{ typography: 'caption', ml: info.id === 'comment' ? 0 : 1.5 }}
+            >
+              <Iconify icon={info.icon} width={16} sx={{ mr: 0.5 }} />
+              {fShortenNumber(info.value)}
+            </Stack>
+          ))}
         </Stack>
       </Stack>
     </Card>
