@@ -38,7 +38,7 @@ const apiBase =
 
 export const courseApi = createApi({
   reducerPath: 'courseApi',
-  tagTypes: ['Course', 'OneCourse'],
+  tagTypes: ['Course', 'OneCourse', 'Search'],
   endpoints: (builder) => ({
     create: builder.mutation<MessageResponseCourse, CourseCreateData>({
       query: (data) => ({
@@ -109,6 +109,14 @@ export const courseApi = createApi({
         body: data,
       }),
       providesTags: ['Course'],
+    }),
+    searchCourse: builder.mutation<PaginationCourseData, BodyFilter>({
+      query: (data) => ({
+        url: "/course/query",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ['Search'],
     }),
     getAllForAdmin: builder.query<PaginationCourseData, BodyFilter>({
       query: (data) => ({
@@ -183,5 +191,6 @@ export const courseApi = createApi({
 export const {
   useCreateMutation, useGetAllForAdminQuery, useGetAllForUserQuery, useGetOneQuery, useDeleteCourseMutation, useCreateLessonMutation,
   useCreateTaskMutation, useDeleteTaskMutation, useDeleteLessonMutation, useSavePageMutation, useUploadImageMutation,
-  useEditTaskMutation, useEditLessonMutation, useEditCourseMutation, useBuyCourseMutation, useAddToCourseMutation, useDeleteFromCourseMutation
+  useEditTaskMutation, useEditLessonMutation, useEditCourseMutation, useBuyCourseMutation, useAddToCourseMutation, useDeleteFromCourseMutation,
+  useSearchCourseMutation
 } = courseApi

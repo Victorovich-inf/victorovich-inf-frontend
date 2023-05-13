@@ -5,6 +5,7 @@ import Header from './header';
 import Nav from './nav';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NavMini from './nav/NavMini';
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 53;
@@ -37,7 +38,7 @@ export default function DashboardLayout() {
     <StyledRoot>
       <Header onOpenNav={() => setOpen(true)} />
 
-      <Nav openNav={open} onCloseNav={() => setOpen(false)} />
+      <NavMini openNav={open} onCloseNav={() => setOpen(false)} />
 
       <Main>
         <Outlet />

@@ -1,21 +1,21 @@
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Box, Drawer, Stack } from '@mui/material';
+import { Box, Stack, Drawer } from '@mui/material';
 import useResponsive from '../../../hooks/useResponsive';
+import { NAV } from '../../../config-global';
 import Logo from '../../../components/logo';
 import Scrollbar from '../../../components/scrollbar';
-import navConfig from './config';
-import NavToggleButton from './NavToggleButton';
-import { NAV } from '../../../config-global';
 import { NavSectionVertical } from '../../../components/nav-section';
+import NavToggleButton from './NavToggleButton';
+import navConfig from './config';
 
-Nav.propTypes = {
+NavVertical.propTypes = {
   openNav: PropTypes.bool,
   onCloseNav: PropTypes.func,
 };
 
-export default function Nav({ openNav, onCloseNav }) {
+export default function NavVertical({ openNav, onCloseNav }) {
   const { pathname } = useLocation();
 
   const isDesktop = useResponsive('up', 'lg');

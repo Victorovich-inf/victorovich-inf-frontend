@@ -5,6 +5,7 @@ import { bgBlur } from '../../../utils/cssStyles';
 import Iconify from '../../../components/iconify';
 import AccountPopover from './AccountPopover';
 import DialogDelete from '../../../components/dialogs/DialogDelete';
+import NotificationsPopover from './NotificationsPopover';
 
 const NAV_WIDTH = 280;
 
@@ -59,6 +60,7 @@ export default function Header({ onOpenNav }) {
             sm: 1,
           }}
         >
+          <NotificationsPopover />
           <AccountPopover />
         </Stack>
       </StyledToolbar>
