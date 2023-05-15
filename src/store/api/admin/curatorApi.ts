@@ -1,15 +1,8 @@
 import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
-  BodyFilter,
   MessageResponse,
-  MessageResponseCourse,
-  MessageResponseCourseUpload,
 } from '../../../@types/schema';
 import { ErrorValidation, showErrors, showMessage } from '../../../utils/errors';
-import { CourseCreateData, CourseData, PaginationCourseData, ProgressData, UploadData } from '../../../@types/course';
-import { LessonCreateData, LessonEditData } from '../../../@types/lesson';
-import { TaskCreateData, TaskEditData, TaskEditFormData } from '../../../@types/task';
-import { Content } from '../../../@types/editor';
 import { PaginationUserData } from '../../../@types/user';
 
 const apiBase =

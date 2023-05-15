@@ -16,6 +16,7 @@ import CoursesPageAdmin from './pages/Courses/CoursesPageAdmin';
 import CoursesPage from './pages/Courses/CoursesPage';
 import CoursesDetailsPage from './pages/Courses/Details';
 import EditorLayout from './layouts/dashboard/EditorLayout';
+import ChatPage from './pages/Chat/ChatPage';
 
 export default function Router() {
   return useRoutes([
@@ -30,6 +31,8 @@ export default function Router() {
         { path: 'courses', element: <CoursesPage /> },
         { path: 'courses-admin/add', element: <CreateCourse /> },
         { path: 'orders', element: <OrderPage /> },
+        { path: 'chats', element: <ChatPage /> },
+        { path: 'chats/:id', element: <ChatPage /> },
         { path: 'user/add', element: <CreateUser /> },
         { path: 'user/:id', element: <CreateUser /> },
         { path: 'user/:id/view', element: <CreateUser /> },

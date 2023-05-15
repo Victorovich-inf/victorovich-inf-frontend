@@ -32,18 +32,11 @@ const navConfig = [
           { title: 'Каталог', path: PATH_DASHBOARD.courses.rootUser },
         ],
       },
-      // {
-      //   title: 'Курсы (админ.)',
-      //   path: '/dashboard/courses-admin',
-      //   icon: icon('ic_courses-admin'),
-      //   role: [1],
-      // },
-      // {
-      //   title: 'Курсы',
-      //   path: '/dashboard/courses',
-      //   icon: icon('ic_courses-admin'),
-      //   role: [0, 1, 2],
-      // },
+      {
+        title: 'Чат',
+        path: '/dashboard/chats',
+        icon: icon('ic_chat'),
+      },
     ],
   },
 ];

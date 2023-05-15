@@ -19,4 +19,10 @@ const setSession = (accessToken) => {
   }
 };
 
-export { isValidToken, setSession };
+const getUserFromLocalStorage = () => {
+  const token = localStorage.getItem('accessToken')
+  const { data } = jwtDecode(token);
+  return data;
+};
+
+export { isValidToken, setSession, getUserFromLocalStorage };

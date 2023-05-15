@@ -27,6 +27,7 @@ import { useGetOnePaidQuery, useUpdateProgressMutation } from '../../store/api/a
 import { showToast } from '../../utils/toast';
 import { connect } from 'react-redux';
 import { getIsCurator, getUserData } from '../../store/reducers/userReducer';
+import { useCreateChatWithCuratorMutation } from '../../store/api/admin/chatApi';
 
 const dataToContent = (data: CourseData) => {
   const content = {} as Content;
@@ -76,6 +77,9 @@ function Details({isCurator}: {isCurator: boolean}) {
   const [content, setContent] = React.useState<Content>({});
   const [answerData, setAnswerData] = React.useState<AnswerData>({});
   const [percent, setPercent] = React.useState<number>(0);
+
+  const [createChatWithCurator] = useCreateChatWithCuratorMutation()
+
   const navigate = useNavigate();
   const [updateProgress] = useUpdateProgressMutation();
 
@@ -113,6 +117,12 @@ function Details({isCurator}: {isCurator: boolean}) {
       setAnswerData(JSON.parse(answer) || {})
     }
   }, [data]);
+
+  const handleGoToChatWithCurator = async () => {
+    if (data) {
+       await createChatWithCurator({curatorId: data.CuratorCourses[0].userId.toString()});
+    }
+  }
 
   const updateProgressLesson = (lesson: string, task?: string, answer?: string) => {
     const hasKey = Object.keys(answerData).includes(lesson);
@@ -465,7 +475,7 @@ function Details({isCurator}: {isCurator: boolean}) {
                        spacing={2}
                        direction={isMobile ? 'column' : 'row'}>
                   {!isCurator ? <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
-                          onClick={() => navigate(PATH_DASHBOARD.courses.rootUser)}
+                          onClick={handleGoToChatWithCurator}
                           variant='outlined' color='warning'>В чат с куратором</Button> : null}
                   <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
                           onClick={() => navigate(PATH_DASHBOARD.courses.rootUser)}

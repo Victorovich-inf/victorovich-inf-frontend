@@ -5,6 +5,7 @@ import citiesReducer from './reducers/citiesReducer';
 import { courseApi } from './api/admin/courseApi';
 import { paidCourseApi } from './api/admin/paidCourseApi';
 import { curatorApi } from './api/admin/curatorApi';
+import { chatApi } from './api/admin/chatApi';
 
 const rootReducer = combineReducers({
   'user': userReducer,
@@ -13,11 +14,12 @@ const rootReducer = combineReducers({
   [courseApi.reducerPath]: courseApi.reducer,
   [paidCourseApi.reducerPath]: paidCourseApi.reducer,
   [curatorApi.reducerPath]: curatorApi.reducer,
+  [chatApi.reducerPath]: chatApi.reducer,
 });
 
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware).concat(courseApi.middleware).concat(paidCourseApi.middleware)
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware).concat(courseApi.middleware).concat(paidCourseApi.middleware).concat(chatApi.middleware)
     .concat(curatorApi.middleware),
   devTools: true,
 });

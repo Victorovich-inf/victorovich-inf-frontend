@@ -4,6 +4,10 @@ type MessageResponse = {
   message: string,
 }
 
+type ChatWithCuratorResponse = {
+  roomId: number,
+}
+
 type MessageResponseCourse = {
   message: string,
   data: CourseData
@@ -22,4 +26,4 @@ type BodyFilter = {
   filter?: any
 }
 
-export type {MessageResponse, BodyFilter, MessageResponseCourse, MessageResponseCourseUpload}
+export type {MessageResponse, BodyFilter, MessageResponseCourse, MessageResponseCourseUpload, ChatWithCuratorResponse}

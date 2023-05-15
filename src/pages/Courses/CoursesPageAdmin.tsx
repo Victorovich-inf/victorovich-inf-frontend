@@ -7,6 +7,7 @@ import { PATH_DASHBOARD } from '../../paths';
 import { useDeleteCourseMutation, useGetAllForAdminQuery } from '../../store/api/admin/courseApi';
 import { confirmDialog } from '../../components/dialogs/DialogDelete';
 import Empty from '../../components/Empty';
+import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 
 const CoursesPageAdmin = () => {
   const [skip, setSkip] = useState<number>(0);
@@ -33,12 +34,12 @@ const CoursesPageAdmin = () => {
 
   return (
     <Page title={'Курсы (администрирование) | Victorovich-inf'}>
-      <Stack direction='row' alignItems='center' justifyContent='space-between' mb={5}>
-        <Typography variant='h4' gutterBottom>
-          Курсы (админ.)
-        </Typography>
-        <Button onClick={handleAdd} variant='outlined'>Добавить курс</Button>
-      </Stack>
+      <CustomBreadcrumbs
+        heading='Курсы (администрирование)'
+        links={[
+          { name: 'Дашбоард', href: PATH_DASHBOARD.root },
+          { name: 'Курсы (администрирование)' },
+        ]} action={<Button onClick={handleAdd} variant='outlined'>Добавить курс</Button>} moreLink={undefined} activeLast={undefined} sx={undefined}        />
       {(data && data.rows?.length) ? <Stack direction='row' alignItems='center' flexWrap='wrap'>
         <Grid container spacing={1}>
           {data.rows.map(el => {
