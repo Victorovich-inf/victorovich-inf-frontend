@@ -14,3 +14,20 @@ export interface ChatData {
   user2: UserData;
   user?: UserData;
 }
+
+export interface PaginationMessagesData {
+  count: number,
+  rows: MessagesData[]
+}
+
+export interface MessagesData {
+  id?: string;
+  senderId: number,
+  sender: UserData,
+  recipientId: number,
+  recipient: UserData,
+  chatId: number,
+  message: string,
+  createdAt: string,
+  image: string,
+}

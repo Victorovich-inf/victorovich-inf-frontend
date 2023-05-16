@@ -61,6 +61,7 @@ function AuthProvider({ children }) {
 
   const logoutFunc = async () => {
     setSession(null);
+    localStorage.removeItem('accessToken')
     dispatch(logout());
     dispatch(RELOAD())
   };

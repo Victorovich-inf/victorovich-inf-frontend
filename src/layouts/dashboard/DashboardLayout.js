@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Header from './header';
-import Nav from './nav';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NavMini from './nav/NavMini';
+import NavVertical from './nav/NavVertical';
+import useResponsive from '../../hooks/useResponsive';
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 53;
@@ -33,13 +34,15 @@ const Main = styled('div')(({ theme }) => ({
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
+  const isDesktop = useResponsive('up', 'lg');
+
+  const renderNavVertical = <NavVertical openNav={open} onCloseNav={() => setOpen(false)} />;
 
   return (
     <StyledRoot>
       <Header onOpenNav={() => setOpen(true)} />
 
-      <NavMini openNav={open} onCloseNav={() => setOpen(false)} />
-
+      {isDesktop ? <NavMini openNav={open} onCloseNav={() => setOpen(false)} /> : renderNavVertical}
       <Main>
         <Outlet />
       </Main>

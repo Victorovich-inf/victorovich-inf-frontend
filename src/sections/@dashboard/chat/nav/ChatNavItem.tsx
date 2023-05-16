@@ -21,6 +21,8 @@ interface ChatNavItemProps {
 export default function ChatNavItem({ conversation, openNav, isSelected, onSelect }: ChatNavItemProps) {
   const lastActivity = conversation.createdAt;
 
+  const secondaryText = conversation.user?.role === 2 ?  'Куратор' : 'Ученик'
+
   const isUnread = true;
 
   return (
@@ -52,7 +54,7 @@ export default function ChatNavItem({ conversation, openNav, isSelected, onSelec
           <ListItemText
             primary={`${conversation.user?.firstName} ${conversation.user?.lastName}`}
             primaryTypographyProps={{ noWrap: true, variant: 'subtitle2' }}
-            secondary={`Куратор`}
+            secondary={secondaryText}
             secondaryTypographyProps={{
               noWrap: true,
               variant: isUnread ? 'subtitle2' : 'body2',

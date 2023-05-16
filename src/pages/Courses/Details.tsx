@@ -8,7 +8,6 @@ import React from 'react';
 import Page from '../../components/Page';
 import useLoader from '../../hooks/useLoader';
 import Typography from '@mui/material/Typography';
-import { useGetOneQuery, useSavePageMutation } from '../../store/api/admin/courseApi';
 import { useNavigate, useParams } from 'react-router';
 import CourseListItem from '../../components/admins/course/CourseListItem';
 import { LessonData } from '../../@types/lesson';
@@ -26,7 +25,7 @@ import ProgressWithLabel from '../../components/admins/editor/ProgressWithLabel'
 import { useGetOnePaidQuery, useUpdateProgressMutation } from '../../store/api/admin/paidCourseApi';
 import { showToast } from '../../utils/toast';
 import { connect } from 'react-redux';
-import { getIsCurator, getUserData } from '../../store/reducers/userReducer';
+import { getIsCurator } from '../../store/reducers/userReducer';
 import { useCreateChatWithCuratorMutation } from '../../store/api/admin/chatApi';
 
 const dataToContent = (data: CourseData) => {

@@ -5,7 +5,7 @@ import {
 } from '../../../@types/schema';
 import { ErrorValidation, showErrors, showMessage } from '../../../utils/errors';
 import { PaginationUserData, UserData } from '../../../@types/user';
-import { ChatData, PaginationChatData } from '../../../@types/chat';
+import { ChatData, PaginationChatData, PaginationMessagesData } from '../../../@types/chat';
 import { useSelector } from 'react-redux';
 import { getUserData } from '../../reducers/userReducer';
 import { getUserFromLocalStorage } from '../../../utils/jwt';
@@ -37,7 +37,7 @@ const apiBase =
 
 export const chatApi = createApi({
   reducerPath: 'chatApi',
-  tagTypes: ['Chats'],
+  tagTypes: ['Chats', 'Messages'],
   endpoints: (builder) => {
     return ({
       createChatWithCurator: builder.mutation<ChatWithCuratorResponse, { curatorId: string }>({
@@ -47,6 +47,13 @@ export const chatApi = createApi({
           body: data,
         }),
         invalidatesTags: ['Chats'],
+      }),
+      getMessagesFromRoom: builder.query<PaginationMessagesData, string>({
+        query: (id) => ({
+          url: `/chat/room/${id}`,
+          method: 'GET',
+        }),
+        providesTags: ['Messages'],
       }),
       getChats: builder.query<PaginationChatData, void>({
         query: (data) => ({
@@ -85,5 +92,5 @@ export const chatApi = createApi({
 });
 
 export const {
-  useCreateChatWithCuratorMutation, useGetChatsQuery,
+  useCreateChatWithCuratorMutation, useGetChatsQuery, useGetMessagesFromRoomQuery
 } = chatApi;

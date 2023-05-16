@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { ContentData } from '../../../@types/editor';
@@ -8,6 +8,8 @@ import clsx from 'clsx';
 import './RowElement.css';
 import axios from 'axios';
 import { formatBytes } from '../../../utils/utils';
+import Lightbox from '../../lightbox';
+import useResponsive from '../../../hooks/useResponsive';
 
 interface RowElementProps {
   data: ContentData;
@@ -46,7 +48,11 @@ const useStyles = makeStyles({
 
 const RowElement = ({ data, idx }: RowElementProps) => {
   const classes = useStyles();
-  const [size, setSize] = React.useState('');
+  const [size, setSize] = useState('');
+  const isMobile = useResponsive('down', 'sm');
+
+  const [imagesLightbox, setImagesLightbox] = useState<Array<{ src: string }>>([])
+  const [selectedImage, setSelectedImage] = useState(-1);
 
   const type = useMemo(() => {
     if ('src' in data.element) {
@@ -63,6 +69,15 @@ const RowElement = ({ data, idx }: RowElementProps) => {
     }
     return '';
   }, [data]);
+
+  function handleOpenImage(src: string) {
+    setSelectedImage(0)
+    setImagesLightbox([{src: src}])
+  }
+
+  function handleCloseLightbox() {
+    setSelectedImage(-1);
+  };
 
   async function getFileStats(url: string) {
     const { data } = await axios.get(url, {
@@ -103,7 +118,7 @@ const RowElement = ({ data, idx }: RowElementProps) => {
   const renderRow = (type: string) => {
     switch (type) {
       case 'image': {
-        return <img className={classes.image} src={'src' in data.element ? data.element?.src : ''} alt='image' />;
+        return <img className={classes.image} onClick={() => handleOpenImage('src' in data.element ? data.element?.src :'')} src={'src' in data.element ? data.element?.src : ''} alt='image' />;
       }
       case 'video': {
         return <ReactPlayer className={clsx(classes.image, 'player-details')}
@@ -135,6 +150,12 @@ const RowElement = ({ data, idx }: RowElementProps) => {
     <>
       <Box className={classes.row}>
         {renderRow(type)}
+        <Lightbox
+          index={selectedImage}
+          slides={imagesLightbox} disabledZoom={!isMobile} disabledCaptions disabledFullscreen disabledVideo disabledThumbnails
+          open={selectedImage >= 0}
+          close={handleCloseLightbox} disabledTotal={false} disabledSlideshow={false}
+          onGetCurrentIndex={undefined} />
       </Box>
     </>
   );

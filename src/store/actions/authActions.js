@@ -1,6 +1,7 @@
 import {store} from "../index";
 import $authHost from "../../utils/axios";
 import { auth, logout, setUser } from '../reducers/userReducer';
+import { setSession } from '../../utils/jwt';
 
 const {dispatch} = store
 
@@ -11,6 +12,7 @@ export const loginAction = async (data) => {
             await localStorage.setItem('accessToken', res.data.token);
             await dispatch(setUser(res.data.user))
             await dispatch(auth());
+            setSession(res.data.token)
         }
     })
 }

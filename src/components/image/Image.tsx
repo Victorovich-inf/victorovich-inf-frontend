@@ -5,6 +5,7 @@ import getRatio from './getRatio';
 
 interface ImageProps {
   ratio?: string;
+  onClick?: () => void;
   sx: any;
   src: string;
   effect?: string;

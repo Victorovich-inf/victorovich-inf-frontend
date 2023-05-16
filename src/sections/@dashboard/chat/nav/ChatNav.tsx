@@ -6,6 +6,8 @@ import Iconify from '../../../../components/iconify';
 import Scrollbar from '../../../../components/scrollbar';
 import ChatNavList from './ChatNavList';
 import { ChatData } from '../../../../@types/chat';
+import { useParams } from 'react-router';
+import { useChatContext } from '../../../../utils/context/ChatContext';
 
 const StyledToggleButton = styled((props) => <IconButton disableRipple {...props} />)(
   ({ theme }) => ({
@@ -37,6 +39,8 @@ interface ChatNavProps {
 
 export default function ChatNav({ conversations }: ChatNavProps) {
   const theme = useTheme();
+
+  const {activeChat} = useChatContext()
 
   const isDesktop = useResponsive('up', 'md');
 
@@ -73,7 +77,9 @@ export default function ChatNav({ conversations }: ChatNavProps) {
           openNav={openNav}
           onCloseNav={handleCloseNav}
           conversations={conversations}
-          selected={() => false} sx={undefined}        />
+          selected={(el) => {
+            return false
+          }} sx={undefined}        />
       </Scrollbar>
     </>
   );
@@ -103,7 +109,7 @@ export default function ChatNav({ conversations }: ChatNavProps) {
             },
           }}
           sx={{
-            width: NAV_WIDTH,
+            width: activeChat ? NAV_WIDTH : '100%',
             transition: theme.transitions.create('width'),
             ...(isCollapse && {
               width: NAV_COLLAPSE_WIDTH,

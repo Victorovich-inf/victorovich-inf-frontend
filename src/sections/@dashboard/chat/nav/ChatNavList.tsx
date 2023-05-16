@@ -5,13 +5,15 @@ import { SkeletonConversationItem } from '../../../../components/skeleton';
 import ChatNavItem from './ChatNavItem';
 import React from 'react';
 import { ChatData } from '../../../../@types/chat';
+import { PATH_DASHBOARD } from '../../../../paths';
+import { useParams } from 'react-router';
 
 interface ChatNavListProps {
   conversations: ChatData[]
   openNav: boolean
   loading: boolean
   onCloseNav: () => void
-  selected: () => boolean
+  selected: (el: ChatData) => boolean
   sx: any
 }
 
@@ -25,21 +27,23 @@ export default function ChatNavList({
   ...other
 }: ChatNavListProps) {
   const navigate = useNavigate();
+  const params = useParams()
 
   const isDesktop = useResponsive('up', 'md');
 
   const handleSelectConversation = (el: ChatData) => {
-
+    navigate(PATH_DASHBOARD.chat.detail(el.id))
   };
 
   return (
     <List disablePadding sx={sx} {...other}>
       {loading ? [...Array(12)].map((_, idx: number) => <SkeletonConversationItem key={idx} sx={undefined} />) : conversations?.length ? conversations.map((el, idx: number) => {
+
         return <ChatNavItem
           key={idx}
           openNav={openNav}
           conversation={el}
-          isSelected={false}
+          isSelected={params?.id === el?.id?.toString()}
           onSelect={() => {
             if (!isDesktop) {
               onCloseNav();

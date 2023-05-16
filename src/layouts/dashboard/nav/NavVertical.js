@@ -38,19 +38,6 @@ export default function NavVertical({ openNav, onCloseNav }) {
         },
       }}
     >
-      <Stack
-        spacing={3}
-        sx={{
-          pt: 3,
-          pb: 2,
-          px: 2.5,
-          flexShrink: 0,
-        }}
-      >
-        <Logo />
-
-      </Stack>
-
       <NavSectionVertical data={navConfig} />
 
       <Box sx={{ flexGrow: 1 }} />
