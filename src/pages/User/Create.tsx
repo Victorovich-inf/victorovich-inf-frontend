@@ -12,6 +12,7 @@ import { PATH_DASHBOARD } from '../../paths';
 import { UserCreateData } from '../../@types/user';
 import { useRegisterMutation } from '../../store/api/admin/userApi';
 import { useStableNavigate } from '../../contexts/StableNavigateContext';
+import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 
 function CreateOrEdit() {
   const { loading, start, stop, Preloader } = useLoader(false);
@@ -59,15 +60,13 @@ function CreateOrEdit() {
   return (
     <Page title={'Добавление пользователя'}>
         {loading ? Preloader() : <>
-          <Box sx={{ mb: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Box sx={{ flexGrow: 1 }}>
-                <Typography variant='h4' gutterBottom>
-                  Добавление пользователя
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
+          <CustomBreadcrumbs
+            heading='Добавление пользователя'
+            links={[
+              { name: 'Дашбоард', href: PATH_DASHBOARD.root },
+              { name: 'Пользователи', href: PATH_DASHBOARD.user.root },
+              { name: 'Добавление пользователя' },
+            ]} action={undefined} moreLink={undefined} activeLast={undefined} sx={undefined}        />
           <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Grid container>
               <Grid item xs={12} md={12}>

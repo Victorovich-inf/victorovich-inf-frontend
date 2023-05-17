@@ -1,7 +1,5 @@
 import {
   Box, Button, Chip,
-  List,
-  ListSubheader,
   Stack, ToggleButton, ToggleButtonGroup,
 } from '@mui/material';
 import React from 'react';
@@ -10,9 +8,6 @@ import useLoader from '../../hooks/useLoader';
 import Typography from '@mui/material/Typography';
 import { useGetOneQuery, useSavePageMutation } from '../../store/api/admin/courseApi';
 import { useNavigate, useParams } from 'react-router';
-import CourseListItem from '../../components/admins/course/CourseListItem';
-import CourseLessonAdmin from '../../components/admins/course/CourseLessonAdmin';
-import CourseAdd from '../../components/admins/course/CourseAdd';
 import { LessonData } from '../../@types/lesson';
 import { TaskData } from '../../@types/task';
 import { CourseEditProvider } from '../../utils/context/CourseEditContext';

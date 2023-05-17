@@ -13,6 +13,7 @@ import { useDeleteUserMutation, useGetAllQuery } from '../store/api/admin/userAp
 import React from 'react';
 import Page from '../components/Page';
 import XLSXButton from '../components/admins/XLSXButton';
+import CustomBreadcrumbs from '../components/custom-breadcrumbs';
 
 export default function UserPage() {
   const navigate = useNavigate()
@@ -34,11 +35,12 @@ export default function UserPage() {
 
   return (
       <Page title={'Пользователи | Victorovich-inf'}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Пользователи
-          </Typography>
-        </Stack>
+        <CustomBreadcrumbs
+          heading='Пользователи'
+          links={[
+            { name: 'Дашбоард', href: PATH_DASHBOARD.root },
+            { name: 'Пользователи' },
+          ]} action={undefined} moreLink={undefined} activeLast={undefined} sx={undefined}        />
 
         <Card>
           <AdminTable Button={<>

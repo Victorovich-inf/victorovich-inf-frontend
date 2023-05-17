@@ -1,10 +1,10 @@
-import { Box, Card, Grid, Stack } from '@mui/material';
+import { Card, Grid, Stack } from '@mui/material';
 import React, { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
 import Page from '../../components/Page';
 import useLoader from '../../hooks/useLoader';
-import { FormProvider, RHFCheckbox, RHFTextField } from '../../components/hook-form';
+import { FormProvider, RHFTextField } from '../../components/hook-form';
 import Typography from '@mui/material/Typography';
 import { CourseCreateData } from '../../@types/course';
 import { fData } from '../../utils/formatNumber';
@@ -16,6 +16,7 @@ import { useCreateMutation } from '../../store/api/admin/courseApi';
 import { useStableNavigate } from '../../contexts/StableNavigateContext';
 import { PATH_DASHBOARD } from '../../paths';
 import RHFSwitch from '../../components/hook-form/RHFSwitch';
+import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 
 function CreateOrEdit() {
   const { loading, Preloader } = useLoader(false);
@@ -82,15 +83,13 @@ function CreateOrEdit() {
   return (
     <Page title={'Добавление курса'}>
       {loading ? Preloader() : <>
-        <Box sx={{ mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ flexGrow: 1 }}>
-              <Typography variant='h4' gutterBottom>
-                Добавление курса
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
+        <CustomBreadcrumbs
+          heading='Добавление курса'
+          links={[
+            { name: 'Дашбоард', href: PATH_DASHBOARD.root },
+            { name: 'Курсы', href: PATH_DASHBOARD.courses.root },
+            { name: 'Добавление' },
+          ]} action={undefined} moreLink={undefined} activeLast={undefined} sx={undefined}        />
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
           <Grid container>
             <Grid item xs={12} md={12}>

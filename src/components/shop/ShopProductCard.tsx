@@ -8,6 +8,9 @@ import Image from '../image';
 import Iconify from '../iconify';
 import { connect } from 'react-redux';
 import { getUserData } from '../../store/reducers/userReducer';
+import { useBuyCourseMutation } from '../../store/api/admin/courseApi';
+import { useStableNavigate } from '../../contexts/StableNavigateContext';
+import { confirmDialog } from '../dialogs/DialogDelete';
 
 interface ShopProductCardProps {
   data: CourseData,
@@ -15,6 +18,22 @@ interface ShopProductCardProps {
 }
 
 const ShopProductCard  = ({ data, user }: ShopProductCardProps) => {
+
+  const [buyCourse] = useBuyCourseMutation()
+
+  const navigate = useStableNavigate()
+
+  const handleGoToDetails = (e: { preventDefault: () => void; }) => {
+    e.preventDefault()
+    if (data.CourseUsers.find(el => el.userId === user.id)) {
+      navigate(PATH_DASHBOARD.courses.details(data.id))
+    } else {
+      confirmDialog('Приобретение курса', `Вы действительно хотите приобрести этот курс? Стоимость: ${data?.free ? 'Бесплатно': `${data.cost}₽`}`,
+        async () => {
+          await buyCourse(data.id.toString()).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)))
+        })
+    }
+  }
 
   const POST_INFO = [
     { id: 'view', value: 3, icon: 'eva:eye-fill' },
@@ -80,7 +99,7 @@ const ShopProductCard  = ({ data, user }: ShopProductCardProps) => {
       </Box>
 
       <Stack spacing={2.5} sx={{ p: 3 }}>
-        <Link component={RouterLink} to={linkTo} color="inherit" variant="subtitle2" noWrap>
+        <Link component={RouterLink} to={linkTo} onClick={handleGoToDetails} color="inherit" variant="subtitle2" noWrap>
           {data.name}
         </Link>
 
@@ -92,7 +111,7 @@ const ShopProductCard  = ({ data, user }: ShopProductCardProps) => {
             {/*  </Box>*/}
             {/*)}*/}
 
-            <Box component="span">{data?.free ? 'Бесплатно' : `${fCurrency(data.cost)}₽`}</Box>
+            <Box component="span">{data?.free ? 'Бесплатно' : `${fCurrency(data.cost)} ₽`}</Box>
         </Stack>
         <Stack
           flexWrap="wrap"

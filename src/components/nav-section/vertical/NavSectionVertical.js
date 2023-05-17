@@ -18,7 +18,7 @@ export default function NavSectionVertical({ data, sx, ...other }) {
         const key = group.subheader || group.items[0].title;
 
         return (
-          <List key={key} disablePadding sx={{ px: 2 }}>
+          <List key={key} disablePadding sx={{ px: 1 }}>
             {group.subheader && (
               <StyledSubheader disableSticky>{group.subheader}</StyledSubheader>
             )}

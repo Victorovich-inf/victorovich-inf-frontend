@@ -43,7 +43,7 @@ const CoursesPageAdmin = () => {
       {(data && data.rows?.length) ? <Stack direction='row' alignItems='center' flexWrap='wrap'>
         <Grid container spacing={1}>
           {data.rows.map(el => {
-            return <Grid sx={{display: 'flex', flex: 1, flexDirection: 'column'}} item xs={12} sm={6} md={4}><CourseCardAdmin onDelete={handleDelete} data={el} /></Grid>;
+            return <Grid sx={{display: 'flex', flex: 1, flexDirection: 'column'}} item xs={12} sm={6} md={4} lg={4} xl={4}><CourseCardAdmin onDelete={handleDelete} data={el} /></Grid>;
           })}
         </Grid>
       </Stack> : <Empty />}

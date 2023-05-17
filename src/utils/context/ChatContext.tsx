@@ -5,6 +5,9 @@ interface ChatContextProps {
    roomId?: number | null;
    activeChat?: ChatData;
   messages?: MessagesData[];
+  selectedMessage: MessagesData | null;
+  handleSelectMessage: (el: MessagesData | null) => void;
+  handleDeleteMessage: () => void;
 }
 
 const ChatContext = React.createContext<ChatContextProps | null>(null);

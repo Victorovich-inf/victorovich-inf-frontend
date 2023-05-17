@@ -119,7 +119,8 @@ function Details({isCurator}: {isCurator: boolean}) {
 
   const handleGoToChatWithCurator = async () => {
     if (data) {
-       await createChatWithCurator({curatorId: data.CuratorCourses[0].userId.toString()});
+       const { roomId } = await createChatWithCurator({curatorId: data.CuratorCourses[0].userId.toString()}).unwrap();
+      navigate(PATH_DASHBOARD.chat.detail(roomId))
     }
   }
 

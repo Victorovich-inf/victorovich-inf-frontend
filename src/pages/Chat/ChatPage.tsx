@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { PATH_DASHBOARD } from '../../paths';
 import Page from '../../components/Page';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import { Card, Stack } from '@mui/material';
+import { Box, Card, Stack } from '@mui/material';
 import { ChatHeaderDetail, ChatMessageInput, ChatMessageList, ChatNav } from '../../sections/@dashboard/chat';
 import useChat from '../../hooks/useChat';
 import {
@@ -10,7 +10,7 @@ import {
 } from '../../store/api/admin/chatApi';
 import { useParams } from 'react-router';
 import { CourseEditProvider } from '../../utils/context/ChatContext';
-import { ChatData } from '../../@types/chat';
+import { ChatData, MessagesData } from '../../@types/chat';
 import { connect } from 'react-redux';
 import { getUserData } from '../../store/reducers/userReducer';
 import { UserData } from '../../@types/user';
@@ -25,16 +25,32 @@ const ChatPage = ({user}: ChatPageProps) => {
 
   const [activeChat, setActiveChat] = useState<ChatData | undefined>()
 
+  const [selectedMessage, setSelectedMessage] = useState<MessagesData | null>(null)
+
   const {data} = useGetChatsQuery()
 
-  const { users, messages, log, sendMessage, removeMessage } = useChat(roomId)
+  const { messages, sendMessage, removeMessage } = useChat(roomId)
 
   const params = useParams()
+
+  const handleSelectMessage = (message: MessagesData | null) => {
+    setSelectedMessage(message);
+  }
+
+  const handleDeleteMessage = () => {
+    removeMessage({
+      id: selectedMessage?.id,
+      path: selectedMessage?.image
+    })
+    setSelectedMessage(null);
+  }
+
 
   useEffect(() => {
     if (params?.id && data?.rows) {
       setRoomId(+params?.id)
       setActiveChat(data.rows.find(el => Number(el.id) === Number(params?.id)))
+      setSelectedMessage(null)
     }
   }, [params, data]);
 
@@ -46,7 +62,7 @@ const ChatPage = ({user}: ChatPageProps) => {
           { name: 'Дашбоард', href: PATH_DASHBOARD.root },
           { name: 'Чаты' },
         ]} action={undefined} moreLink={undefined} activeLast={undefined} sx={undefined}        />
-      <CourseEditProvider value={{activeChat, roomId, messages}}>
+      <CourseEditProvider value={{activeChat, roomId, messages, handleSelectMessage, selectedMessage, handleDeleteMessage}}>
         <Card sx={{ height: '72vh', display: 'flex' }}>
           <ChatNav  conversations={data ? data.rows : []} />
 
@@ -62,7 +78,7 @@ const ChatPage = ({user}: ChatPageProps) => {
               }}
             >
               <Stack flexGrow={1}>
-                {messages?.length ?  <ChatMessageList /> : null}
+                {messages?.length ?  <ChatMessageList /> : <Box flex={1}></Box>}
 
                 <ChatMessageInput
                   onSend={({ message, image }: {message?: string, image?: string}) => {

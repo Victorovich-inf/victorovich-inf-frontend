@@ -1,12 +1,15 @@
 import { formatDistanceToNowStrict } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { Typography, Stack } from '@mui/material';
+import { Typography, Stack, IconButton } from '@mui/material';
 import Image from '../../../../components/image';
 import { MessagesData } from '../../../../@types/chat';
 import { connect } from 'react-redux';
 import { getUserData } from '../../../../store/reducers/userReducer';
 import { UserData } from '../../../../@types/user';
 import { CustomAvatar } from '../../../../components/custom-avatar';
+import Iconify from '../../../../components/iconify';
+import { useState } from 'react';
+import { useChatContext } from '../../../../utils/context/ChatContext';
 
 interface ChatMessageItemProps {
   message: MessagesData;
@@ -16,16 +19,26 @@ interface ChatMessageItemProps {
 
 const ChatMessageItem = ({ message, onOpenLightbox, user }: ChatMessageItemProps) => {
 
+  const [down, setDown] = useState(false)
+
+  const {handleSelectMessage, selectedMessage} = useChatContext()
+
   const currentUser = message.sender.id === user.id;
 
   const firstName = message.sender.firstName;
 
   const isImage = !!message?.image
 
+  const handleSelectMessageDown = () => {
+    if (currentUser) {
+      setDown(prev => !prev);
+      handleSelectMessage(selectedMessage ? null : message);
+    }
+  }
   return (
-    <Stack direction='row' justifyContent={currentUser ? 'flex-end' : 'unset'} sx={{ mb: 3 }}>
+    <Stack  direction='row' justifyContent={currentUser ? 'flex-end' : 'unset'} sx={{ mb: 3 }}>
 
-      <Stack spacing={1} alignItems='flex-end'>
+      <Stack  onMouseDown={handleSelectMessageDown}  position="relative" spacing={1} alignItems='flex-end'>
         <Typography
           noWrap
           variant='caption'
@@ -51,7 +64,6 @@ const ChatMessageItem = ({ message, onOpenLightbox, user }: ChatMessageItemProps
             borderRadius: 1,
             overflow: 'hidden',
             typography: 'body2',
-            bgcolor: 'background.neutral',
             ...(currentUser && {
               color: 'grey.800',
               bgcolor: 'primary.lighter',
@@ -59,6 +71,11 @@ const ChatMessageItem = ({ message, onOpenLightbox, user }: ChatMessageItemProps
             ...(!currentUser && {
               alignSelf: 'flex-start',
             }),
+            ...(selectedMessage?.id === message.id ? {
+              bgcolor: '#c7c7c7',
+            } : {
+              bgcolor: 'background.neutral',
+            })
             // ...(isImage && {
             //   p: 0,
             // }),

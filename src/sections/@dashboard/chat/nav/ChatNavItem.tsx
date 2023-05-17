@@ -79,7 +79,6 @@ export default function ChatNavItem({ conversation, openNav, isSelected, onSelec
               })}
             </Typography>
 
-            {isUnread && <BadgeStatus status='unread' size='small' />}
           </Stack>
         </>
       )}

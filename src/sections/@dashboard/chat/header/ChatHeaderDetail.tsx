@@ -1,11 +1,12 @@
-import { Stack, Typography } from '@mui/material';
+import { IconButton, Stack, Typography } from '@mui/material';
 import { fToNow } from '../../../../utils/formatTime';
 import { CustomAvatar } from '../../../../components/custom-avatar';
 import { useChatContext } from '../../../../utils/context/ChatContext';
+import Iconify from '../../../../components/iconify';
 
 export default function ChatHeaderDetail( ) {
 
-  const {activeChat} = useChatContext()
+  const {activeChat, selectedMessage, handleSelectMessage, handleDeleteMessage} = useChatContext()
 
   const participantInfo = activeChat?.user
 
@@ -31,6 +32,14 @@ export default function ChatHeaderDetail( ) {
           <Typography variant="subtitle2">{`${participantInfo?.firstName} ${participantInfo?.lastName}`}</Typography>
         </div>
       </Stack>
+      {selectedMessage ? <Stack direction="row"  alignItems="center">
+        <IconButton color="error" onClick={handleDeleteMessage}>
+          <Iconify icon="material-symbols:delete-outline" />
+        </IconButton>
+        <IconButton onClick={() => handleSelectMessage(null)}>
+          <Iconify icon="eva:close-fill" />
+        </IconButton>
+      </Stack> : null}
     </Stack>
   );
 }
