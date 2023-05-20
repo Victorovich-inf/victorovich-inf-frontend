@@ -12,7 +12,7 @@ interface ChatContextProps {
 
 const ChatContext = React.createContext<ChatContextProps | null>(null);
 
-const CourseEditProvider = ChatContext.Provider
+const ChatContextProvider = ChatContext.Provider
 
 const useChatContext = () => {
     const data = React.useContext(ChatContext)
@@ -24,4 +24,4 @@ const useChatContext = () => {
     return data;
 }
 
-export {CourseEditProvider, useChatContext}
+export {ChatContextProvider, useChatContext}

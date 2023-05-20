@@ -1,0 +1,15 @@
+.payments-card {
+    flex: 0 0 auto;
+    color: #323C65;
+    width: 328px;
+    cursor: default;
+    display: flex;
+    overflow: inherit;
+    position: relative;
+    flex-flow: column nowrap;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+    transition: all .25s;
+    border-radius: 5px;
+    justify-content: space-between;
+    min-height: 300px;
+}

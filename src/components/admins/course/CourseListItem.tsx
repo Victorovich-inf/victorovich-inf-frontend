@@ -81,8 +81,8 @@ const CourseListItem = ({data, detailsMode = false}: CourseListItemProps) => {
         <Stack direction="row" alignItems="center">
               {!detailsMode ? <>
             <Chip size="small" label={data.public ? 'Опуб.' : 'Не опуб.'} color={data.public ? 'success': 'error'} />
-            <IconButton onClick={() => handleDelete(data.id, 'lesson')}>
-              <Iconify icon="material-symbols:delete-forever-rounded"/>
+            <IconButton color="error" onClick={() => handleDelete(data.id, 'lesson')}>
+              <Iconify icon="material-symbols:delete-outline"/>
             </IconButton>
           </> : null}
           {viewed ? <Iconify sx={{color: '#54D62C'}} icon="material-symbols:check-circle"/> : null}
@@ -128,12 +128,12 @@ const CourseListItem = ({data, detailsMode = false}: CourseListItemProps) => {
               {correctly() ? <Iconify sx={{color: '#54D62C'}} icon="material-symbols:check-circle"/> : null}
               {!detailsMode ? <Stack direction="row" alignItems="center">
                 <Chip size="small" label={task.public ? 'Опуб.' : 'Не опуб.'} color={task.public ? 'success': 'error'} />
-                <IconButton onClick={(e) => {
+                <IconButton color="error" onClick={(e) => {
                   e.stopPropagation()
                   e.preventDefault()
                   handleDelete(task.id, 'task')
                 }}>
-                  <Iconify icon="material-symbols:delete-forever-rounded"/>
+                  <Iconify icon="material-symbols:delete-outline"/>
                 </IconButton>
               </Stack> : null}
             </ListItemButton>

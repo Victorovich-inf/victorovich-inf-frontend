@@ -4,6 +4,7 @@ import {useDispatch} from "react-redux";
 import { isValidToken, setSession } from '../utils/jwt';
 import { getMy, loginAction, register } from '../store/actions/authActions';
 import {auth, init, logout, RELOAD, setUser} from "../store/reducers/userReducer";
+import { useSocketContext } from '../utils/context/SocketContext';
 
 
 const initialState = {
@@ -26,6 +27,8 @@ AuthProvider.propTypes = {
 
 function AuthProvider({ children }) {
   const dispatch = useDispatch()
+
+  const {socket} = useSocketContext()
 
   useEffect(() => {
     const initialize = async () => {
@@ -62,6 +65,7 @@ function AuthProvider({ children }) {
   const logoutFunc = async () => {
     setSession(null);
     localStorage.removeItem('accessToken')
+    socket.disconnect();
     dispatch(logout());
     dispatch(RELOAD())
   };

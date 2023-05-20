@@ -104,7 +104,7 @@ function RHFOptions({label, disabled, subServiceId}) {
                         {item.optionsNewPrice}
                       </TableCell>
                       <TableCell variant={'head'} align={'right'} style={cellHeadStyles}>
-                        <Iconify icon={'material-symbols:delete-forever-rounded'}
+                        <Iconify color="error" icon={'material-symbols:delete-outline'}
                                  style={{ fontSize: '1.5rem', cursor: 'pointer' }}
                                  onClick={() => onClickDeleteButton(item)} />
                       </TableCell>

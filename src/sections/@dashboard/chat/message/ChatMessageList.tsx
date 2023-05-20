@@ -1,24 +1,15 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, forwardRef, ForwardedRef } from 'react';
 import Scrollbar from '../../../../components/scrollbar';
 import Lightbox from '../../../../components/lightbox';
 import ChatMessageItem from './ChatMessageItem';
 import { useChatContext } from '../../../../utils/context/ChatContext';
 
-export default function ChatMessageList() {
-  const scrollRef = useRef<HTMLElement>(null);
+const ChatMessageList = forwardRef<HTMLElement>( (props, scrollRef) => {
 
   const { messages } = useChatContext();
 
   const [selectedImage, setSelectedImage] = useState(-1);
 
-  useEffect(() => {
-    const scrollMessagesToBottom = () => {
-      if (scrollRef.current) {
-        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-      }
-    };
-    scrollMessagesToBottom();
-  }, [messages]);
 
   const imagesLightbox: Array<{ src: string }> = messages?.length ? messages
     ?.filter((message) => message?.image)
@@ -47,7 +38,6 @@ export default function ChatMessageList() {
           <ChatMessageItem
             key={message.id}
             message={message}
-            // onOpenLightbox={() => {}}
             onOpenLightbox={(url) => handleOpenLightbox(url)}
           />
         ))}
@@ -61,4 +51,6 @@ export default function ChatMessageList() {
           close={handleCloseLightbox} />}
     </>
   );
-}
+})
+
+export default ChatMessageList

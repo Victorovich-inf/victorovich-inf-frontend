@@ -165,8 +165,8 @@ const RowElementAdmin = ({ data, idx }: RowElementProps) => {
           <IconButton onClick={handleMoveDownElement}>
             <Iconify icon='material-symbols:arrow-circle-down' />
           </IconButton>
-          <IconButton onClick={handleDelete}>
-            <Iconify icon='material-symbols:delete-forever-rounded' />
+          <IconButton onClick={handleDelete} color="error">
+            <Iconify icon='material-symbols:delete-outline' />
           </IconButton>
           {type === 'video' || type === 'image' || type === 'file' ? <IconButton onClick={handleClick}>
             <Iconify icon='material-symbols:settings' />

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Button, Card, CardActions, CardContent, CardMedia, Chip, Stack, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardMedia, Chip, IconButton, Stack, Typography } from '@mui/material';
 import { CourseData } from '../../../@types/course';
 import { useStableNavigate } from '../../../contexts/StableNavigateContext';
 import { PATH_DASHBOARD } from '../../../paths';
+import Iconify from '../../iconify';
 
 interface CourseCardAdminProps {
   data: CourseData,
@@ -15,6 +16,10 @@ const CourseCardAdmin = ({data, onDelete}: CourseCardAdminProps) => {
 
   const handleEdit = () => {
     navigate(PATH_DASHBOARD.courses.edit(data.id))
+  }
+
+  const handleCopy = () => {
+
   }
 
   const handleDelete = () => {
@@ -37,9 +42,16 @@ const CourseCardAdmin = ({data, onDelete}: CourseCardAdminProps) => {
         </Stack>
         <Typography variant="body2" color="text.secondary">{data.description}</Typography>
       </CardContent>
-      <CardActions sx={{padding: '12px', mt: 'auto'}}>
-        <Button onClick={handleEdit} size="small">Редактировать</Button>
-        <Button onClick={handleDelete} size="small" color="error">Удалить</Button>
+      <CardActions sx={{padding: '12px', mt: 'auto', ml: 'auto'}}>
+        <IconButton onClick={handleCopy} >
+          <Iconify icon="ph:copy" width={16} />
+        </IconButton>
+        <IconButton onClick={handleEdit} >
+          <Iconify icon="material-symbols:edit" width={16} />
+        </IconButton>
+        <IconButton onClick={handleDelete} color="error">
+          <Iconify icon="material-symbols:delete-outline" width={16} />
+        </IconButton>
       </CardActions>
     </Card>
   );

@@ -5,6 +5,7 @@ import account from '../../../_mock/account';
 import { connect } from 'react-redux';
 import { getUserData } from '../../../store/reducers/userReducer';
 import useAuth from '../../../hooks/useAuth';
+import SubscriptionDialog from './SubscriptionDialog';
 
 function AccountPopover({user}) {
   const [open, setOpen] = useState(null);
@@ -20,7 +21,7 @@ function AccountPopover({user}) {
 
   return (
     <>
-      <Button size="small" variant="contained" color="info">Купить подписку</Button>
+      <SubscriptionDialog/>
 
       <IconButton
         onClick={handleOpen}

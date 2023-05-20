@@ -10,9 +10,7 @@ export const loginAction = async (data) => {
     await $authHost.post('/auth/login', data).then(async (res) => {
         if (res.data?.token) {
             await localStorage.setItem('accessToken', res.data.token);
-            await dispatch(setUser(res.data.user))
-            await dispatch(auth());
-            setSession(res.data.token)
+            window.location.reload();
         }
     })
 }

@@ -52,7 +52,10 @@ const DialogContentCourse = () => {
 
 
   const onSubmit = async (state: CourseEditData) => {
-    await editCourse({ ...state, id: course?.id.toString() });
+    await editCourse({
+      ...state, id: course?.id.toString(),
+      start: '',
+    });
   }
 
   return (

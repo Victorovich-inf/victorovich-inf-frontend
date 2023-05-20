@@ -100,7 +100,7 @@ const AddItem = ({hasElements = false}: AddItemProps) => {
 
   return (
     <>
-      {hasElements ? <Box className={classes.root} sx={{boxShadow: 2}}>
+      {true ? <Box className={classes.root} sx={{boxShadow: 2}}>
         <IconButton onClick={handleClick}>
           <Iconify width={40} icon='material-symbols:add' />
         </IconButton>

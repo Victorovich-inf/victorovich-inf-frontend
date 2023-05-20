@@ -1,7 +1,7 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
-import UserPage from './pages/UserPage';
+import UserPage from './pages/User/UserPage';
 import LoginPage from './pages/auth/LoginPage';
 import Page404 from './pages/Page404';
 import CreateUser from './pages/User/Create';
@@ -17,6 +17,7 @@ import CoursesPage from './pages/Courses/CoursesPage';
 import CoursesDetailsPage from './pages/Courses/Details';
 import EditorLayout from './layouts/dashboard/EditorLayout';
 import ChatPage from './pages/Chat/ChatPage';
+import ChatPageWithId from './pages/Chat/ChatPageWithId';
 
 export default function Router() {
   return useRoutes([
@@ -32,7 +33,7 @@ export default function Router() {
         { path: 'courses-admin/add', element: <CreateCourse /> },
         { path: 'orders', element: <OrderPage /> },
         { path: 'chats', element: <ChatPage /> },
-        { path: 'chats/:id', element: <ChatPage /> },
+        { path: 'chats/:id', element: <ChatPageWithId /> },
         { path: 'user/add', element: <CreateUser /> },
         { path: 'user/:id', element: <CreateUser /> },
         { path: 'user/:id/view', element: <CreateUser /> },

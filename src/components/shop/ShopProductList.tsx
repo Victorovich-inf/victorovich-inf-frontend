@@ -18,6 +18,7 @@ export default function ShopProductList({ courses, loading, ...other }: ShopProd
         sm: 'repeat(2, 1fr)',
         md: 'repeat(3, 1fr)',
         lg: 'repeat(3, 1fr)',
+        xl: 'repeat(4, 1fr)',
       }}
       {...other}
     >

@@ -7,8 +7,8 @@ import {
 } from '../../../@types/schema';
 import { ErrorValidation, showErrors, showMessage } from '../../../utils/errors';
 import { CourseCreateData, CourseData, PaginationCourseData, UploadData } from '../../../@types/course';
-import { LessonCreateData, LessonEditData } from '../../../@types/lesson';
-import { TaskCreateData, TaskEditData, TaskEditFormData } from '../../../@types/task';
+import { LessonCreateData, LessonData, LessonEditData } from '../../../@types/lesson';
+import { TaskCreateData, TaskEditFormData } from '../../../@types/task';
 import { Content } from '../../../@types/editor';
 
 const apiBase =
@@ -38,7 +38,7 @@ const apiBase =
 
 export const courseApi = createApi({
   reducerPath: 'courseApi',
-  tagTypes: ['Course', 'OneCourse', 'Search'],
+  tagTypes: ['Course', 'OneCourse', 'Search', 'Schedules'],
   endpoints: (builder) => ({
     create: builder.mutation<MessageResponseCourse, CourseCreateData>({
       query: (data) => ({
@@ -66,7 +66,7 @@ export const courseApi = createApi({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: ['OneCourse']
+      invalidatesTags: ['OneCourse', 'Schedules']
     }),
     deleteLesson: builder.mutation<MessageResponse, number>({
       query: (id) => ({
@@ -133,6 +133,13 @@ export const courseApi = createApi({
       }),
       providesTags: ['OneCourse']
     }),
+    getSchedules: builder.query<LessonData[], void>({
+      query: (id) => ({
+        url: `/course/schedules`,
+        method: "GET",
+      }),
+      providesTags: ['Schedules']
+    }),
     deleteCourse: builder.mutation<MessageResponse, number>({
       query: (id) => ({
         url: `/course/admin/${id}`,
@@ -192,5 +199,5 @@ export const {
   useCreateMutation, useGetAllForAdminQuery, useGetAllForUserQuery, useGetOneQuery, useDeleteCourseMutation, useCreateLessonMutation,
   useCreateTaskMutation, useDeleteTaskMutation, useDeleteLessonMutation, useSavePageMutation, useUploadImageMutation,
   useEditTaskMutation, useEditLessonMutation, useEditCourseMutation, useBuyCourseMutation, useAddToCourseMutation, useDeleteFromCourseMutation,
-  useSearchCourseMutation
+  useSearchCourseMutation, useGetSchedulesQuery
 } = courseApi

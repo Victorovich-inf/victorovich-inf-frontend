@@ -72,7 +72,7 @@ const CRUDTable = ({
                                                style={{ fontSize: '1.5rem', marginRight: '20px', cursor: 'pointer' }}
                                                onClick={() => onClickEditButton(record.id)} />}
                 {onClickDeleteButton &&
-                  <Iconify icon={'material-symbols:delete-forever-rounded'} style={{ fontSize: '1.5rem', cursor: 'pointer' }}
+                  <Iconify color="error" icon={'material-symbols:delete-outline'} style={{ fontSize: '1.5rem', cursor: 'pointer' }}
                            onClick={() => onClickDeleteButton(record.id)} />}
               </Box>
             );

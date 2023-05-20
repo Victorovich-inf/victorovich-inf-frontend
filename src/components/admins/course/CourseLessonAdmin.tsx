@@ -1,20 +1,26 @@
 import React, { useMemo } from 'react';
-import { Box, Button, Card, Grid, IconButton, Stack } from '@mui/material';
+import { Box, Button, Card, DialogContent, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { FormProvider, RHFTextField } from '../../hook-form';
+import { FormProvider, RHFCheckbox, RHFTextField } from '../../hook-form';
 import { useForm } from 'react-hook-form';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
 import Iconify from '../../iconify';
 import AddItem from './AddItem';
 import RowElementAdmin from '../editor/RowElementAdmin';
+import { useEditLessonMutation, useEditTaskMutation, useSavePageMutation } from '../../../store/api/admin/courseApi';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { editorLessonDialogSchema, editorTaskDialogSchema } from '../../../schemas/editor/dialog/editorDialogSchema';
+import { LessonEditData } from '../../../@types/lesson';
+import RHFSwitch from '../../hook-form/RHFSwitch';
+import RHFDateTime from '../../hook-form/RHFDateTime';
+import DialogActions from '@mui/material/DialogActions';
+import axios from '../../../utils/axios';
+import { TaskEditData } from '../../../@types/task';
+import { RHFUpload } from '../../hook-form/RHFUpload';
 
 const CourseLessonAdmin = () => {
 
-  const {selected, content} = useCourseEditContext()
-
-  const defaultValues = useMemo(() => ({
-    name: '',
-  }), []);
+  const {selected, content, isTask, handleSave} = useCourseEditContext()
 
   const elements = useMemo(() => {
     if (selected?.id && Object.keys(content)?.length) {
@@ -31,33 +37,141 @@ const CourseLessonAdmin = () => {
     return []
   }, [selected, content])
 
+  const [editTask] = useEditTaskMutation();
+
+  const defaultValues = useMemo(() => ({
+    name: '',
+    prompt: '',
+    answer: '',
+    taskSolutionText: '',
+    file: null,
+    public: false,
+    answerFile: false,
+
+  }), []);
+
   const methods = useForm({
     defaultValues,
+    resolver: yupResolver(editorTaskDialogSchema),
   });
 
   const {
     handleSubmit,
+    setValue,
     reset,
-    formState: { isSubmitting },
   } = methods;
 
   React.useEffect(() => {
     if (selected) {
-      reset({
-        name: selected.name
-      })
+      if ('prompt' in selected) {
+        reset({
+          prompt: selected?.prompt || '',
+          name: selected?.name || '',
+          answer: selected?.answer || '',
+          taskSolutionText: selected?.taskSolutionText || '',
+          public: selected?.public || false,
+          answerFile: selected?.answerFile || false,
+        });
+      }
+
+      if ('taskSolutionFile' in selected && selected.taskSolutionFile) {
+        const link = `${process.env.REACT_APP_API_URL}/${selected.taskSolutionFile}`
+        axios.get(link, {responseType: 'blob'}).then(response => {
+          setValue('file', {... response.data, preview: link }, { shouldValidate: true });
+        })
+      }
     }
   }, [selected])
 
+  const handleDrop = React.useCallback(
+    (acceptedFiles: any[]) => {
+      const file = acceptedFiles[0];
+
+      const newFile = Object.assign(file, {
+        preview: URL.createObjectURL(file),
+      });
+
+      if (newFile) {
+        setValue('file', newFile, { shouldValidate: true });
+      }
+    },
+    [],
+  );
+
+  const onSubmit = async (state: TaskEditData) => {
+    let formData = new FormData();
+    if (selected) {
+      state.file && state.file.size && formData.append('file', state.file);
+      state.name && formData.append('name', state.name);
+      state.answer && formData.append('answer', state.answer);
+      state.prompt && formData.append('prompt', state.prompt);
+      state.taskSolutionText && formData.append('taskSolutionText', state.taskSolutionText);
+      state.answerFile && formData.append('answerFile', state.answerFile ? '1' : '0');
+      formData.append('public', state.public ? '1' : '0');
+
+      if (handleSave) {
+        await handleSave()
+        await editTask({ id: selected.id.toString(), data: formData as unknown as TaskEditData }).unwrap();
+      }
+    }
+  };
+
   return (
-    <>
-      {selected ? <Stack direction="column" spacing={2} sx={{flex: 1}}>
+    <Stack direction="column" spacing={4} flex={1}>
+      {selected ? <Stack direction="column" spacing={2} >
         {elements ? elements.map((el, idx) => {
           return <RowElementAdmin key={idx} idx={idx} data={el}/>
         }) : null}
         <AddItem hasElements={!!elements?.length}/>
       </Stack>: <Box sx={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Урок/задание не выбран</Box>}
-    </>
+      {isTask(selected) ? <Card sx={{p: 2}}>
+        <FormProvider
+          methods={methods} onSubmit={handleSubmit(onSubmit)}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={12}>
+              <RHFTextField name='name' label='Название' />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <RHFTextField multiline name='answer' label='Правильный ответ' />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <RHFTextField multiline name='prompt' label='Подсказка к ответу' />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <RHFTextField multiline rows={6} name='taskSolutionText' label='Решение задания (текст)' />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <RHFUpload
+                name='file'
+                maxSize={3145728}
+                onDrop={handleDrop}
+                onDelete={() => setValue('file', null, { shouldValidate: true })}
+                helperText={<Typography
+                  variant='caption'
+                  sx={{
+                    mt: 2,
+                    mx: 'auto',
+                    display: 'block',
+                    textAlign: 'center',
+                    color: 'text.secondary',
+                  }}
+                >
+                  Решение задания (картинка)
+                </Typography>} multiple={false} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <RHFSwitch name='public' label='Опубликовано' helperText={null} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <RHFCheckbox name='answerFile' label='Ответ в виде файла' />
+            </Grid>
+          </Grid>
+          <Button sx={{marginLeft: 'auto'}} type='submit'>
+            Сохранить
+          </Button>
+        </FormProvider>
+      </Card> : null}
+    </Stack>
   );
 };
 

@@ -10,6 +10,8 @@ import { editorLessonDialogSchema } from '../../../schemas/editor/dialog/editorD
 import RHFSwitch from '../../hook-form/RHFSwitch';
 import { useEditLessonMutation } from '../../../store/api/admin/courseApi';
 import { LessonEditData } from '../../../@types/lesson';
+import RHFDate from '../../hook-form/RHFDate';
+import RHFDateTime from '../../hook-form/RHFDateTime';
 
 const DialogContentLesson = () => {
 
@@ -18,7 +20,8 @@ const DialogContentLesson = () => {
 
   const defaultValues = useMemo(() => ({
     name: '',
-    public: false
+    public: false,
+    start: ''
   }), []);
 
   const methods = useForm({
@@ -34,7 +37,8 @@ const DialogContentLesson = () => {
   React.useEffect(() => {
     if (selected) {
       if ('public' in selected) {
-        reset({ name: selected?.name, public: selected?.public });
+          // @ts-ignore
+        reset({ name: selected?.name, public: selected?.public, start: selected?.start });
       }
     }
   }, [selected])
@@ -54,6 +58,9 @@ const DialogContentLesson = () => {
           </Grid>
           <Grid item xs={12} md={12}>
             <RHFSwitch name='public' label='Опубликовано' helperText={null} />
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <RHFDateTime name='start' label='Дата начала' />
           </Grid>
         </Grid>
       </DialogContent>

@@ -18,6 +18,7 @@ interface CourseEditContextProps {
     course?: CourseData;
     answerData?: AnswerData;
     isCurator?: boolean;
+    handleSave?: () => void;
     updateProgressLesson?: (lesson: string, task?: string, answer?: string) => void;
 }
 

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Box, Link, Stack, Typography, Breadcrumbs } from '@mui/material';
 //
 import LinkItem from './LinkItem';
+import useResponsive from '../../hooks/useResponsive';
 
 // ----------------------------------------------------------------------
 
@@ -25,10 +26,11 @@ export default function CustomBreadcrumbs({
   ...other
 }) {
   const lastLink = links[links.length - 1].name;
+  const isMobile = useResponsive('down', 'sm');
 
   return (
     <Box sx={{ mb: 5, ...sx }}>
-      <Stack direction="row" alignItems="center">
+      <Stack direction={isMobile ? 'column' : "row"} alignItems="center" spacing={isMobile ? 2 : 0}>
         <Box sx={{ flexGrow: 1 }}>
           {/* HEADING */}
           {heading && (

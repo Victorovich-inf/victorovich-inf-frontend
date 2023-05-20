@@ -8,7 +8,9 @@ export default function Input(theme) {
       styleOverrides: {
         root: {
           '&.Mui-disabled': {
-            '& svg': { color: theme.palette.text.disabled },
+            '& svg': {
+              color: theme.palette.text.disabled,
+            },
           },
         },
         input: {
@@ -25,26 +27,39 @@ export default function Input(theme) {
           '&:before': {
             borderBottomColor: alpha(theme.palette.grey[500], 0.56),
           },
+          '&:after': {
+            borderBottomColor: theme.palette.text.primary,
+          },
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: theme.palette.text.primary,
+          },
         },
       },
     },
     MuiFilledInput: {
       styleOverrides: {
         root: {
-          backgroundColor: alpha(theme.palette.grey[500], 0.12),
+          borderRadius: theme.shape.borderRadius,
+          backgroundColor: alpha(theme.palette.grey[500], 0.08),
           '&:hover': {
             backgroundColor: alpha(theme.palette.grey[500], 0.16),
           },
           '&.Mui-focused': {
-            backgroundColor: theme.palette.action.focus,
+            backgroundColor: alpha(theme.palette.grey[500], 0.16),
           },
           '&.Mui-disabled': {
             backgroundColor: theme.palette.action.disabledBackground,
           },
         },
         underline: {
-          '&:before': {
-            borderBottomColor: alpha(theme.palette.grey[500], 0.56),
+          '&:before, :after': {
+            display: 'none',
           },
         },
       },
@@ -54,6 +69,12 @@ export default function Input(theme) {
         root: {
           '& .MuiOutlinedInput-notchedOutline': {
             borderColor: alpha(theme.palette.grey[500], 0.32),
+          },
+          '&.Mui-focused': {
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderWidth: 1,
+              borderColor: theme.palette.text.primary,
+            },
           },
           '&.Mui-disabled': {
             '& .MuiOutlinedInput-notchedOutline': {

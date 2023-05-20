@@ -2,6 +2,7 @@ import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from '@reduxjs/too
 import { BodyFilter, MessageResponse } from '../../../@types/schema';
 import { PaginationUserData, ParseXLSXData, UserCreateData } from '../../../@types/user';
 import { ErrorValidation, showErrors, showMessage } from '../../../utils/errors';
+import { NotificationData } from '../../../@types/notifications';
 
 const apiBase =
   async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: {}) => {
@@ -94,6 +95,14 @@ export const userApi = createApi({
         body: data,
       }),
       providesTags: ['User'],
+    }),
+    getNotifications: builder.query<NotificationData[], void>({
+      query: (data) => ({
+        url: "/user/notifications",
+        method: "GET",
+        body: data,
+      }),
+      providesTags: ['User'],
     })
   }),
   baseQuery: apiBase
@@ -107,5 +116,6 @@ export const {
   useUnbanMutation,
   useMakeСuratorMutation,
   useRemoveСuratorMutation,
-  useParseXLSXMutation
+  useParseXLSXMutation,
+  useGetNotificationsQuery
 } = userApi

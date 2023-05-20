@@ -1,13 +1,11 @@
 import { formatDistanceToNowStrict } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { Typography, Stack, IconButton } from '@mui/material';
+import { Typography, Stack } from '@mui/material';
 import Image from '../../../../components/image';
 import { MessagesData } from '../../../../@types/chat';
 import { connect } from 'react-redux';
 import { getUserData } from '../../../../store/reducers/userReducer';
 import { UserData } from '../../../../@types/user';
-import { CustomAvatar } from '../../../../components/custom-avatar';
-import Iconify from '../../../../components/iconify';
 import { useState } from 'react';
 import { useChatContext } from '../../../../utils/context/ChatContext';
 

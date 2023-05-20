@@ -12,9 +12,9 @@ const navConfig = [
     subheader: 'Дашбоард',
     items: [
       {
-        title: 'Дашбоард',
+        title: 'Календарь',
         path: '/dashboard/app',
-        icon: icon('ic_analytics'),
+        icon: icon('ic_calendar'),
         role: [0, 1, 2],
       },
       {

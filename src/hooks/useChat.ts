@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client'
 import { useSelector } from 'react-redux';
 import { getUserData } from '../store/reducers/userReducer';
@@ -11,10 +11,11 @@ export default function useChat(roomId?: number | null) {
   const [messages, setMessages] = useState<MessagesData[]>([])
   const [log, setLog] = useState(null)
 
+
   const socket = io(process.env.REACT_APP_API_URL as string, {
     query: {
       roomId: Number(roomId),
-      userName: `${user.firstName} ${user.lastName}`
+      userName: `${user.firstName} ${user.lastName}`,
     }
   })
 

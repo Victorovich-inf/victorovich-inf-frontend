@@ -308,6 +308,7 @@ function Edit() {
         handleMoveDown,
         isLesson,
         isTask,
+        handleSave,
         course: data
       }}>
         {loading ? Preloader() : data ? <>
@@ -341,9 +342,9 @@ function Edit() {
                                   startIcon={<Iconify icon='ep:setting' />}>
                     Курса
                   </Button> : null}
-                  {selected ? <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={handleClickOpen}  variant='outlined'
+                  {isLesson(selected) ? <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={handleClickOpen}  variant='outlined'
                                       startIcon={<Iconify icon='ep:setting' />}>
-                    {isLesson(selected) ? 'Урока' : 'Задания'}
+                    Урока
                   </Button> : null}
 
                   <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={() => navigate(PATH_DASHBOARD.courses.root)}
