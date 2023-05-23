@@ -22,7 +22,11 @@ import useResponsive from '../../hooks/useResponsive';
 import EditorCourse from '../../components/admins/dialog/EditorCourse';
 import CourseLesson from '../../components/admins/course/CourseLesson';
 import ProgressWithLabel from '../../components/admins/editor/ProgressWithLabel';
-import { useGetOnePaidQuery, useUpdateProgressMutation } from '../../store/api/admin/paidCourseApi';
+import {
+  useGetOnePaidQuery,
+  useResetWinningStreakMutation,
+  useUpdateProgressMutation,
+} from '../../store/api/admin/paidCourseApi';
 import { showToast } from '../../utils/toast';
 import { connect } from 'react-redux';
 import { getIsCurator } from '../../store/reducers/userReducer';
@@ -81,6 +85,7 @@ function Details({isCurator}: {isCurator: boolean}) {
 
   const navigate = useNavigate();
   const [updateProgress] = useUpdateProgressMutation();
+  const [resetWinningStreak] = useResetWinningStreakMutation();
 
   const { id } = useParams();
 
@@ -102,6 +107,7 @@ function Details({isCurator}: {isCurator: boolean}) {
   React.useEffect(() => {
     if (Object.keys(content).length) {
       let all = Object.keys(content).filter(el => content[el].public).length;
+
       const percent = calculateProgress(answerData, all);
       setPercent(percent);
     }
@@ -129,6 +135,7 @@ function Details({isCurator}: {isCurator: boolean}) {
 
     if (selected && answer && 'answer' in selected) {
       if (selected.answer.toLowerCase() !== answer.toLowerCase()) {
+        resetWinningStreak()
         return showToast({ variant: 'close', content: 'Неправильный ответ' });
       }
     }
@@ -170,7 +177,7 @@ function Details({isCurator}: {isCurator: boolean}) {
               Tasks: tasks,
             },
           };
-          updateProgress({ id: id.toString(), data: JSON.stringify(data) });
+          updateProgress({ id: id.toString(), data: JSON.stringify(data), answer: !!answer });
         }
       } else {
         setAnswerData((prev) => {
@@ -199,7 +206,7 @@ function Details({isCurator}: {isCurator: boolean}) {
                 Tasks: tasks,
               },
             };
-            updateProgress({ id: id.toString(), data: JSON.stringify(data) });
+            updateProgress({ id: id.toString(), data: JSON.stringify(data), answer: !!answer });
         }
       }
     } else {
@@ -230,7 +237,7 @@ function Details({isCurator}: {isCurator: boolean}) {
               Tasks: tasks,
             },
           };
-          updateProgress({ id: id.toString(), data: JSON.stringify(data) });
+          updateProgress({ id: id.toString(), data: JSON.stringify(data), answer: !!answer });
         }
       } else {
         setAnswerData((prev) => {
@@ -248,7 +255,7 @@ function Details({isCurator}: {isCurator: boolean}) {
               Tasks: [],
             },
           };
-          updateProgress({ id: id.toString(), data: JSON.stringify(data) });
+          updateProgress({ id: id.toString(), data: JSON.stringify(data), answer: !!answer });
         }
       }
     }
@@ -474,7 +481,7 @@ function Details({isCurator}: {isCurator: boolean}) {
                 <Stack sx={{ marginTop: 2, marginLeft: !isMobile ? 'auto' : 0, width: { xs: '100%', md: 'auto' } }}
                        spacing={2}
                        direction={isMobile ? 'column' : 'row'}>
-                  {!isCurator ? <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
+                  {!isCurator && data?.CuratorCourses?.length ? <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
                           onClick={handleGoToChatWithCurator}
                           variant='outlined' color='warning'>В чат с куратором</Button> : null}
                   <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}

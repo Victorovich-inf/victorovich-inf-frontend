@@ -54,11 +54,17 @@ export const paidCourseApi = createApi({
         body: data,
       }),
       invalidatesTags: ['OneCourse']
+    }),
+    resetWinningStreak: builder.mutation<void, void>({
+      query: (data) => ({
+        url: `/buy-course/reset`,
+        method: "DELETE",
+      }),
     })
   }),
   baseQuery: apiBase
 })
 
 export const {
-  useGetOnePaidQuery, useUpdateProgressMutation
+  useGetOnePaidQuery, useUpdateProgressMutation, useResetWinningStreakMutation
 } = paidCourseApi

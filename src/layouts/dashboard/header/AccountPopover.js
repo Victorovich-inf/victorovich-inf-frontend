@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { getUserData } from '../../../store/reducers/userReducer';
 import useAuth from '../../../hooks/useAuth';
 import SubscriptionDialog from './SubscriptionDialog';
+import { CustomAvatar } from '../../../components/custom-avatar';
 
 function AccountPopover({user}) {
   const [open, setOpen] = useState(null);
@@ -40,7 +41,11 @@ function AccountPopover({user}) {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+
+        <CustomAvatar
+          // @ts-ignore
+          name={`${user?.firstName}${user?.lastName}`}
+        />
       </IconButton>
       <Popover
         open={Boolean(open)}

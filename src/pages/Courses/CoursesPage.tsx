@@ -6,7 +6,6 @@ import { PATH_DASHBOARD } from '../../paths';
 import ShopProductList from '../../components/shop/ShopProductList';
 import { Stack } from '@mui/material';
 import ShopCourseSearch from '../../components/shop/filter/ShopCourseSearch';
-import ShopCourseSort from '../../components/shop/filter/ShopCourseSort';
 
 const SORT_OPTIONS = [
   { value: 'latest', label: 'Latest' },
@@ -37,7 +36,7 @@ const CoursesPage = () => {
 
       <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
         <ShopCourseSearch />
-        <ShopCourseSort sortBy={sortBy} sortOptions={SORT_OPTIONS} onSort={handleChangeSortBy} />
+        {/*<ShopCourseSort sortBy={sortBy} sortOptions={SORT_OPTIONS} onSort={handleChangeSortBy} />*/}
       </Stack>
 
       <ShopProductList loading={isLoading}  courses={data ? data.rows : []}/>

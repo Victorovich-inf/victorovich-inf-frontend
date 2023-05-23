@@ -27,7 +27,6 @@ const TaskContent = () => {
   } = methods;
 
   const onSubmit = (state: { answer: string }) => {
-
     if (selected && 'Lesson' in selected) {
       const lessonId = `${selected.Lesson.id}_lesson`;
 

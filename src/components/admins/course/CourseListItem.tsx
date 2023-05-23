@@ -101,7 +101,7 @@ const CourseListItem = ({data, detailsMode = false}: CourseListItemProps) => {
               return task.public
             }
             return task
-          }).map(task => {
+          }).sort(function (a, b) {  return +a?.name.replace(/[^0-9]/g,"") - +b?.name.replace(/[^0-9]/g,"");  }).map(task => {
 
             const correctly = () => {
               if (task && answerData && 'Lesson' in task) {

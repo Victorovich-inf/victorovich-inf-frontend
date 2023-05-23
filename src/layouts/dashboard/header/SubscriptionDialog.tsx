@@ -16,7 +16,7 @@ const SubscriptionDialog = ({}: SubscriptionDialogProps) => {
 
   return (
     <>
-      <Button size="small" variant="contained" color="info" onClick={() => setOpen(true)}>Купить подписку</Button>
+      <Button size="small" variant="contained"  onClick={() => setOpen(true)}>Купить подписку</Button>
       <Dialog maxWidth="lg" open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Подписки</DialogTitle>
         <DialogContent>

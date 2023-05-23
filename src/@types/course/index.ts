@@ -74,6 +74,7 @@ export interface CourseEditData {
 export interface ProgressData {
   id: string;
   data: string;
+  answer?: boolean;
 }
 
 export interface AnswerData {

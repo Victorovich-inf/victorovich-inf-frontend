@@ -1,6 +1,4 @@
-import { Helmet } from 'react-helmet-async';
-import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography, Card, Dialog, DialogTitle, Stack, DialogContent } from '@mui/material';
+import { Card, Dialog, DialogTitle, Stack, DialogContent } from '@mui/material';
 import FullCalendar from '@fullcalendar/react'; // => request placed at the top
 import interactionPlugin from '@fullcalendar/interaction';
 import ru from '@fullcalendar/core/locales/ru';
@@ -75,20 +73,21 @@ export default function DashboardAppPage() {
     const event = events.find(el => el.id === arg.event.id);
 
     if (event) {
-      reset({ title: event.title, start: event?.date?.toString() })
-      setOpen(true)
-    };
+      reset({ title: event.title, start: event?.date?.toString() });
+      setOpen(true);
+    }
+    ;
 
   };
 
   return (
     <Page title={'Дашбоард | Victorovich-inf'}>
       <CustomBreadcrumbs
-        heading='Чат'
+        heading='Календарь'
         links={[
           { name: 'Дашбоард', href: PATH_DASHBOARD.root },
           { name: 'Календарь' },
-        ]} action={undefined} moreLink={undefined} activeLast={undefined} sx={undefined}        />
+        ]} action={undefined} moreLink={undefined} activeLast={undefined} sx={undefined} />
       <Card>
         <StyledCalendar>
           <FullCalendar
@@ -123,9 +122,9 @@ export default function DashboardAppPage() {
           <FormProvider
             methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={3} sx={{ py: 3 }}>
-              <RHFTextField disabled name='title' label='Название' />
+              <RHFTextField name='title' label='Название' />
 
-              <RHFDateTime disabled name='start' label='Дата' />
+              <RHFDateTime name='start' label='Дата' />
             </Stack>
           </FormProvider>
         </DialogContent>

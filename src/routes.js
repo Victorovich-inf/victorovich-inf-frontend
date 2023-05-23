@@ -8,7 +8,6 @@ import CreateUser from './pages/User/Create';
 import CreateCourse from './pages/Courses/Create';
 import EditCourse from './pages/Courses/Edit';
 import DashboardAppPage from './pages/DashboardAppPage';
-import OrderPage from './pages/OrderPage';
 import AuthGuard from './guards/AuthGuard';
 import GuestGuard from './guards/GuestGuard';
 import RegisterPage from './pages/auth/RegisterPage';
@@ -31,7 +30,6 @@ export default function Router() {
         { path: 'courses-admin', element: <CoursesPageAdmin /> },
         { path: 'courses', element: <CoursesPage /> },
         { path: 'courses-admin/add', element: <CreateCourse /> },
-        { path: 'orders', element: <OrderPage /> },
         { path: 'chats', element: <ChatPage /> },
         { path: 'chats/:id', element: <ChatPageWithId /> },
         { path: 'user/add', element: <CreateUser /> },

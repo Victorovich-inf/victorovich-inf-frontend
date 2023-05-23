@@ -3,6 +3,7 @@ import { BodyFilter, MessageResponse } from '../../../@types/schema';
 import { PaginationUserData, ParseXLSXData, UserCreateData } from '../../../@types/user';
 import { ErrorValidation, showErrors, showMessage } from '../../../utils/errors';
 import { NotificationData } from '../../../@types/notifications';
+import { AchievementsData, StaticsData } from '../../../@types/achievements';
 
 const apiBase =
   async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: {}) => {
@@ -103,6 +104,17 @@ export const userApi = createApi({
         body: data,
       }),
       providesTags: ['User'],
+    }),
+    getAchievements: builder.query<{
+      statics: StaticsData,
+      achievements: AchievementsData
+    }, void>({
+      query: (data) => ({
+        url: "/user/achievements",
+        method: "GET",
+        body: data,
+      }),
+      providesTags: ['User'],
     })
   }),
   baseQuery: apiBase
@@ -117,5 +129,6 @@ export const {
   useMakeСuratorMutation,
   useRemoveСuratorMutation,
   useParseXLSXMutation,
-  useGetNotificationsQuery
+  useGetNotificationsQuery,
+  useGetAchievementsQuery
 } = userApi

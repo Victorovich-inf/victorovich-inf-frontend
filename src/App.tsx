@@ -9,6 +9,7 @@ import './style.css';
 import { AuthProvider } from './contexts/JWTContext';
 import MotionLazyContainer from './components/animate/MotionLazyContainer';
 import { SocketProvider } from './contexts/SocketProvider';
+import ThemeColorPresets from './components/settings/ThemeColorPresets';
 
 export default function App() {
 
@@ -16,15 +17,17 @@ export default function App() {
     <Provider store={store}>
       <SnackbarProvider maxSnack={3}>
         <ThemeProvider>
-          <SocketProvider>
-            <AuthProvider>
-              <MotionLazyContainer>
-                <ScrollToTop />
-                <StyledChart />
-                <Router />
-              </MotionLazyContainer>
-            </AuthProvider>
-          </SocketProvider>
+          <ThemeColorPresets>
+            <SocketProvider>
+              <AuthProvider>
+                <MotionLazyContainer>
+                  <ScrollToTop />
+                  <StyledChart />
+                  <Router />
+                </MotionLazyContainer>
+              </AuthProvider>
+            </SocketProvider>
+          </ThemeColorPresets>
         </ThemeProvider>
       </SnackbarProvider>
     </Provider>
