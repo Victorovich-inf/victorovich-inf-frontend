@@ -1,15 +1,9 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import {useSelector} from "react-redux";
 import LoadingScreen from '../components/LoadingScreen';
-import {PATH_AUTH} from "../paths";
+import { PATH_AUTH, PATH_NO_AUTH } from '../paths';
 
-// ----------------------------------------------------------------------
-
-AuthGuard.propTypes = {
-  children: PropTypes.node,
-};
 
 export default function AuthGuard({ children }) {
   const { isAuthenticated, isInitialized } = useSelector((state) => state.user);
@@ -24,7 +18,7 @@ export default function AuthGuard({ children }) {
     if (pathname !== requestedLocation) {
       setRequestedLocation(pathname);
     }
-    return <Navigate to={PATH_AUTH.login} />;
+    return <Navigate to={PATH_NO_AUTH.app} />;
   }
 
   if (requestedLocation && pathname !== requestedLocation) {

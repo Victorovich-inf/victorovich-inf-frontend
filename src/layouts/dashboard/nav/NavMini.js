@@ -3,8 +3,11 @@ import { NAV } from '../../../config-global';
 import { hideScrollbarX } from '../../../utils/cssStyles';
 import { NavSectionMini } from '../../../components/nav-section';
 import navConfig from './config';
+import { connect } from 'react-redux';
+import { getUserData } from '../../../store/reducers/userReducer';
 
-export default function NavMini() {
+const NavMini = ({user}) => {
+
   return (
     <Box
       component="nav"
@@ -24,8 +27,14 @@ export default function NavMini() {
           ...hideScrollbarX,
         }}
       >
-        <NavSectionMini data={navConfig} />
+        <NavSectionMini data={navConfig(user.role)} />
       </Stack>
     </Box>
   );
 }
+
+export default connect(
+  (state) => ({
+    user: getUserData(state),
+  }),
+)(NavMini);

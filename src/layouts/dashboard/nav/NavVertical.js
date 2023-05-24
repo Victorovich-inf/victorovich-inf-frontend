@@ -1,21 +1,15 @@
-import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Box, Stack, Drawer } from '@mui/material';
+import { Box, Drawer } from '@mui/material';
 import useResponsive from '../../../hooks/useResponsive';
 import { NAV } from '../../../config-global';
-import Logo from '../../../components/logo';
 import Scrollbar from '../../../components/scrollbar';
 import { NavSectionVertical } from '../../../components/nav-section';
-import NavToggleButton from './NavToggleButton';
 import navConfig from './config';
+import { connect } from 'react-redux';
+import { getUserData } from '../../../store/reducers/userReducer';
 
-NavVertical.propTypes = {
-  openNav: PropTypes.bool,
-  onCloseNav: PropTypes.func,
-};
-
-export default function NavVertical({ openNav, onCloseNav }) {
+const NavVertical = ({ openNav, onCloseNav, user }) => {
   const { pathname } = useLocation();
 
   const isDesktop = useResponsive('up', 'lg');
@@ -38,7 +32,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
         },
       }}
     >
-      <NavSectionVertical data={navConfig} />
+      <NavSectionVertical data={navConfig(user.role)} />
 
       <Box sx={{ flexGrow: 1 }} />
 
@@ -87,3 +81,9 @@ export default function NavVertical({ openNav, onCloseNav }) {
     </Box>
   );
 }
+
+export default connect(
+  (state) => ({
+    user: getUserData(state),
+  }),
+)(NavVertical);

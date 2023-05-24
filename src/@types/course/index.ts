@@ -7,6 +7,7 @@ export interface CourseCreateData {
   description: string;
   dateStart: Date;
   cost: number;
+  oldPrice: number;
   free: boolean;
   file: File | null;
 }
@@ -22,6 +23,8 @@ export interface CourseUser {
   createdAt: string
   id: number
   updatedAt: string
+  buyed: boolean;
+  curator: boolean;
   userId: number;
   ProgressCourseUsers: ProgressCourseUsers[]
 }
@@ -37,6 +40,7 @@ export interface CuratorCourses {
 
 export interface CourseData {
   cost: string
+  oldPrice: string
   createdAt: string
   dateStart: string
   description: string

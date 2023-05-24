@@ -1,10 +1,9 @@
 import React from 'react';
-import { Button, Card, CardActions, CardContent, CardMedia, Chip, IconButton, Stack, Typography } from '@mui/material';
+import {  Card, CardActions, CardContent, CardMedia, Chip, IconButton, Stack, Typography } from '@mui/material';
 import { CourseData } from '../../../@types/course';
 import { useStableNavigate } from '../../../contexts/StableNavigateContext';
 import { PATH_DASHBOARD } from '../../../paths';
 import Iconify from '../../iconify';
-import { useCopyCourseMutation } from '../../../store/api/admin/courseApi';
 
 interface CourseCardAdminProps {
   data: CourseData,

@@ -30,6 +30,7 @@ function CreateOrEdit() {
     file: null,
     dateStart: new Date(),
     cost: 0,
+    oldPrice: 0,
     free: false,
   }), []);
 
@@ -58,6 +59,7 @@ function CreateOrEdit() {
     state.description && formData.append('description', state.description)
     state.dateStart && formData.append('dateStart', state.dateStart.toString())
     state.cost && formData.append('cost', state.cost.toString())
+    state.oldPrice && formData.append('oldPrice', state.oldPrice.toString())
     state.free && formData.append('free', state.free ? '1' : '0')
 
     const {data} = await create(formData as unknown as CourseCreateData).unwrap();
@@ -128,6 +130,9 @@ function CreateOrEdit() {
                     </Grid>
                     <Grid item xs={12} md={6}>
                       <RHFTextField disabled={free} name='cost' type='number' label='Стоимость' />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <RHFTextField disabled={free} name='oldPrice' type='number' label='Старая цена' />
                     </Grid>
                     <Grid item xs={12} md={6}>
                       <RHFSwitch name='free' label='Бесплатно' helperText={null} />

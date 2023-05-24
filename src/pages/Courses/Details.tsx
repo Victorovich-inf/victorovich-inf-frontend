@@ -29,8 +29,10 @@ import {
 } from '../../store/api/admin/paidCourseApi';
 import { showToast } from '../../utils/toast';
 import { connect } from 'react-redux';
-import { getIsCurator } from '../../store/reducers/userReducer';
+import { getIsCurator, getUserData } from '../../store/reducers/userReducer';
 import { useCreateChatWithCuratorMutation } from '../../store/api/admin/chatApi';
+import { UserData } from '../../@types/user';
+import dayjs from 'dayjs';
 
 const dataToContent = (data: CourseData) => {
   const content = {} as Content;
@@ -74,14 +76,14 @@ const calculateProgress = (data: AnswerData, all: number) => {
   return percent;
 };
 
-function Details({isCurator}: {isCurator: boolean}) {
+function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
 
   const { loading, Preloader } = useLoader(false);
   const [content, setContent] = React.useState<Content>({});
   const [answerData, setAnswerData] = React.useState<AnswerData>({});
   const [percent, setPercent] = React.useState<number>(0);
 
-  const [createChatWithCurator] = useCreateChatWithCuratorMutation()
+  const [createChatWithCurator] = useCreateChatWithCuratorMutation();
 
   const navigate = useNavigate();
   const [updateProgress] = useUpdateProgressMutation();
@@ -115,27 +117,29 @@ function Details({isCurator}: {isCurator: boolean}) {
 
   React.useEffect(() => {
     if (data) {
-      const answer = data.CourseUsers[0]?.ProgressCourseUsers[0]?.data
+      const answer = data.CourseUsers?.[0]?.ProgressCourseUsers[0]?.data;
 
       const content = dataToContent(data);
       setContent(content);
-      setAnswerData(JSON.parse(answer) || {})
+
+      if (typeof answer === 'string')
+        setAnswerData(JSON.parse(answer) || {});
     }
   }, [data]);
 
   const handleGoToChatWithCurator = async () => {
     if (data) {
-       const { roomId } = await createChatWithCurator({curatorId: data.CuratorCourses[0].userId.toString()}).unwrap();
-      navigate(PATH_DASHBOARD.chat.detail(roomId))
+      const { roomId } = await createChatWithCurator({ curatorId: data.CuratorCourses[0].userId.toString() }).unwrap();
+      navigate(PATH_DASHBOARD.chat.detail(roomId));
     }
-  }
+  };
 
   const updateProgressLesson = (lesson: string, task?: string, answer?: string) => {
     const hasKey = Object.keys(answerData).includes(lesson);
 
     if (selected && answer && 'answer' in selected) {
       if (selected.answer.toLowerCase() !== answer.toLowerCase()) {
-        resetWinningStreak()
+        resetWinningStreak();
         return showToast({ variant: 'close', content: 'Неправильный ответ' });
       }
     }
@@ -195,18 +199,18 @@ function Details({isCurator}: {isCurator: boolean}) {
           };
         });
         if (id) {
-            let tasks: any[] = [];
+          let tasks: any[] = [];
 
-            tasks.push(
-              { answer, correctly: true, id: selected.id.toString() },
-            );
-            const data = {
-              ...answerData, [lesson]: {
-                viewed: true,
-                Tasks: tasks,
-              },
-            };
-            updateProgress({ id: id.toString(), data: JSON.stringify(data), answer: !!answer });
+          tasks.push(
+            { answer, correctly: true, id: selected.id.toString() },
+          );
+          const data = {
+            ...answerData, [lesson]: {
+              viewed: true,
+              Tasks: tasks,
+            },
+          };
+          updateProgress({ id: id.toString(), data: JSON.stringify(data), answer: !!answer });
         }
       }
     } else {
@@ -461,7 +465,7 @@ function Details({isCurator}: {isCurator: boolean}) {
         isTask,
         course: data,
         answerData: answerData,
-        isCurator: isCurator ? isCurator : false
+        isCurator: isCurator ? isCurator : false,
       }}>
         {loading ? Preloader() : data ? <>
           <Box sx={{ mb: 3 }}>
@@ -481,9 +485,10 @@ function Details({isCurator}: {isCurator: boolean}) {
                 <Stack sx={{ marginTop: 2, marginLeft: !isMobile ? 'auto' : 0, width: { xs: '100%', md: 'auto' } }}
                        spacing={2}
                        direction={isMobile ? 'column' : 'row'}>
-                  {!isCurator && data?.CuratorCourses?.length ? <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
-                          onClick={handleGoToChatWithCurator}
-                          variant='outlined' color='warning'>В чат с куратором</Button> : null}
+                  {!isCurator && data?.CuratorCourses?.length ?
+                    <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
+                            onClick={handleGoToChatWithCurator}
+                            variant='outlined' color='warning'>В чат с куратором</Button> : null}
                   <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
                           onClick={() => navigate(PATH_DASHBOARD.courses.rootUser)}
                           variant='outlined'>Назад</Button>
@@ -516,6 +521,29 @@ function Details({isCurator}: {isCurator: boolean}) {
             >
               {data.Lessons.filter(lesson => {
                 return lesson.public;
+              }).filter((lesson) => {
+
+                const courseUser = data.CourseUsers?.find(el => el.userId == user.id);
+
+                if (!courseUser) {
+                  return false;
+                }
+
+                if (courseUser.buyed || courseUser.curator) {
+                  return true;
+                }
+
+                if (data.free) {
+                  return true;
+                }
+
+                if (user.role === 0) {
+                  const subscription = user.Subscription;
+
+                  return dayjs(subscription.end) > dayjs(lesson.start);
+                } else {
+                  return true;
+                }
               }).map(lesson => {
                 return <CourseListItem detailsMode key={lesson.id} data={lesson} />;
               })}
@@ -533,5 +561,6 @@ function Details({isCurator}: {isCurator: boolean}) {
 export default connect(
   (state) => ({
     isCurator: getIsCurator(state),
+    user: getUserData(state),
   }),
 )(Details);

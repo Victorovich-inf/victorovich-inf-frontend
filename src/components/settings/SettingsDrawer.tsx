@@ -9,10 +9,13 @@ import { bgBlur } from '../../utils/cssStyles';
 import AppWidget from '../../sections/@dashboard/app/AppWidget';
 import { useGetAchievementsQuery } from '../../store/api/admin/userApi';
 import { useLocation } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { getUserData } from '../../store/reducers/userReducer';
+import { UserData } from '../../@types/user';
 
 const SPACING = 2.5;
 
-export default function SettingsDrawer() {
+const SettingsDrawer = ({user}: {user: UserData}) => {
   const { pathname } = useLocation()
 
   const {data} = useGetAchievementsQuery()
@@ -31,7 +34,7 @@ export default function SettingsDrawer() {
 
   return (
     <>
-      {!open && pathname.includes('dashboard') && <ToggleButton open={open} onToggle={handleToggle} notDefault={false}  />}
+      {!open && pathname.includes('dashboard') && user && <ToggleButton open={open} onToggle={handleToggle} notDefault={false}  />}
 
       <Drawer
         anchor="right"
@@ -89,7 +92,7 @@ export default function SettingsDrawer() {
                 total={`${value} из ${el}`}
                 icon='material-symbols:task-alt'
                 chart={{
-                  series: value / el * 100
+                  series: (value / el * 100).toFixed(0)
                 }} sx={undefined} title={undefined} />
             })}
           </Block> : null}
@@ -119,7 +122,7 @@ export default function SettingsDrawer() {
                 total={`${value} из ${el}`}
                 icon='akar-icons:victory-hand'
                 chart={{
-                  series: value / el * 100
+                  series: (value / el * 100).toFixed(0)
                 }} sx={undefined} title={undefined} />
             })}
           </Block> : null}
@@ -130,3 +133,9 @@ export default function SettingsDrawer() {
     </>
   );
 }
+
+export default connect(
+  (state) => ({
+    user: getUserData(state),
+  }),
+)(SettingsDrawer);

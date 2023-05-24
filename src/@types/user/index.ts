@@ -3,6 +3,9 @@ import { SubscriptionData } from '../subscription';
 
 export interface UserCreateData {
   email: string;
+  start: Date;
+  end: Date;
+  hasSub: boolean;
 }
 
 export interface UserRegisterData {

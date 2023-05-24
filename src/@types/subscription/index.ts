@@ -9,6 +9,7 @@ export interface SubscriptionData {
   end: string,
   duration: number,
   userId: number,
-  createdAt: string
+  createdAt: string,
+  active: boolean
 }
 

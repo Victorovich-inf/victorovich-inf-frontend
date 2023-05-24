@@ -13,9 +13,13 @@ import { useSocketContext } from '../../../utils/context/SocketContext';
 import { NotificationData } from '../../../@types/notifications';
 import NotificationItem from './NotificationItem';
 import { useGetNotificationsQuery } from '../../../store/api/admin/userApi';
+import { connect } from 'react-redux';
+import { getUserData } from '../../../store/reducers/userReducer';
+import { UserData } from '../../../@types/user';
+import { isEmpty } from 'lodash';
 
 
-export default function NotificationsPopover() {
+const NotificationsPopover = ({user}: {user: UserData}) => {
 
   const {data} = useGetNotificationsQuery()
 
@@ -48,35 +52,40 @@ export default function NotificationsPopover() {
   return (
     <>
       {  // @ts-ignore
-      <IconButtonAnimate
-        color={openPopover ? 'primary' : 'default'}
-        onClick={handleOpenPopover}
-        sx={{ width: 40, height: 40 }}
-      >
-        <Badge badgeContent={notifications.length} color='error'>
-          <Iconify icon='eva:bell-fill' />
-        </Badge>
-      </IconButtonAnimate>}
-
-      <MenuPopover open={openPopover} onClose={handleClosePopover} sx={{ width: 360, p: 0 }}
-                   disabledArrow={undefined}>
-        <Box sx={{ display: 'flex', alignItems: 'center', py: 2, px: 2.5 }}>
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography variant='subtitle1'>Уведомления</Typography>
+        !isEmpty(user) ? <><IconButtonAnimate
+          color={openPopover ? 'primary' : 'default'}
+          onClick={handleOpenPopover}
+          sx={{ width: 40, height: 40 }}
+        >
+          <Badge badgeContent={notifications.length} color='error'>
+            <Iconify icon='eva:bell-fill' />
+          </Badge>
+        </IconButtonAnimate><MenuPopover open={openPopover} onClose={handleClosePopover} sx={{ width: 360, p: 0 }}
+                                         disabledArrow={undefined}>
+          <Box sx={{ display: 'flex', alignItems: 'center', py: 2, px: 2.5 }}>
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography variant='subtitle1'>Уведомления</Typography>
+            </Box>
           </Box>
-        </Box>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+          <Divider sx={{ borderStyle: 'dashed' }} />
 
           <List
             disablePadding
-            sx={{maxHeight: 300, overflowY: 'scroll'}}
+            sx={{ maxHeight: 300, overflowY: 'scroll' }}
           >
             {notifications.map((notification) => (
-              <NotificationItem key={notification.id} data={notification}/>
+              <NotificationItem key={notification.id} data={notification} />
             ))}
           </List>
-      </MenuPopover>
+        </MenuPopover></> : null
+      }
     </>
   );
 }
+
+export default connect(
+  (state) => ({
+    user: getUserData(state),
+  }),
+)(NotificationsPopover);

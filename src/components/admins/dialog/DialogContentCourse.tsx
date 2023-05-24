@@ -23,6 +23,7 @@ const DialogContentCourse = () => {
     description: '',
     dateStart: new Date(),
     cost: 0,
+    oldPrice: 0,
     free: false,
   }), []);
 
@@ -45,7 +46,7 @@ const DialogContentCourse = () => {
   React.useEffect(() => {
     if (course) {
       if ('public' in course) {
-        reset({ name: course?.name, public: course?.public, description: course?.description, cost: +course?.cost, free: course?.free, dateStart: new Date(course?.dateStart) });
+        reset({ name: course?.name, public: course?.public, description: course?.description, cost: +course?.cost, oldPrice: +course?.oldPrice, free: course?.free, dateStart: new Date(course?.dateStart) });
       }
     }
   }, [course])
@@ -81,6 +82,9 @@ const DialogContentCourse = () => {
           </Grid>
           <Grid item xs={12} md={6}>
             <RHFTextField disabled={free} name='cost' type='number' label='Стоимость' />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <RHFTextField disabled={free} name='oldPrice' type='number' label='Старая цена' />
           </Grid>
         </Grid>
       </DialogContent>

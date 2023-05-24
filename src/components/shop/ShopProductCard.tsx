@@ -11,30 +11,58 @@ import { getUserData } from '../../store/reducers/userReducer';
 import { useBuyCourseMutation } from '../../store/api/admin/courseApi';
 import { useStableNavigate } from '../../contexts/StableNavigateContext';
 import { confirmDialog } from '../dialogs/DialogDelete';
+import Label from '../label';
+import { isEmpty } from 'lodash';
+import { showToast } from '../../utils/toast';
 
 interface ShopProductCardProps {
   data: CourseData,
   user: UserData
 }
 
-const ShopProductCard  = ({ data, user }: ShopProductCardProps) => {
+const ShopProductCard = ({ data, user }: ShopProductCardProps) => {
 
-  const [buyCourse] = useBuyCourseMutation()
+  const [buyCourse] = useBuyCourseMutation();
 
-  const navigate = useStableNavigate()
+  const navigate = useStableNavigate();
 
   const handleGoToDetails = (e: { preventDefault: () => void; }) => {
-    e.preventDefault()
-    if (data.CourseUsers.find(el => el.userId === user.id)) {
-      navigate(PATH_DASHBOARD.courses.details(data.id))
-    } else {
+    e.preventDefault();
 
-      confirmDialog('Приобретение курса', `Вы действительно хотите приобрести этот курс? Стоимость: ${data?.free ? 'Бесплатно': `${data.cost}₽`}`,
-        async () => {
-          await buyCourse({id: data.id.toString(), buyed: true}).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)))
-        })
+    console.log(data.free);
+
+    if (data.free) {
+      if (isEmpty(user)) {
+        navigate(PATH_DASHBOARD.courses.details(data.id))
+      } else {
+        buyCourse({
+          id: data.id.toString(),
+          buyed: true,
+        }).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)))
+      }
+    } else if (data.CourseUsers.find(el => el.userId === user.id)) {
+      navigate(PATH_DASHBOARD.courses.details(data.id));
+    } else {
+      if (user?.Subscription?.active) {
+        buyCourse({
+          id: data.id.toString(),
+          buyed: false,
+        }).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)));
+      } else {
+        confirmDialog('Приобретение курса', `Вы действительно хотите приобрести этот курс? Стоимость: ${data?.free ? 'Бесплатно' : `${data.cost}₽`}`,
+          async () => {
+            if (isEmpty(user)) {
+              showToast({ variant: 'close', content: 'Пожалуйста, авторизуйтесь' });
+            } else {
+              await buyCourse({
+                id: data.id.toString(),
+                buyed: true,
+              }).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)));
+            }
+          });
+      }
     }
-  }
+  };
 
   const POST_INFO = [
     { id: 'view', value: 3, icon: 'eva:eye-fill' },
@@ -59,24 +87,25 @@ const ShopProductCard  = ({ data, user }: ShopProductCardProps) => {
       }}
     >
       <Box sx={{ position: 'relative', p: 1 }}>
-        {/*<Label*/}
-        {/*  variant="filled"*/}
-        {/*  color={(status === 'sale' && 'error') || 'info'}*/}
-        {/*  sx={{*/}
-        {/*    top: 16,*/}
-        {/*    right: 16,*/}
-        {/*    zIndex: 9,*/}
-        {/*    position: 'absolute',*/}
-        {/*    textTransform: 'uppercase',*/}
-        {/*  }}*/}
-        {/*>*/}
-        {/*  Статус*/}
-        {/*</Label>*/}
+        {// @ts-ignore
+          data?.oldPrice ? <Label
+            variant='filled'
+            color={'error'}
+            sx={{
+              top: 16,
+              right: 16,
+              zIndex: 9,
+              position: 'absolute',
+              textTransform: 'uppercase',
+            }}
+          >
+            Скидка
+          </Label> : null}
 
         <Fab
-          color="warning"
-          size="medium"
-          className="add-cart-btn"
+          color='warning'
+          size='medium'
+          className='add-cart-btn'
           onClick={handleGoToDetails}
           sx={{
             right: 16,
@@ -91,54 +120,35 @@ const ShopProductCard  = ({ data, user }: ShopProductCardProps) => {
               }),
           }}
         >
-          <Iconify icon="ic:round-add-shopping-cart" />
+          <Iconify icon='ic:round-add-shopping-cart' />
         </Fab>
         {// @ts-ignore
-          <Image src={`${process.env.REACT_APP_API_URL}/${data.logo.replace('\\', '/')}`} ratio="1/1"
+          <Image src={`${process.env.REACT_APP_API_URL}/${data.logo.replace('\\', '/')}`} ratio='1/1'
                  sx={{ borderRadius: 1.5 }} />
         }
       </Box>
 
       <Stack spacing={2.5} sx={{ p: 3 }}>
-        <Link component={RouterLink} to={linkTo} onClick={handleGoToDetails} color="inherit" variant="subtitle2" noWrap>
+        <Link component={RouterLink} to={linkTo} onClick={handleGoToDetails} color='inherit' variant='h6' noWrap>
           {data.name}
         </Link>
 
-        <Stack direction="row" alignItems="center" justifyContent="flex-end">
+        <Stack direction='row' alignItems='center' justifyContent='flex-end'>
 
-            {/*{priceSale && (*/}
-            {/*  <Box component="span" sx={{ color: 'text.disabled', textDecoration: 'line-through' }}>*/}
-            {/*    {fCurrency(priceSale)}*/}
-            {/*  </Box>*/}
-            {/*)}*/}
+          {data?.oldPrice ? (
+            <>
+              <Box component='span' sx={{ color: 'text.disabled', textDecoration: 'line-through', marginRight: 1 }}>
+                {fCurrency(data?.oldPrice)} ₽
+              </Box>
+            </>
+          ) : null}
 
-            <Box component="span">{data?.free ? 'Бесплатно' : `${fCurrency(data.cost)} ₽`}</Box>
-        </Stack>
-        <Stack
-          flexWrap="wrap"
-          direction="row"
-          justifyContent="flex-end"
-          sx={{
-            mt: 3,
-            color: 'text.disabled',
-          }}
-        >
-          {POST_INFO.map((info) => (
-            <Stack
-              key={info.id}
-              direction="row"
-              alignItems="center"
-              sx={{ typography: 'caption', ml: info.id === 'comment' ? 0 : 1.5 }}
-            >
-              <Iconify icon={info.icon} width={16} sx={{ mr: 0.5 }} />
-              {fShortenNumber(info.value)}
-            </Stack>
-          ))}
+          <Box component='span'>{data?.free ? 'Бесплатно' : `${fCurrency(data.cost)} ₽`}</Box>
         </Stack>
       </Stack>
     </Card>
   );
-}
+};
 
 export default connect(
   (state) => ({

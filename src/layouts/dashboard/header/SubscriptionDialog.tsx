@@ -5,6 +5,7 @@ import { useBuySubscriptionMutation } from '../../../store/api/admin/subscriptio
 import { connect, useDispatch } from 'react-redux';
 import { getUserData, setUser } from '../../../store/reducers/userReducer';
 import { UserData } from '../../../@types/user';
+import { convertToDate } from '../../../utils/time';
 
 interface SubscriptionDialogProps {
   user: UserData
@@ -23,20 +24,20 @@ const SubscriptionDialog = ({user}: SubscriptionDialogProps) => {
 
   const handleBuySubscription = async (duration: number) => {
     const {user} = await buySubscription({duration}).unwrap()
-    dispatch(setUser(user))
+    dispatch(setUser({...user, Subscription: {...user.Subscription, active: true}}))
   }
 
   return (
     <>
-      {user?.Subscription ? <Button size="small" variant="contained" onClick={() => setOpen(true)}>
-          Подписка на {user?.Subscription?.duration} мес.
-        </Button> :
+      {user?.Subscription ? user?.Subscription?.active ? <Button size="small" variant="contained" onClick={() => setOpen(true)}>
+          Подписка до {convertToDate(user?.Subscription?.end)}
+        </Button> : <Button size="small" variant="contained"  onClick={() => setOpen(true)}>Подписка истекла</Button> :
         <Button size="small" variant="contained"  onClick={() => setOpen(true)}>Купить подписку</Button>}
       <Dialog maxWidth="lg" open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Подписки</DialogTitle>
         <DialogContent>
           <Stack spacing={2} direction="row" alignItems="center">
-            {payments.map(({ label, cost, id, duration }) => <PaymentsCardUi buySubscription={handleBuySubscription} duration={duration} id={id} cost={cost} label={label} key={id}/>)}
+            {payments.map(({ label, cost, id, duration }) => <PaymentsCardUi icon="fluent:premium-32-filled" buySubscription={handleBuySubscription} duration={duration} id={id} cost={cost} label={label} key={id}/>)}
           </Stack>
         </DialogContent>
       </Dialog>

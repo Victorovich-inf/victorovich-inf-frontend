@@ -48,7 +48,7 @@ const dataToContent = (data: CourseData) => {
 function Edit() {
   const { loading, Preloader } = useLoader(false);
   const [content, setContent] = React.useState<Content>({});
-  const [mode, setMode] = React.useState<Mode>('course')
+  const [mode, setMode] = React.useState<Mode>('course');
   const [savePage] = useSavePageMutation();
 
   const { id } = useParams();
@@ -89,9 +89,10 @@ function Edit() {
     setSelected(data);
   };
 
-  const handleChangeMode = ( event: React.MouseEvent<HTMLElement>,
-                             newAlignment: string) => {
-    setMode(newAlignment as Mode)
+  const handleChangeMode = (event: React.MouseEvent<HTMLElement>,
+                            newAlignment: string) => {
+    if (newAlignment)
+      setMode(newAlignment as Mode);
   };
 
   const handleSave = () => {
@@ -280,20 +281,20 @@ function Edit() {
     switch (mode) {
       case 'course': {
         if (data) {
-          return <CourseContent data={data}/>
+          return <CourseContent data={data} />;
         } else {
-          return <></>
+          return <></>;
         }
       }
       case 'curator': {
         if (data) {
-          return <CuratorContent />
+          return <CuratorContent />;
         } else {
-          return <></>
+          return <></>;
         }
       }
     }
-  }
+  };
 
   return (
     <Page title={'Добавление курса'}>
@@ -309,7 +310,7 @@ function Edit() {
         isLesson,
         isTask,
         handleSave,
-        course: data
+        course: data,
       }}>
         {loading ? Preloader() : data ? <>
           <Box sx={{ mb: 3 }}>
@@ -320,36 +321,43 @@ function Edit() {
                   sm: 'row',
                 },
               }}>
-                <Stack direction="row" spacing={2} alignItems="center">
+                <Stack direction='row' spacing={2} alignItems='center'>
                   <Typography variant={isMobile ? 'h4' : 'h6'}>
                     Редактирование курса "{data.name}"
                   </Typography>
-                  <Chip size="small" label={data.public ? 'Опубликован' : 'Не опубликован'} color={data.public ? 'success': 'error'} />
+                  <Chip size='small' label={data.public ? 'Опубликован' : 'Не опубликован'}
+                        color={data.public ? 'success' : 'error'} />
                 </Stack>
-                <Stack sx={{ marginTop: 2, marginLeft: !isMobile ? 'auto' : 0, width: { xs: '100%', md: 'auto' } }} spacing={2}
+                <Stack sx={{ marginTop: 2, marginLeft: !isMobile ? 'auto' : 0, width: { xs: '100%', md: 'auto' } }}
+                       spacing={2}
                        direction={isMobile ? 'column' : 'row'}>
                   <ToggleButtonGroup
-                    color="primary"
+                    color='primary'
                     value={mode}
-                    size="small"
+                    size='small'
                     exclusive
                     onChange={handleChangeMode}
                   >
-                    <ToggleButton value="course">Контент</ToggleButton>
-                    <ToggleButton value="curator">Кураторы</ToggleButton>
+                    <ToggleButton value='course'>Контент</ToggleButton>
+                    <ToggleButton value='curator'>Кураторы</ToggleButton>
                   </ToggleButtonGroup>
-                  {data ? <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={handleClickOpen2}  variant='outlined'
+                  {data ? <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile} onClick={handleClickOpen2}
+                                  variant='outlined'
                                   startIcon={<Iconify icon='ep:setting' />}>
                     Курса
                   </Button> : null}
-                  {isLesson(selected) ? <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={handleClickOpen}  variant='outlined'
-                                      startIcon={<Iconify icon='ep:setting' />}>
-                    Урока
-                  </Button> : null}
+                  {isLesson(selected) ?
+                    <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile} onClick={handleClickOpen}
+                            variant='outlined'
+                            startIcon={<Iconify icon='ep:setting' />}>
+                      Урока
+                    </Button> : null}
 
-                  <Button size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={() => navigate(PATH_DASHBOARD.courses.root)}
+                  <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
+                          onClick={() => navigate(PATH_DASHBOARD.courses.root)}
                           variant='outlined'>Назад</Button>
-                  <LoadingButton size={isMobile ? 'small': 'medium'} fullWidth={isMobile} onClick={handleSave} type='submit' variant='contained'>
+                  <LoadingButton size={isMobile ? 'small' : 'medium'} fullWidth={isMobile} onClick={handleSave}
+                                 type='submit' variant='contained'>
                     {'Сохранить'}
                   </LoadingButton>
                 </Stack>

@@ -24,6 +24,7 @@ const TaskContent = () => {
 
   const {
     handleSubmit,
+    reset
   } = methods;
 
   const onSubmit = (state: { answer: string }) => {
@@ -32,6 +33,7 @@ const TaskContent = () => {
 
       if (updateProgressLesson) {
         updateProgressLesson(lessonId, `${selected.id}_task`, state.answer);
+        reset({answer: ''})
       }
     }
   };

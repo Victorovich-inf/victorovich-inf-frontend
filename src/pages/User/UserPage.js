@@ -12,6 +12,7 @@ import React, { useState } from 'react';
 import Page from '../../components/Page';
 import XLSXButton from '../../components/admins/XLSXButton';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
+import useResponsive from '../../hooks/useResponsive';
 
 const ROLE_OPTIONS = [
   {value: null, title: 'Все'},
@@ -24,6 +25,10 @@ export default function UserPage() {
   const navigate = useNavigate()
   const [role, setRole] = useState(null)
   const [deleteUser] = useDeleteUserMutation()
+
+  const isMobile = useResponsive('down', 'sm');
+
+
 
   const handleAdd = () => {
     navigate(PATH_DASHBOARD.user.add)
@@ -57,7 +62,7 @@ export default function UserPage() {
             ...(role !== null && {
               role,
             }),
-          }} Button={<Stack direction="row" justifyContent="space-between" alignItems="center" sx={{
+          }} Button={<Stack direction={isMobile ? 'column' : "row"} spacing={isMobile ? 2 : 0} justifyContent="space-between" alignItems="center" sx={{
             paddingLeft: '20px',
             paddingRight: '20px',
             paddingTop: '24px',

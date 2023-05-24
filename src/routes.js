@@ -24,7 +24,7 @@ export default function Router() {
       path: '/dashboard',
       element: <AuthGuard><DashboardLayout /></AuthGuard>,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
+        { element: <Navigate to='/dashboard/app' />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'courses-admin', element: <CoursesPageAdmin /> },
@@ -41,7 +41,7 @@ export default function Router() {
       path: '/dashboard',
       element: <AuthGuard><EditorLayout /></AuthGuard>,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
+        { element: <Navigate to='/dashboard/app' />, index: true },
         { path: 'courses-admin/:id/edit', element: <EditCourse /> },
         { path: 'courses/:id/details', element: <CoursesDetailsPage /> },
       ],
@@ -69,16 +69,24 @@ export default function Router() {
       ],
     },
     {
+      path: 'main',
+      element: <GuestGuard><DashboardLayout /></GuestGuard>,
+      children: [
+        { element: <Navigate to='/main/app' />, index: true },
+        { path: 'app', element: <CoursesPage /> },
+      ],
+    },
+    {
       element: <SimpleLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
+        { element: <Navigate to='/dashboard/app' />, index: true },
         { path: '404', element: <Page404 /> },
-        { path: '*', element: <Navigate to="/404" /> },
+        { path: '*', element: <Navigate to='/404' /> },
       ],
     },
     {
       path: '*',
-      element: <Navigate to="/404" replace />,
+      element: <Navigate to='/404' replace />,
     },
   ]);
 }

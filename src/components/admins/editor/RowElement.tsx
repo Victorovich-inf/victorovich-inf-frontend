@@ -27,6 +27,7 @@ const useStyles = makeStyles({
   },
   image: {
     objectFit: 'cover',
+    maxHeight: 500,
     '@media (max-width: 900px)': {
       maxWidth: '95%',
       paddingTop: 20,
