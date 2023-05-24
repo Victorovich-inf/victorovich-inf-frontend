@@ -169,10 +169,18 @@ export const courseApi = createApi({
       }),
       invalidatesTags: ['OneCourse']
     }),
-    buyCourse: builder.mutation<MessageResponse, string>({
+    copyCourse: builder.mutation<MessageResponse, string>({
       query: (id) => ({
-        url: `/buy-course/${id}`,
+        url: `/course/admin/copy/${id}`,
         method: "POST",
+      }),
+      invalidatesTags: ['Course']
+    }),
+    buyCourse: builder.mutation<MessageResponse, {id: string, buyed: boolean}>({
+      query: (data) => ({
+        url: `/buy-course/${data.id}`,
+        method: "POST",
+        body: data
       }),
       invalidatesTags: ['Course']
     }),
@@ -199,5 +207,5 @@ export const {
   useCreateMutation, useGetAllForAdminQuery, useGetAllForUserQuery, useGetOneQuery, useDeleteCourseMutation, useCreateLessonMutation,
   useCreateTaskMutation, useDeleteTaskMutation, useDeleteLessonMutation, useSavePageMutation, useUploadImageMutation,
   useEditTaskMutation, useEditLessonMutation, useEditCourseMutation, useBuyCourseMutation, useAddToCourseMutation, useDeleteFromCourseMutation,
-  useSearchCourseMutation, useGetSchedulesQuery
+  useSearchCourseMutation, useGetSchedulesQuery, useCopyCourseMutation
 } = courseApi

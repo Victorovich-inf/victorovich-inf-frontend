@@ -8,10 +8,12 @@ import ToggleButton from './ToggleButton';
 import { bgBlur } from '../../utils/cssStyles';
 import AppWidget from '../../sections/@dashboard/app/AppWidget';
 import { useGetAchievementsQuery } from '../../store/api/admin/userApi';
+import { useLocation } from 'react-router-dom';
 
 const SPACING = 2.5;
 
 export default function SettingsDrawer() {
+  const { pathname } = useLocation()
 
   const {data} = useGetAchievementsQuery()
 
@@ -29,7 +31,7 @@ export default function SettingsDrawer() {
 
   return (
     <>
-      {!open && <ToggleButton open={open} onToggle={handleToggle} notDefault={false}  />}
+      {!open && pathname.includes('dashboard') && <ToggleButton open={open} onToggle={handleToggle} notDefault={false}  />}
 
       <Drawer
         anchor="right"
@@ -75,7 +77,11 @@ export default function SettingsDrawer() {
           </Block>
           {data ? <Block title='Выполнено заданий' tooltip={undefined}  sx={undefined}>
             {[10, 25, 50, 100].map(el => {
-              let value = el <= +data?.statics.correctlyCompletedTasks ? el : +data?.statics.correctlyCompletedTasks;
+              let value = 0;
+
+              if (data?.statics?.correctlyCompletedTasks) {
+                value = el <= +data?.statics?.correctlyCompletedTasks ? el : +data?.statics?.correctlyCompletedTasks
+              }
 
               return <AppWidget
                 key={el}
@@ -89,10 +95,14 @@ export default function SettingsDrawer() {
           </Block> : null}
           {data ? <Block title='Победная серия' tooltip={undefined}  sx={undefined}>
             {[5, 10, 15, 25].map(el => {
-              let value = el <= +data?.statics.winningStreak ? el : +data?.statics.winningStreak;
+              let value = 0;
+
+              if (data?.statics?.winningStreak) {
+                value = el <= +data?.statics?.winningStreak ? el : +data?.statics?.winningStreak
+              }
 
               // @ts-ignore
-              if (data?.achievements[`winningStreak${el}`]) {
+              if (data?.achievements?.[`winningStreak${el}`]) {
                 return <AppWidget
                   key={el}
                   color="info"

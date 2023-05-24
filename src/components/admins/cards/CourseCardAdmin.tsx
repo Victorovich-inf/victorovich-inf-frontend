@@ -4,13 +4,15 @@ import { CourseData } from '../../../@types/course';
 import { useStableNavigate } from '../../../contexts/StableNavigateContext';
 import { PATH_DASHBOARD } from '../../../paths';
 import Iconify from '../../iconify';
+import { useCopyCourseMutation } from '../../../store/api/admin/courseApi';
 
 interface CourseCardAdminProps {
   data: CourseData,
   onDelete: (id: number) => void
+  onCopy: (id: number) => void
 }
 
-const CourseCardAdmin = ({data, onDelete}: CourseCardAdminProps) => {
+const CourseCardAdmin = ({data, onDelete, onCopy}: CourseCardAdminProps) => {
 
   const navigate = useStableNavigate()
 
@@ -18,8 +20,8 @@ const CourseCardAdmin = ({data, onDelete}: CourseCardAdminProps) => {
     navigate(PATH_DASHBOARD.courses.edit(data.id))
   }
 
-  const handleCopy = () => {
-
+  const handleCopy = async () => {
+    onCopy(data.id)
   }
 
   const handleDelete = () => {

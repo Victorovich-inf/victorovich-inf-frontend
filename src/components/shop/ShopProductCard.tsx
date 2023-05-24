@@ -28,9 +28,10 @@ const ShopProductCard  = ({ data, user }: ShopProductCardProps) => {
     if (data.CourseUsers.find(el => el.userId === user.id)) {
       navigate(PATH_DASHBOARD.courses.details(data.id))
     } else {
+
       confirmDialog('Приобретение курса', `Вы действительно хотите приобрести этот курс? Стоимость: ${data?.free ? 'Бесплатно': `${data.cost}₽`}`,
         async () => {
-          await buyCourse(data.id.toString()).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)))
+          await buyCourse({id: data.id.toString(), buyed: true}).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)))
         })
     }
   }
@@ -76,7 +77,7 @@ const ShopProductCard  = ({ data, user }: ShopProductCardProps) => {
           color="warning"
           size="medium"
           className="add-cart-btn"
-          onClick={handleAddCart}
+          onClick={handleGoToDetails}
           sx={{
             right: 16,
             bottom: 16,

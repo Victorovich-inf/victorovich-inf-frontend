@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Grid, Stack, Typography } from '@mui/material';
+import { Box, Button, Grid, Stack, Typography } from '@mui/material';
 import Page from '../../components/Page';
 import CourseCardAdmin from '../../components/admins/cards/CourseCardAdmin';
 import { useNavigate } from 'react-router';
 import { PATH_DASHBOARD } from '../../paths';
-import { useDeleteCourseMutation, useGetAllForAdminQuery } from '../../store/api/admin/courseApi';
+import {
+  useCopyCourseMutation,
+  useDeleteCourseMutation,
+  useGetAllForAdminQuery,
+} from '../../store/api/admin/courseApi';
 import { confirmDialog } from '../../components/dialogs/DialogDelete';
 import Empty from '../../components/Empty';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
@@ -15,6 +19,7 @@ const CoursesPageAdmin = () => {
 
   const { data } = useGetAllForAdminQuery({ paging: { skip: skip, take: take } });
   const [deleteCourse] = useDeleteCourseMutation();
+  const [copyCourse] = useCopyCourseMutation()
 
   const navigate = useNavigate();
 
@@ -32,6 +37,10 @@ const CoursesPageAdmin = () => {
     });
   };
 
+  const handleCopy = async (id: number) => {
+    await copyCourse(id.toString())
+  }
+
   return (
     <Page title={'Курсы (администрирование) | Victorovich-inf'}>
       <CustomBreadcrumbs
@@ -40,13 +49,24 @@ const CoursesPageAdmin = () => {
           { name: 'Дашбоард', href: PATH_DASHBOARD.root },
           { name: 'Курсы (администрирование)' },
         ]} action={<Button fullWidth onClick={handleAdd} variant='outlined'>Добавить курс</Button>} moreLink={undefined} activeLast={undefined} sx={undefined}        />
-      {(data && data.rows?.length) ? <Stack direction='row' alignItems='center' flexWrap='wrap'>
-        <Grid container spacing={1}>
+      {(data && data.rows?.length) ?
+        <Box
+          gap={3}
+          display="grid"
+          gridTemplateColumns={{
+            xs: 'repeat(1, 1fr)',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
+            lg: 'repeat(3, 1fr)',
+            xl: 'repeat(4, 1fr)',
+          }}
+        >
           {data.rows.map(el => {
-            return <Grid key={el.id} sx={{display: 'flex', flex: 1, flexDirection: 'column'}} item xs={12} sm={6} md={4} lg={4} xl={3}><CourseCardAdmin onDelete={handleDelete} data={el} /></Grid>;
+            return <CourseCardAdmin key={el.id} onCopy={handleCopy} onDelete={handleDelete} data={el} />;
           })}
-        </Grid>
-      </Stack> : <Empty />}
+
+        </Box>
+       : <Empty />}
     </Page>
   );
 };

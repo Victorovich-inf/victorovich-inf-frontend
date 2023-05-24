@@ -27,7 +27,7 @@ const CourseCard = ({data, user}: CourseCardProps) => {
     } else {
       confirmDialog('Приобретение курса', `Вы действительно хотите приобрести этот курс? Стоимость: ${data?.free ? 'Бесплатно': `${data.cost}₽`}`,
         async () => {
-          await buyCourse(data.id.toString()).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)))
+          await buyCourse({id: data.id.toString(), buyed: true}).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)))
         })
     }
   }

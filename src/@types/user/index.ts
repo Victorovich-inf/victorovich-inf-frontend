@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { SubscriptionData } from '../subscription';
 
 export interface UserCreateData {
   email: string;
@@ -24,6 +25,7 @@ export interface UserData {
   confirmationCode?: string,
   createdAt: string,
   updatedAt: string,
+  Subscription: SubscriptionData,
   actions?: ReactNode
   access?: ReactNode
 }

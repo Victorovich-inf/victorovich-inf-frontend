@@ -1,9 +1,16 @@
 import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
+  BodyFilter,
   MessageResponse,
+  MessageResponseCourse,
+  MessageResponseCourseUpload, MessageResponseUser,
 } from '../../../@types/schema';
 import { ErrorValidation, showErrors, showMessage } from '../../../utils/errors';
-import { CourseData, ProgressData } from '../../../@types/course';
+import { CourseCreateData, CourseData, PaginationCourseData, ProgressData, UploadData } from '../../../@types/course';
+import { LessonCreateData, LessonEditData } from '../../../@types/lesson';
+import { TaskCreateData, TaskEditData, TaskEditFormData } from '../../../@types/task';
+import { Content } from '../../../@types/editor';
+import { BuySubscription } from '../../../@types/subscription';
 
 const apiBase =
   async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: {}) => {
@@ -30,35 +37,22 @@ const apiBase =
     return result
   }
 
-export const paidCourseApi = createApi({
-  reducerPath: 'paidCourseApi',
-  tagTypes: ['Course', 'OneCourse'],
+export const subscriptionApi = createApi({
+  reducerPath: 'subscriptionApi',
+  tagTypes: ['Subscription'],
   endpoints: (builder) => ({
-    getOnePaid: builder.query<CourseData, string>({
-      query: (id) => ({
-        url: `/buy-course/${id}`,
-        method: "GET",
-      }),
-      providesTags: ['OneCourse']
-    }),
-    updateProgress: builder.mutation<MessageResponse, ProgressData>({
+    buySubscription: builder.mutation<MessageResponseUser, BuySubscription>({
       query: (data) => ({
-        url: `/buy-course/${data.id}`,
-        method: "PUT",
+        url: `/subscription`,
+        method: "POST",
         body: data,
       }),
-      invalidatesTags: ['OneCourse']
-    }),
-    resetWinningStreak: builder.mutation<void, void>({
-      query: (data) => ({
-        url: `/buy-course/reset`,
-        method: "DELETE",
-      }),
+      invalidatesTags: ['Subscription']
     })
   }),
   baseQuery: apiBase
 })
 
 export const {
-  useGetOnePaidQuery, useUpdateProgressMutation, useResetWinningStreakMutation
-} = paidCourseApi
+  useBuySubscriptionMutation
+} = subscriptionApi

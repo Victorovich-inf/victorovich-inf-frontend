@@ -1,7 +1,13 @@
 import { CourseData } from './course';
+import { UserData } from './user';
 
 type MessageResponse = {
   message: string,
+}
+
+type MessageResponseUser = {
+  message: string,
+  user: UserData
 }
 
 type ChatWithCuratorResponse = {
@@ -26,4 +32,4 @@ type BodyFilter = {
   filter?: any
 }
 
-export type {MessageResponse, BodyFilter, MessageResponseCourse, MessageResponseCourseUpload, ChatWithCuratorResponse}
+export type {MessageResponse, BodyFilter, MessageResponseCourse, MessageResponseCourseUpload, ChatWithCuratorResponse, MessageResponseUser}

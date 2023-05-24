@@ -11,14 +11,20 @@ import {
   Typography,
 } from '@mui/material';
 import './style.css'
+import { connect } from 'react-redux';
+import { getUserData } from '../../../store/reducers/userReducer';
+import { UserData } from '../../../@types/user';
 
 interface PaymentsCardUiProps {
   id: number;
   cost: number;
+  duration: number;
   label: string;
+  buySubscription: (duration: number) => void;
+  user: UserData;
 }
 
-const PaymentsCardUi = ({cost, label}: PaymentsCardUiProps) => {
+const PaymentsCardUi = ({cost, label, buySubscription, duration, user}: PaymentsCardUiProps) => {
   return (
     <Card
       elevation={4}
@@ -61,10 +67,11 @@ const PaymentsCardUi = ({cost, label}: PaymentsCardUiProps) => {
       </CardContent>
       <CardActions >
         <Button
+          disabled={+user?.Subscription?.duration === +duration}
           color='primary'
           variant='outlined'
           fullWidth
-
+          onClick={() => buySubscription(duration)}
         >
           Выбрать
         </Button>
@@ -73,4 +80,9 @@ const PaymentsCardUi = ({cost, label}: PaymentsCardUiProps) => {
   );
 };
 
-export default PaymentsCardUi;
+
+export default connect(
+  (state) => ({
+    user: getUserData(state),
+  }),
+)(PaymentsCardUi);
