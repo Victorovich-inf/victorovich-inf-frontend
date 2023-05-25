@@ -29,7 +29,7 @@ export default function RegisterForm() {
   const onClickAuth = () => {
     const query = new URLSearchParams(search);
     window.open(
-      `http://localhost:5001/auth/vkontakte-register?t=${query.get('t')}`,
+      `${process.env.REACT_APP_API_URL}/auth/vkontakte-register?t=${query.get('t')}`,
       'Register',
       'width=650,height=500,status=yes,toolbar=no,menubar=no,location=no',
     );

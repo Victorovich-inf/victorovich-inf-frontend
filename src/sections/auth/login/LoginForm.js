@@ -18,7 +18,7 @@ export default function LoginForm() {
 
   const onClickAuth = () => {
     window.open(
-      'http://localhost:5001/auth/vkontakte-login',
+      `${process.env.REACT_APP_API_URL}/auth/vkontakte-login`,
       'Auth',
       'width=650,height=500,status=yes,toolbar=no,menubar=no,location=no',
     );
