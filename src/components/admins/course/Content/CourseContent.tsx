@@ -38,7 +38,7 @@ const CourseContent = ({data}: CourseContentProps) => {
             </ListSubheader>
           }
         >
-          {data.Lessons.map(lesson => {
+          {data.Lessons?.sort(function (a, b) {  return +a?.name.replace(/[^0-9]/g,"") - +b?.name.replace(/[^0-9]/g,"");  }).map(lesson => {
             return <CourseListItem key={lesson.id} data={lesson} />;
           })}
           <CourseAdd id={data.id} label='Добавить урок' type='lesson' />
