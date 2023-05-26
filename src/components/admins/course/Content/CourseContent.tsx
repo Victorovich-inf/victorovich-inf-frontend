@@ -13,6 +13,8 @@ interface CourseContentProps {
 const CourseContent = ({data}: CourseContentProps) => {
   const isMobile = useResponsive('down', 'sm');
 
+  console.log(data.Lessons);
+
   return (
     <>
       <Stack spacing={2} direction={isMobile ? 'column' : 'row'} justifyContent='space-between' sx={{ flex: 1 }}>
@@ -38,7 +40,7 @@ const CourseContent = ({data}: CourseContentProps) => {
             </ListSubheader>
           }
         >
-          {data.Lessons?.sort(function (a, b) {  return +a?.name.replace(/[^0-9]/g,"") - +b?.name.replace(/[^0-9]/g,"");  }).map(lesson => {
+          {data.Lessons?.map(lesson => {
             return <CourseListItem key={lesson.id} data={lesson} />;
           })}
           <CourseAdd id={data.id} label='Добавить урок' type='lesson' />
