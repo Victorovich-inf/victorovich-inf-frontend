@@ -14,10 +14,7 @@ import Empty from '../../components/Empty';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 
 const CoursesPageAdmin = () => {
-  const [skip, setSkip] = useState<number>(0);
-  const [take, setTake] = useState<number>(30);
-
-  const { data } = useGetAllForAdminQuery({ paging: { skip: skip, take: take } });
+  const { data } = useGetAllForAdminQuery({ paging: { skip: 0, take: 100 } });
   const [deleteCourse] = useDeleteCourseMutation();
   const [copyCourse] = useCopyCourseMutation()
 

@@ -8,6 +8,16 @@ export interface UserCreateData {
   hasSub: boolean;
 }
 
+export interface UserSettingsData {
+  firstName: string;
+  lastName: string;
+}
+
+export interface UserPasswordData {
+  oldPassword: string;
+  newPassword: string;
+}
+
 export interface UserRegisterData {
   firstName: string;
   lastName: string;

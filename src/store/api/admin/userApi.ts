@@ -1,6 +1,12 @@
 import { BaseQueryApi, createApi, FetchArgs, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { BodyFilter, MessageResponse } from '../../../@types/schema';
-import { PaginationUserData, ParseXLSXData, UserCreateData } from '../../../@types/user';
+import { BodyFilter, MessageResponse, MessageResponseUser } from '../../../@types/schema';
+import {
+  PaginationUserData,
+  ParseXLSXData,
+  UserCreateData,
+  UserPasswordData,
+  UserSettingsData,
+} from '../../../@types/user';
 import { ErrorValidation, showErrors, showMessage } from '../../../utils/errors';
 import { NotificationData } from '../../../@types/notifications';
 import { AchievementsData, StaticsData } from '../../../@types/achievements';
@@ -75,6 +81,29 @@ export const userApi = createApi({
       }),
       invalidatesTags: ['User']
     }),
+    updateProfile: builder.mutation<MessageResponseUser, UserSettingsData>({
+      query: (data) => ({
+        url: `/user/profile`,
+        body: data,
+        method: "PATCH",
+      }),
+      invalidatesTags: ['User']
+    }),
+    updatePassword: builder.mutation<MessageResponseUser, UserPasswordData>({
+      query: (data) => ({
+        url: `/user/password`,
+        body: data,
+        method: "PATCH",
+      }),
+      invalidatesTags: ['User']
+    }),
+    makeAdmin: builder.mutation<MessageResponse, number>({
+      query: (id) => ({
+        url: `/user/admin/${id}/make-admin`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ['User']
+    }),
     removeСurator: builder.mutation<MessageResponse, number>({
       query: (id) => ({
         url: `/user/admin/${id}/remove-curator`,
@@ -130,5 +159,8 @@ export const {
   useRemoveСuratorMutation,
   useParseXLSXMutation,
   useGetNotificationsQuery,
-  useGetAchievementsQuery
+  useGetAchievementsQuery,
+  useMakeAdminMutation,
+  useUpdateProfileMutation,
+  useUpdatePasswordMutation
 } = userApi

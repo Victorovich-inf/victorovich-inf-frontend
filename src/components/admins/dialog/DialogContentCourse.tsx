@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { DialogContent, Grid } from '@mui/material';
+import { DialogContent, Grid, Typography } from '@mui/material';
 import { useForm, useWatch } from 'react-hook-form';
 import { FormProvider, RHFTextField } from '../../hook-form';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
@@ -11,6 +11,8 @@ import RHFSwitch from '../../hook-form/RHFSwitch';
 import { useEditCourseMutation } from '../../../store/api/admin/courseApi';
 import { CourseEditData } from '../../../@types/course';
 import RHFDate from '../../hook-form/RHFDate';
+import axios from '../../../utils/axios';
+import { RHFUpload } from '../../hook-form/RHFUpload';
 
 const DialogContentCourse = () => {
 
@@ -22,6 +24,7 @@ const DialogContentCourse = () => {
     public: false,
     description: '',
     dateStart: new Date(),
+    file: null,
     cost: 0,
     oldPrice: 0,
     free: false,
@@ -35,7 +38,8 @@ const DialogContentCourse = () => {
   const {
     handleSubmit,
     reset,
-    control
+    control,
+    setValue
   } = methods;
 
   const free = useWatch({
@@ -48,15 +52,48 @@ const DialogContentCourse = () => {
       if ('public' in course) {
         reset({ name: course?.name, public: course?.public, description: course?.description, cost: +course?.cost, oldPrice: +course?.oldPrice, free: course?.free, dateStart: new Date(course?.dateStart) });
       }
+      if ('logo' in course) {
+        const link = `${process.env.REACT_APP_API_URL}/${course.logo}`
+        axios.get(link, {responseType: 'blob'}).then(response => {
+          setValue('file', {... response.data, preview: link }, { shouldValidate: true });
+        })
+      }
     }
   }, [course])
 
+  const handleDrop = React.useCallback(
+    (acceptedFiles: any[]) => {
+      const file = acceptedFiles[0];
+
+      const newFile = Object.assign(file, {
+        preview: URL.createObjectURL(file),
+      });
+
+      if (newFile) {
+        setValue('file', newFile, { shouldValidate: true });
+      }
+    },
+    [],
+  );
 
   const onSubmit = async (state: CourseEditData) => {
-    await editCourse({
-      ...state, id: course?.id.toString(),
-      start: '',
-    });
+    let formData: any = new FormData();
+
+    if (course) {
+      state.file && formData.append('file', state.file);
+      state.id && formData.append('id', state.id);
+      state.name && formData.append('name', state.name);
+      state.description && formData.append('description', state.description);
+      state.dateStart && formData.append('dateStart', state.dateStart);
+      state.cost && formData.append('cost', state.cost);
+      state.public && formData.append('public', state.public);
+      state.free && formData.append('free', state.free);
+      formData.append('start', '');
+
+      console.log({data: formData, id: course?.id.toString() || ''});
+
+      await editCourse({data: formData, id: course?.id.toString() || ''});
+    }
   }
 
   return (
@@ -72,6 +109,25 @@ const DialogContentCourse = () => {
           </Grid>
           <Grid item xs={12} md={6}>
             <RHFSwitch helperText={null} name='free' label='Бесплатно' />
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <RHFUpload
+              name='file'
+              maxSize={3145728}
+              onDrop={handleDrop}
+              onDelete={() => setValue('file', null, { shouldValidate: true })}
+              helperText={<Typography
+                variant='caption'
+                sx={{
+                  mt: 2,
+                  mx: 'auto',
+                  display: 'block',
+                  textAlign: 'center',
+                  color: 'text.secondary',
+                }}
+              >
+                Логотип курса
+              </Typography>} multiple={false} />
           </Grid>
           <Grid item xs={12} md={12}>
             <RHFTextField name='description' label='Описание' multiline

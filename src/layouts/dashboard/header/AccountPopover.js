@@ -1,18 +1,17 @@
 import { useState } from 'react';
 import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, MenuItem, Avatar, IconButton, Popover, Button } from '@mui/material';
-import account from '../../../_mock/account';
+import { Box, Divider, Typography, MenuItem, IconButton, Popover, Button, Link } from '@mui/material';
 import { connect } from 'react-redux';
 import { getUserData } from '../../../store/reducers/userReducer';
 import useAuth from '../../../hooks/useAuth';
-import SubscriptionDialog from './SubscriptionDialog';
 import { CustomAvatar } from '../../../components/custom-avatar';
 import { isEmpty } from 'lodash';
 import { useNavigate } from 'react-router';
-import { PATH_AUTH } from '../../../paths';
+import { PATH_AUTH, PATH_DASHBOARD } from '../../../paths';
+import { Link as RouterLink } from 'react-router-dom';
 
 function AccountPopover({ user }) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [open, setOpen] = useState(null);
   const { logout } = useAuth();
 
@@ -27,8 +26,6 @@ function AccountPopover({ user }) {
   return (
     <>
       {!isEmpty(user) ? <>
-        <SubscriptionDialog />
-
         <IconButton
           onClick={handleOpen}
           sx={{
@@ -79,6 +76,9 @@ function AccountPopover({ user }) {
               {user?.email}
             </Typography>
           </Box>
+          <Link sx={{
+            display: 'contents',
+          }} component={RouterLink} to={PATH_DASHBOARD.settings.root}><MenuItem sx={{ m: 1 }}>Профиль</MenuItem></Link>
           <Divider sx={{ borderStyle: 'dashed' }} />
           <MenuItem onClick={async () => {
             setOpen(false);

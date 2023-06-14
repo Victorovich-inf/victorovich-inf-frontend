@@ -7,6 +7,7 @@ import Page404 from './pages/Page404';
 import CreateUser from './pages/User/Create';
 import CreateCourse from './pages/Courses/Create';
 import EditCourse from './pages/Courses/Edit';
+import SettingsUser from './pages/User/Settings';
 import DashboardAppPage from './pages/DashboardAppPage';
 import AuthGuard from './guards/AuthGuard';
 import GuestGuard from './guards/GuestGuard';
@@ -14,7 +15,6 @@ import RegisterPage from './pages/auth/RegisterPage';
 import CoursesPageAdmin from './pages/Courses/CoursesPageAdmin';
 import CoursesPage from './pages/Courses/CoursesPage';
 import CoursesDetailsPage from './pages/Courses/Details';
-import EditorLayout from './layouts/dashboard/EditorLayout';
 import ChatPage from './pages/Chat/ChatPage';
 import ChatPageWithId from './pages/Chat/ChatPageWithId';
 
@@ -31,6 +31,7 @@ export default function Router() {
         { path: 'courses', element: <CoursesPage /> },
         { path: 'courses-admin/add', element: <CreateCourse /> },
         { path: 'chats', element: <ChatPage /> },
+        { path: 'settings', element: <SettingsUser /> },
         { path: 'chats/:id', element: <ChatPageWithId /> },
         { path: 'user/add', element: <CreateUser /> },
         { path: 'user/:id', element: <CreateUser /> },
@@ -39,7 +40,7 @@ export default function Router() {
     },
     {
       path: '/dashboard',
-      element: <AuthGuard><EditorLayout /></AuthGuard>,
+      element: <AuthGuard><DashboardLayout /></AuthGuard>,
       children: [
         { element: <Navigate to='/dashboard/app' />, index: true },
         { path: 'courses-admin/:id/edit', element: <EditCourse /> },

@@ -22,8 +22,9 @@ import useResponsive from '../../hooks/useResponsive';
 import EditorCourse from '../../components/admins/dialog/EditorCourse';
 import CourseContent from '../../components/admins/course/Content/CourseContent';
 import CuratorContent from '../../components/admins/course/Content/CuratorContent';
+import StudentsContent from '../../components/admins/course/Content/StudentsContent';
 
-type Mode = 'course' | 'curator'
+type Mode = 'course' | 'curator' | 'students'
 
 const dataToContent = (data: CourseData) => {
   const content = {} as Content;
@@ -293,6 +294,13 @@ function Edit() {
           return <></>;
         }
       }
+      case 'students': {
+        if (data) {
+          return <StudentsContent />;
+        } else {
+          return <></>;
+        }
+      }
     }
   };
 
@@ -340,6 +348,7 @@ function Edit() {
                   >
                     <ToggleButton value='course'>Контент</ToggleButton>
                     <ToggleButton value='curator'>Кураторы</ToggleButton>
+                    <ToggleButton value='students'>Ученики</ToggleButton>
                   </ToggleButtonGroup>
                   {data ? <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile} onClick={handleClickOpen2}
                                   variant='outlined'
@@ -353,9 +362,6 @@ function Edit() {
                       Урока
                     </Button> : null}
 
-                  <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
-                          onClick={() => navigate(PATH_DASHBOARD.courses.root)}
-                          variant='outlined'>Назад</Button>
                   <LoadingButton size={isMobile ? 'small' : 'medium'} fullWidth={isMobile} onClick={handleSave}
                                  type='submit' variant='contained'>
                     {'Сохранить'}

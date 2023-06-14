@@ -31,6 +31,8 @@ const CourseContent = ({data}: CourseContentProps) => {
               xs: 250,
               sm: 500
             },
+            boxShadow: '0 0 2px 0 rgba(145, 158, 171, 0.2), 0 12px 24px -4px rgba(145, 158, 171, 0.12)',
+            borderRadius: '12px'
           }}
           component='nav'
           aria-labelledby='nested-list-subheader'

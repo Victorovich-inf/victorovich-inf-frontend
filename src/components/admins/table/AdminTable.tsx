@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Column, useTable } from 'react-table';
 import {
-  Box,
+  Box, IconButton,
   Paper,
   Table,
   TableBody,
@@ -60,7 +60,7 @@ const AdminTable = ({
           accessor: 'actions',
           disableSortBy: true,
           Cell: ({ row }) => {
-            if (row.original.id === user?.id) {
+            if (row.original.id === user?.id || Number(row.original.role) === 1) {
               return null;
             }
             return <Box sx={{ display: 'flex', columnGap: '5px' }}>
@@ -68,12 +68,17 @@ const AdminTable = ({
               <Iconify onClick={() => onClickDetailsButton(row.original.id)} icon={'clarity:details-line'}
                        style={{ fontSize: '1.5rem', cursor: 'pointer' }} />}
               {onClickEditButton &&
-              <Iconify onClick={() => onClickEditButton(row.original.id)} icon={'material-symbols:edit-document-sharp'}
-                       style={{ fontSize: '1.5rem', cursor: 'pointer' }} />}
+                <IconButton onClick={() => onClickEditButton(row.original.id)}>
+                  <Iconify  icon={'material-symbols:edit'}
+                            />
+                </IconButton>
+              }
               {onClickDeleteButton &&
               // @ts-ignore
-              <Iconify color='error' onClick={() => onClickDeleteButton(row.original.id)}
-                       icon={'material-symbols:delete-outline'} style={{ fontSize: '1.5rem', cursor: 'pointer' }} />}
+              <IconButton onClick={() => onClickDeleteButton(row.original.id)} color="error">
+                <Iconify icon={'material-symbols:delete-outline'}  />
+              </IconButton>
+              }
             </Box>;
           },
         });

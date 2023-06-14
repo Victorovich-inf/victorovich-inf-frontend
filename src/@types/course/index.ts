@@ -71,6 +71,7 @@ export interface CourseEditData {
   description: string;
   dateStart: Date;
   cost: number;
+  file: File | null;
   public: boolean;
   free: boolean;
 }

@@ -6,7 +6,7 @@ import { useCourseEditContext } from '../../../../utils/context/CourseEditContex
 import { convertToDate } from '../../../../utils/time';
 import { useDeleteFromCourseMutation } from '../../../../store/api/admin/courseApi';
 
-const CuratorContent = () => {
+const StudentsContent = () => {
   const [deleteFromCourse] = useDeleteFromCourseMutation()
   const {course} = useCourseEditContext()
 
@@ -26,11 +26,11 @@ const CuratorContent = () => {
       <Card sx={{ p: '16px' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
           <Typography variant="overline" sx={{ color: 'text.secondary' }}>
-            Кураторы
+            Ученики
           </Typography>
 
           <Button onClick={handleClickOpen} size="small" startIcon={<Iconify icon="eva:plus-fill" />}>
-            Добавить куратора
+            Добавить ученика
           </Button>
         </Stack>
 
@@ -52,7 +52,7 @@ const CuratorContent = () => {
                 </Button>
               </Stack>
             </Stack>
-          )) : <Typography variant="subtitle1">Кураторы не назначены</Typography>}
+          )) : <Typography variant="subtitle1">Учеников нет</Typography>}
         </Stack>
       </Card>
       <CuratorDialog open={open} handleClose={handleClose}/>
@@ -60,4 +60,4 @@ const CuratorContent = () => {
   );
 };
 
-export default CuratorContent;
+export default StudentsContent;

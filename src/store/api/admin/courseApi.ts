@@ -6,7 +6,7 @@ import {
   MessageResponseCourseUpload,
 } from '../../../@types/schema';
 import { ErrorValidation, showErrors, showMessage } from '../../../utils/errors';
-import { CourseCreateData, CourseData, PaginationCourseData, UploadData } from '../../../@types/course';
+import { CourseCreateData, CourseData, CourseEditData, PaginationCourseData, UploadData } from '../../../@types/course';
 import { LessonCreateData, LessonData, LessonEditData } from '../../../@types/lesson';
 import { TaskCreateData, TaskEditFormData } from '../../../@types/task';
 import { Content } from '../../../@types/editor';
@@ -161,11 +161,15 @@ export const courseApi = createApi({
         body: data,
       }),
     }),
-    editCourse: builder.mutation<MessageResponse, LessonEditData>({
+    editCourse: builder.mutation<MessageResponse, { data: CourseEditData, id: string }>({
       query: (data) => ({
         url: `/course/admin/${data.id}`,
         method: "PUT",
-        body: data,
+        body: data.data,
+        headers: {
+          Accept: 'multipart/form-data',
+          token: `${localStorage.getItem('accessToken')}`
+        }
       }),
       invalidatesTags: ['OneCourse']
     }),

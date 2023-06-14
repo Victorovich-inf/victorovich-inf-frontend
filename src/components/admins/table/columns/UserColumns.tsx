@@ -2,14 +2,15 @@ import {Column} from 'react-table'
 import React from "react";
 import { UserData } from '../../../../@types/user';
 import Iconify from '../../../iconify';
-import { Box, Button } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 import {
-    useBanMutation,
+    useBanMutation, useMakeAdminMutation,
     useMakeСuratorMutation,
     useRemoveСuratorMutation,
     useUnbanMutation,
 } from '../../../../store/api/admin/userApi';
 import { useSelector } from 'react-redux';
+import { confirmDialog } from '../../../dialogs/DialogDelete';
 
 export const userColumns: Column<UserData>[] = [
     {
@@ -44,9 +45,13 @@ export const userColumns: Column<UserData>[] = [
         disableSortBy: true,
         Cell: ({value}) => {
             if (typeof value !== 'string') {
-                return <Box sx={{display: 'flex', alignItems: 'center'}}><Iconify icon={'material-symbols:check-circle-outline-rounded'}/></Box>
+                return <IconButton >
+                    <Iconify icon="material-symbols:check-circle-rounded"/>
+                </IconButton>
             }
-            return <Box sx={{display: 'flex', alignItems: 'center'}}><Iconify icon={'material-symbols:cancel-presentation-sharp'}/></Box>
+            return <IconButton  >
+                <Iconify icon="material-symbols:cancel"/>
+            </IconButton>
         }
     },
     {
@@ -60,11 +65,17 @@ export const userColumns: Column<UserData>[] = [
             const [unban] = useUnbanMutation()
             const [makeСurator] = useMakeСuratorMutation()
             const [removeСurator] = useRemoveСuratorMutation()
+            const [makeAdmin] = useMakeAdminMutation()
 
             const banHandler = async () => ban(row.original.id)
             const unbanHandler = async () => unban(row.original.id)
             const makeСuratorHandler = async () => makeСurator(row.original.id)
             const removeСuratorHandler = async () => removeСurator(row.original.id)
+            const makeAdminHandler = async () => {
+                return confirmDialog('Назначение администратором', `Вы действительно хотите назначить администратором ${row.original.firstName} ${row.original.lastName}`, async () => {
+                    makeAdmin(row.original.id);
+                })
+            }
 
             if (user.id === row.original.id) {
                 return null
@@ -75,6 +86,7 @@ export const userColumns: Column<UserData>[] = [
                   : <Button onClick={banHandler} size="small" color={'error'}>Забанить</Button>}
                 {row.original.role === 0 ? <Button onClick={makeСuratorHandler} size="small" color={'primary'}>Сд. куратором</Button>
                   : row.original.role === 2 ? <Button onClick={removeСuratorHandler} size="small" color={'secondary'}>Уб. из кураторов</Button> : null}
+                {row.original.role !== 1 ? <Button onClick={makeAdminHandler} size="small" color={'info'}>Сд. админом</Button> : null}
             </Box>
         }
     },
