@@ -30,6 +30,7 @@ export const PATH_DASHBOARD = {
     add: path(ROOTS_DASHBOARD, `/courses-admin/add`),
     edit: (id) => path(ROOTS_DASHBOARD, `/courses-admin/${id}/edit`),
     details: (id) => path(ROOTS_DASHBOARD, `/courses/${id}/details`),
+    chat: (idCourse, id) => path(ROOTS_DASHBOARD, `/courses/${idCourse}/chat/${id}`),
   },
   settings: {
     root: path(ROOTS_DASHBOARD, `/settings`),

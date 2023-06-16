@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Link, Typography, Autocomplete, InputAdornment } from '@mui/material';
+import { Typography, Autocomplete, InputAdornment } from '@mui/material';
 import Image from '../../image';
 import Iconify from '../../iconify';
 import CustomTextField from '../../custom/CustomTextField';

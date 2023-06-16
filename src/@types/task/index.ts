@@ -13,6 +13,7 @@ export interface TaskData {
   prompt: string;
   taskSolutionText: string;
   taskSolutionFile: string;
+  index: number;
   answerFile: boolean;
   public: boolean;
 }
@@ -20,6 +21,7 @@ export interface TaskData {
 export interface TaskCreateData {
   name: string;
   lessonId: number;
+  maxIndex: number;
 }
 
 export interface TaskEditData {
@@ -27,6 +29,7 @@ export interface TaskEditData {
   name: string;
   answer: string;
   prompt: string;
+  index?: number;
   taskSolutionText: string;
   file: File | null;
   answerFile: boolean;

@@ -4,7 +4,7 @@ import { IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack
 import { FormProvider, RHFTextField } from '../../hook-form';
 import Iconify from '../../iconify';
 import { useCreateLessonMutation, useCreateTaskMutation } from '../../../store/api/admin/courseApi';
-import { LessonData } from '../../../@types/lesson';
+import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
 
 interface CourseAddProps {
   type?: 'lesson' | 'task',
@@ -14,6 +14,8 @@ interface CourseAddProps {
 
 const CourseAdd = ({type = 'lesson', id, label}: CourseAddProps) => {
   const [modeAdd, setModeAdd] = React.useState(false)
+
+  const {course} = useCourseEditContext()
 
   const [createLesson] = useCreateLessonMutation()
   const [createTask] = useCreateTaskMutation()
@@ -36,14 +38,34 @@ const CourseAdd = ({type = 'lesson', id, label}: CourseAddProps) => {
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
   } = methods;
 
   const onSubmit = async ({name}: {name: string}) => {
     if (type === 'lesson') {
-      await createLesson({name, courseId: id})
+
+      let maxIndex = 0;
+
+      const maxIndexFind = course?.Lessons;
+
+      if (maxIndexFind) {
+        const maxItem = maxIndexFind.map(el => Number(el.index))
+        maxIndex = Math.max(...maxItem) + 1;
+      }
+
+      await createLesson({name, courseId: id, maxIndex})
+
     } else if (type === 'task') {
-      await createTask({name, lessonId: id})
+
+      let maxIndex = 0;
+
+      const maxIndexFind = course?.Lessons.find(el => el.id === id);
+
+      if (maxIndexFind?.Tasks?.length) {
+        const maxItem = maxIndexFind.Tasks.map(el => Number(el.index))
+        maxIndex = Math.max(...maxItem) + 1;
+      }
+
+      await createTask({name, lessonId: id, maxIndex})
     }
     handleChangeModeToNotActive()
   }

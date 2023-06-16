@@ -28,8 +28,6 @@ export default function UserPage() {
 
   const isMobile = useResponsive('down', 'sm');
 
-
-
   const handleAdd = () => {
     navigate(PATH_DASHBOARD.user.add)
   }

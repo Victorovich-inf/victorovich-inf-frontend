@@ -47,6 +47,7 @@ const NotificationsPopover = ({user}: {user: UserData}) => {
 
   const handleClosePopover = () => {
     setOpenPopover(null);
+    socket.emit('notification:clear')
   };
 
   return (

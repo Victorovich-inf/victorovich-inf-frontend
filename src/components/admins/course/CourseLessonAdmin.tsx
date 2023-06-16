@@ -42,6 +42,7 @@ const CourseLessonAdmin = () => {
   const defaultValues = useMemo(() => ({
     name: '',
     prompt: '',
+    index: 0,
     answer: '',
     taskSolutionText: '',
     file: null,
@@ -67,6 +68,7 @@ const CourseLessonAdmin = () => {
         reset({
           prompt: selected?.prompt || '',
           name: selected?.name || '',
+          index: selected?.index || 0,
           answer: selected?.answer || '',
           taskSolutionText: selected?.taskSolutionText || '',
           public: selected?.public || false,
@@ -105,6 +107,7 @@ const CourseLessonAdmin = () => {
       state.name && formData.append('name', state.name);
       state.answer && formData.append('answer', state.answer);
       state.prompt && formData.append('prompt', state.prompt);
+      state.index && formData.append('index', state.index.toString());
       state.taskSolutionText && formData.append('taskSolutionText', state.taskSolutionText);
       state.answerFile && formData.append('answerFile', state.answerFile ? '1' : '0');
       formData.append('public', state.public ? '1' : '0');
@@ -122,7 +125,7 @@ const CourseLessonAdmin = () => {
         {elements ? elements.map((el, idx) => {
           return <RowElementAdmin key={idx} idx={idx} data={el}/>
         }) : null}
-        <AddItem hasElements={!!elements?.length}/>
+        <AddItem />
       </Stack>: <Box sx={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Урок/задание не выбран</Box>}
       {isTask(selected) ? <Card sx={{p: 2}}>
         <FormProvider
@@ -158,6 +161,9 @@ const CourseLessonAdmin = () => {
                 >
                   Решение задания (картинка)
                 </Typography>} multiple={false} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <RHFTextField number name='index' label='Позиция (для сортировки, начала с 0)' />
             </Grid>
             <Grid item xs={12} md={6}>
               <RHFSwitch name='public' label='Опубликовано' helperText={null} />

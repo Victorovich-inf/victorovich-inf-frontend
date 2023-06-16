@@ -6,11 +6,12 @@ import { FormProvider, RHFTextField } from '../../hook-form';
 import { useDropzone } from 'react-dropzone';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { settingsImage } from '../../../schemas/editorSchema';
-import { ContentData } from '../../../@types/editor';
+import { ContentData, Position } from '../../../@types/editor';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
 import { useUploadImageMutation } from '../../../store/api/admin/courseApi';
 import { UploadData } from '../../../@types/course';
 import useResponsive from '../../../hooks/useResponsive';
+import { v4 as uuidv4 } from 'uuid';
 
 const useStyles = makeStyles({
   root: {
@@ -24,12 +25,14 @@ const useStyles = makeStyles({
 });
 
 interface SettingsImageProps {
-  data: ContentData;
+  data?: ContentData;
+  add?: boolean;
+  handleClose?: () => void;
 }
 
-const SettingsImage = ({data}: SettingsImageProps) => {
+const SettingsImage = ({data, add = false, handleClose}: SettingsImageProps) => {
 
-  const {handleChangeContent} = useCourseEditContext()
+  const {handleChangeContent, handleSetContent} = useCourseEditContext()
   const [uploadImage] = useUploadImageMutation()
 
   const {getRootProps, getInputProps} = useDropzone({
@@ -42,12 +45,26 @@ const SettingsImage = ({data}: SettingsImageProps) => {
 
         const link = `${process.env.REACT_APP_API_URL}/${filePath}`
 
-        let newData = JSON.parse(JSON.stringify(data))
-        if ('src' in newData.element) {
-          newData.element.src = link;
-        }
+        if (add) {
+          handleSetContent({
+            id: uuidv4(),
+            element: {
+              src: link,
+            },
+            settings: {
+              justifyContent: Position.Center,
+            },
+          });
+          handleClose && handleClose()
+        } else {
+          let newData = JSON.parse(JSON.stringify(data))
 
-        handleChangeContent(newData);
+          if ('src' in newData.element) {
+            newData.element.src = link;
+          }
+
+          handleChangeContent(newData);
+        }
       }
     },
     accept: {
@@ -73,11 +90,24 @@ const SettingsImage = ({data}: SettingsImageProps) => {
   const isMobile = useResponsive('down', 'sm');
 
   const onSubmit = (state: {src: string}) => {
-    let newData = JSON.parse(JSON.stringify(data))
-    if ('src' in newData.element) {
-      newData.element.src = state.src;
+    if (add) {
+      handleSetContent({
+        id: uuidv4(),
+        element: {
+          src: state.src,
+        },
+        settings: {
+          justifyContent: Position.Center,
+        },
+      })
+      handleClose && handleClose()
+    } else {
+      let newData = JSON.parse(JSON.stringify(data))
+      if ('src' in newData.element) {
+        newData.element.src = state.src;
+      }
+      handleChangeContent(newData);
     }
-    handleChangeContent(newData);
   }
 
   React.useEffect(() => {

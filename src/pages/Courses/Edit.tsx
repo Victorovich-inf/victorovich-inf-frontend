@@ -7,7 +7,7 @@ import Page from '../../components/Page';
 import useLoader from '../../hooks/useLoader';
 import Typography from '@mui/material/Typography';
 import { useGetOneQuery, useSavePageMutation } from '../../store/api/admin/courseApi';
-import { useNavigate, useParams } from 'react-router';
+import {  useParams } from 'react-router';
 import { LessonData } from '../../@types/lesson';
 import { TaskData } from '../../@types/task';
 import { CourseEditProvider } from '../../utils/context/CourseEditContext';
@@ -16,7 +16,6 @@ import { LoadingButton } from '@mui/lab';
 import { CourseData } from '../../@types/course';
 import { swapElements } from '../../utils/utils';
 import Iconify from '../../components/iconify';
-import { PATH_DASHBOARD } from '../../paths';
 import EditorDialog from '../../components/admins/dialog/EditorDialog';
 import useResponsive from '../../hooks/useResponsive';
 import EditorCourse from '../../components/admins/dialog/EditorCourse';
@@ -37,6 +36,10 @@ const dataToContent = (data: CourseData) => {
         };
       });
 
+      content[`${el.id}_lesson`] = {
+        elements: el.Content.content,
+      };
+    } else {
       content[`${el.id}_lesson`] = {
         elements: el.Content.content,
       };
@@ -74,8 +77,6 @@ function Edit() {
   };
 
   const { data } = useGetOneQuery(id || '');
-
-  const navigate = useNavigate();
 
   const isMobile = useResponsive('down', 'sm');
 
@@ -336,7 +337,7 @@ function Edit() {
                   <Chip size='small' label={data.public ? 'Опубликован' : 'Не опубликован'}
                         color={data.public ? 'success' : 'error'} />
                 </Stack>
-                <Stack sx={{ marginTop: 2, marginLeft: !isMobile ? 'auto' : 0, width: { xs: '100%', md: 'auto' } }}
+                <Stack sx={{ marginLeft: !isMobile ? 'auto' : 0, width: { xs: '100%', md: 'auto' } }}
                        spacing={2}
                        direction={isMobile ? 'column' : 'row'}>
                   <ToggleButtonGroup

@@ -17,6 +17,7 @@ import CoursesPage from './pages/Courses/CoursesPage';
 import CoursesDetailsPage from './pages/Courses/Details';
 import ChatPage from './pages/Chat/ChatPage';
 import ChatPageWithId from './pages/Chat/ChatPageWithId';
+import CoursesChatPageWithId from './pages/Courses/CoursesChatPageWithId';
 
 export default function Router() {
   return useRoutes([
@@ -45,6 +46,7 @@ export default function Router() {
         { element: <Navigate to='/dashboard/app' />, index: true },
         { path: 'courses-admin/:id/edit', element: <EditCourse /> },
         { path: 'courses/:id/details', element: <CoursesDetailsPage /> },
+        { path: 'courses/:idCourse/chat/:id', element: <CoursesChatPageWithId /> },
       ],
     },
     {

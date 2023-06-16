@@ -1,6 +1,5 @@
-import { Box } from '@mui/material';
+import { Box, Paper, Typography } from '@mui/material';
 import ShopProductCard from './ShopProductCard';
-import SkeletonProductItem from './SkeletonProductItem';
 import { CourseData } from '../../@types/course';
 
 interface ShopProductListProps {
@@ -10,25 +9,34 @@ interface ShopProductListProps {
 
 export default function ShopProductList({ courses, loading, ...other }: ShopProductListProps) {
   return (
-    <Box
-      gap={3}
-      display="grid"
-      gridTemplateColumns={{
-        xs: 'repeat(1, 1fr)',
-        sm: 'repeat(2, 1fr)',
-        md: 'repeat(3, 1fr)',
-        lg: 'repeat(3, 1fr)',
-        xl: 'repeat(4, 1fr)',
-      }}
-      {...other}
-    >
-      {(loading ? [...Array(12)] : courses).map((course, index) =>
-        course ? (
-          <ShopProductCard key={course.id} data={course} />
-        ) : (
-          <SkeletonProductItem key={index} />
-        )
-      )}
-    </Box>
+      <>
+        {courses?.length ? <Box
+          gap={3}
+          display="grid"
+          gridTemplateColumns={{
+            xs: 'repeat(1, 1fr)',
+            sm: 'repeat(2, 1fr)',
+            md: 'repeat(3, 1fr)',
+            lg: 'repeat(3, 1fr)',
+            xl: 'repeat(4, 1fr)',
+          }}
+          {...other}
+        >
+          { courses.map((course) => <ShopProductCard key={course.id} data={course} />
+          ) }
+        </Box> : <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flex: 1,
+            textAlign: 'center',
+          }}
+        >
+          <Typography variant="h6" paragraph>
+            Не найдено
+          </Typography>
+        </Box>}
+      </>
   );
 }

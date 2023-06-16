@@ -40,7 +40,7 @@ export const chatApi = createApi({
   tagTypes: ['Chats', 'Messages'],
   endpoints: (builder) => {
     return ({
-      createChatWithCurator: builder.mutation<ChatWithCuratorResponse, { curatorId: string }>({
+      createChatWithCurator: builder.mutation<ChatWithCuratorResponse, { curatorId: string, courseId: string }>({
         query: (data) => ({
           url: `/chat/withCurator`,
           method: 'POST',

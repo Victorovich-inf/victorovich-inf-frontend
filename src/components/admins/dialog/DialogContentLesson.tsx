@@ -21,6 +21,7 @@ const DialogContentLesson = () => {
   const defaultValues = useMemo(() => ({
     name: '',
     public: false,
+    index: 0,
     start: ''
   }), []);
 
@@ -38,7 +39,7 @@ const DialogContentLesson = () => {
     if (selected) {
       if ('public' in selected) {
           // @ts-ignore
-        reset({ name: selected?.name, public: selected?.public, start: selected?.start });
+        reset({ name: selected?.name, public: selected?.public, start: selected?.start, index: Number(selected.index) });
       }
     }
   }, [selected])
@@ -61,6 +62,9 @@ const DialogContentLesson = () => {
           </Grid>
           <Grid item xs={12} md={12}>
             <RHFDateTime name='start' label='Дата начала' />
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <RHFTextField number name='index' label='Позиция (для сортировки, начала с 0)' />
           </Grid>
         </Grid>
       </DialogContent>

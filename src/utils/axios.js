@@ -15,7 +15,6 @@ $authHost.interceptors.request.use(authIntterceptor);
 
 $authHost.interceptors.response.use(
     (response) => response,
-    (error) => Promise.reject((error.response && error.response.data) || 'Something went wrong')
 );
 
 export default $authHost;

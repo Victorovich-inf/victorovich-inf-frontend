@@ -13,8 +13,6 @@ interface CourseContentProps {
 const CourseContent = ({data}: CourseContentProps) => {
   const isMobile = useResponsive('down', 'sm');
 
-  console.log(data.Lessons);
-
   return (
     <>
       <Stack spacing={2} direction={isMobile ? 'column' : 'row'} justifyContent='space-between' sx={{ flex: 1 }}>

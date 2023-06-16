@@ -5,9 +5,10 @@ import { useForm } from 'react-hook-form';
 import { FormProvider, RHFTextField } from '../../hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { settingsVideo } from '../../../schemas/editorSchema';
-import { ContentData } from '../../../@types/editor';
+import { ContentData, Position } from '../../../@types/editor';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
 import useResponsive from '../../../hooks/useResponsive';
+import { v4 as uuidv4 } from 'uuid';
 
 const useStyles = makeStyles({
   root: {
@@ -21,13 +22,15 @@ const useStyles = makeStyles({
 });
 
 interface SettingsVideoProps {
-  data: ContentData;
+  data?: ContentData;
+  add?: boolean;
+  handleClose?: () => void;
+
 }
 
-const SettingsVideo = ({data}: SettingsVideoProps) => {
+const SettingsVideo = ({data, add = false, handleClose}: SettingsVideoProps) => {
 
-  const {handleChangeContent} = useCourseEditContext()
-
+  const {handleChangeContent, handleSetContent} = useCourseEditContext()
 
   const defaultValues = useMemo(() => ({
     video: ''
@@ -47,11 +50,24 @@ const SettingsVideo = ({data}: SettingsVideoProps) => {
   const isMobile = useResponsive('down', 'sm');
 
   const onSubmit = (state: {video: string}) => {
-    let newData = JSON.parse(JSON.stringify(data))
-    if ('video' in newData.element) {
-      newData.element.video = state.video;
+    if (add) {
+      handleSetContent({
+        id: uuidv4(),
+        element: {
+          video: state.video,
+        },
+        settings: {
+          justifyContent: Position.Center,
+        },
+      });
+      handleClose && handleClose()
+    } else {
+      let newData = JSON.parse(JSON.stringify(data))
+      if ('video' in newData.element) {
+        newData.element.video = state.video;
+      }
+      handleChangeContent(newData);
     }
-    handleChangeContent(newData);
   }
 
   React.useEffect(() => {
@@ -66,7 +82,7 @@ const SettingsVideo = ({data}: SettingsVideoProps) => {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Box className={classes.root}>
         <Typography variant="h6" gutterBottom>
-          Настройка видео
+          Настройка плеера
         </Typography>
         <RHFTextField size="small" name='video' label='Ссылка' />
         <Stack spacing={1} className={classes.button} direction="row">

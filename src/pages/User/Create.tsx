@@ -1,10 +1,10 @@
-import { Card, Checkbox, Divider, Grid, Stack } from '@mui/material';
+import { Card, Grid, Stack } from '@mui/material';
 import React, { useMemo, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
 import Page from '../../components/Page';
 import useLoader from '../../hooks/useLoader';
-import { FormProvider, RHFCheckbox, RHFTextField } from '../../components/hook-form';
+import { FormProvider, RHFTextField } from '../../components/hook-form';
 import { useParams } from 'react-router';
 import { oneUserCRUD } from '../../http';
 import { PATH_DASHBOARD } from '../../paths';
@@ -12,7 +12,6 @@ import { UserCreateData } from '../../@types/user';
 import { useRegisterMutation } from '../../store/api/admin/userApi';
 import { useStableNavigate } from '../../contexts/StableNavigateContext';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import RHFDateTime from '../../components/hook-form/RHFDateTime';
 
 function CreateOrEdit() {
   const { loading, start, stop, Preloader } = useLoader(false);
@@ -35,14 +34,8 @@ function CreateOrEdit() {
   const {
     handleSubmit,
     reset,
-    control,
     formState: { isSubmitting },
   } = methods;
-
-  const hasSub = useWatch({
-    control,
-    name: "hasSub",
-  });
 
   const onSubmit = async (state: UserCreateData) => {
     await register(state).unwrap();
@@ -85,18 +78,6 @@ function CreateOrEdit() {
                       <RHFTextField name='email' label='Email' />
                     </Grid>
                   </Grid>
-
-                  <Divider sx={{ my: 3, borderStyle: 'dashed' }} />
-                  <RHFCheckbox name='hasSub' label='Есть подписка' />
-                  {hasSub ? <Stack
-                    spacing={2}
-                    justifyContent='flex-end'
-                    direction={{ xs: 'column', md: 'row' }}
-                    sx={{ width: 1 }}
-                  >
-                    <RHFDateTime name='start' label='От какого числа оплата' />
-                    <RHFDateTime name='end' label='До какого числа оплата' />
-                  </Stack> : null}
                 </Stack>
               </Card>
             </Grid>

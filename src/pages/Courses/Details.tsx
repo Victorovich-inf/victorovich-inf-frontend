@@ -33,6 +33,7 @@ import { getIsCurator, getUserData } from '../../store/reducers/userReducer';
 import { useCreateChatWithCuratorMutation } from '../../store/api/admin/chatApi';
 import { UserData } from '../../@types/user';
 import dayjs from 'dayjs';
+import CuratorButton from '../../components/CuratorButton';
 
 const dataToContent = (data: CourseData) => {
   const content = {} as Content;
@@ -46,6 +47,11 @@ const dataToContent = (data: CourseData) => {
         };
       });
 
+      content[`${el.id}_lesson`] = {
+        elements: el.Content.content,
+        public: el.public,
+      };
+    } else {
       content[`${el.id}_lesson`] = {
         elements: el.Content.content,
         public: el.public,
@@ -83,7 +89,6 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
   const [answerData, setAnswerData] = React.useState<AnswerData>({});
   const [percent, setPercent] = React.useState<number>(0);
 
-  const [createChatWithCurator] = useCreateChatWithCuratorMutation();
 
   const navigate = useNavigate();
   const [updateProgress] = useUpdateProgressMutation();
@@ -127,18 +132,13 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
     }
   }, [data]);
 
-  const handleGoToChatWithCurator = async () => {
-    if (data) {
-      const { roomId } = await createChatWithCurator({ curatorId: data.CuratorCourses[0].userId.toString() }).unwrap();
-      navigate(PATH_DASHBOARD.chat.detail(roomId));
-    }
-  };
-
   const updateProgressLesson = (lesson: string, task?: string, answer?: string) => {
     const hasKey = Object.keys(answerData).includes(lesson);
 
     if (selected && answer && 'answer' in selected) {
-      if (selected.answer.toLowerCase() !== answer.toLowerCase()) {
+      const answerDb = selected.answer.toLowerCase().split(/\r?\n/).join('');
+      const answerUser = answer.toLowerCase().split(/\r?\n/).join('');
+      if (answerDb !== answerUser) {
         resetWinningStreak();
         return showToast({ variant: 'close', content: 'Неправильный ответ' });
       }
@@ -486,9 +486,7 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
                        spacing={2}
                        direction={isMobile ? 'column' : 'row'}>
                   {!isCurator && data?.CuratorCourses?.length ?
-                    <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
-                            onClick={handleGoToChatWithCurator}
-                            variant='outlined' color='warning'>В чат с куратором</Button> : null}
+                    <CuratorButton/> : null}
                   <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
                           onClick={() => navigate(PATH_DASHBOARD.courses.rootUser)}
                           variant='outlined'>Назад</Button>
@@ -538,9 +536,7 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
                 }
 
                 if (user.role === 0) {
-                  const subscription = user.Subscription;
-
-                  return dayjs(subscription.end) > dayjs(lesson.start);
+                  return dayjs(courseUser.end) > dayjs(lesson.start);
                 } else {
                   return true;
                 }

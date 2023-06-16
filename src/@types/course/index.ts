@@ -26,6 +26,9 @@ export interface CourseUser {
   buyed: boolean;
   curator: boolean;
   userId: number;
+  end: string;
+  completed: boolean;
+  User: UserData;
   ProgressCourseUsers: ProgressCourseUsers[]
 }
 

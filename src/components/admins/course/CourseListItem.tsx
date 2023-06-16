@@ -25,35 +25,35 @@ interface CourseListItemProps {
 }
 
 
-const CourseListItem = ({data, detailsMode = false}: CourseListItemProps) => {
+const CourseListItem = ({ data, detailsMode = false }: CourseListItemProps) => {
   const [open, setOpen] = React.useState(false);
-  const [deleteLesson] = useDeleteLessonMutation()
-  const [deleteTask] = useDeleteTaskMutation()
-  const { handleSetSelected, answerData} = useCourseEditContext()
+  const [deleteLesson] = useDeleteLessonMutation();
+  const [deleteTask] = useDeleteTaskMutation();
+  const { handleSetSelected, answerData } = useCourseEditContext();
 
-  const handleDelete = async (id: number, type: 'lesson' | 'task')  => {
+  const handleDelete = async (id: number, type: 'lesson' | 'task') => {
     return confirmDialog(type === 'lesson' ? 'Удаление урока' : 'Удаление задачи',
       type === 'lesson' ? 'Удалить урок?' : 'Удалить задачу?', async () => {
-      try {
-        if (type === 'lesson') {
-          await deleteLesson(id)
-        } else {
-          await deleteTask(id)
+        try {
+          if (type === 'lesson') {
+            await deleteLesson(id);
+          } else {
+            await deleteTask(id);
+          }
+        } catch (e) {
+          console.log(e);
         }
-      } catch (e) {
-        console.log(e);
-      }
-    })
-  }
+      });
+  };
 
   const handleClick = (e: { stopPropagation: () => void; preventDefault: () => void; }) => {
-    e.stopPropagation()
-    e.preventDefault()
+    e.stopPropagation();
+    e.preventDefault();
     setOpen(!open);
   };
 
   const hasChildPublic = (tasks: TaskData[]) => {
-    return tasks.find(el => el.public)
+    return tasks.find(el => el.public);
   };
 
   const viewed = useMemo(() => {
@@ -72,36 +72,37 @@ const CourseListItem = ({data, detailsMode = false}: CourseListItemProps) => {
   return (
     <>
       <ListItemButton onClick={(e) => {
-        handleSetSelected(data)
+        handleSetSelected(data);
       }}>
         <ListItemIcon>
-          <Iconify icon="material-symbols:play-lesson-outline"/>
+          <Iconify icon='material-symbols:play-lesson-outline' />
         </ListItemIcon>
         <ListItemText primary={data.name} />
-        <Stack direction="row" alignItems="center">
-              {!detailsMode ? <>
-            <Chip size="small" label={data.public ? 'Опуб.' : 'Не опуб.'} color={data.public ? 'success': 'error'} />
-            <IconButton color="error" onClick={() => handleDelete(data.id, 'lesson')}>
-              <Iconify icon="material-symbols:delete-outline"/>
+        <Stack direction='row' alignItems='center'>
+          {!detailsMode ? <>
+            <Chip sx={{marginRight: '5px'}} size='small' label={data.public ? 'Опуб.' : 'Не опуб.'} color={data.public ? 'success' : 'error'} />
+            <Chip size='small' label={`${data.index}`} color={'info'} />
+            <IconButton color='error' onClick={() => handleDelete(data.id, 'lesson')}>
+              <Iconify icon='material-symbols:delete-outline' />
             </IconButton>
           </> : null}
-          {viewed ? <Iconify sx={{color: '#54D62C'}} icon="material-symbols:check-circle"/> : null}
+          {viewed ? <Iconify sx={{ color: '#54D62C' }} icon='material-symbols:check-circle' /> : null}
           {(detailsMode && hasChildPublic(data?.Tasks)) ? <IconButton onClick={handleClick}>
-            {open ? <ExpandLess /> : <ExpandMore/>}
+            {open ? <ExpandLess /> : <ExpandMore />}
           </IconButton> : null}
           {!detailsMode ? <IconButton onClick={handleClick}>
-            {open ? <ExpandLess /> : <ExpandMore/>}
+            {open ? <ExpandLess /> : <ExpandMore />}
           </IconButton> : null}
         </Stack>
       </ListItemButton>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
+      <Collapse in={open} timeout='auto' unmountOnExit>
+        <List component='div' disablePadding>
           {data.Tasks?.filter(task => {
             if (detailsMode) {
-              return task.public
+              return task.public;
             }
-            return task
-          }).sort(function (a, b) {  return +a?.name.replace(/[^0-9]/g,"") - +b?.name.replace(/[^0-9]/g,"");  }).map(task => {
+            return task;
+          }).map(task => {
 
             const correctly = () => {
               if (task && answerData && 'Lesson' in task) {
@@ -118,26 +119,28 @@ const CourseListItem = ({data, detailsMode = false}: CourseListItemProps) => {
             };
 
             return <ListItemButton onClick={(e) => {
-              handleSetSelected(task)
+              handleSetSelected(task);
             }
             } key={task.id} sx={{ pl: 4 }}>
               <ListItemIcon>
-                <Iconify icon="material-symbols:task"/>
+                <Iconify icon='material-symbols:task' />
               </ListItemIcon>
               <ListItemText primary={task.name} />
-              {correctly() ? <Iconify sx={{color: '#54D62C'}} icon="material-symbols:check-circle"/> : null}
-              {!detailsMode ? <Stack direction="row" alignItems="center">
-                <Chip size="small" label={task.public ? 'Опуб.' : 'Не опуб.'} color={task.public ? 'success': 'error'} />
-                <IconButton color="error" onClick={(e) => {
-                  e.stopPropagation()
-                  e.preventDefault()
-                  handleDelete(task.id, 'task')
+              {correctly() ? <Iconify sx={{ color: '#54D62C' }} icon='material-symbols:check-circle' /> : null}
+              {!detailsMode ? <Stack direction='row' alignItems='center'>
+                <Chip size='small' sx={{marginRight: '5px'}} label={task.public ? 'Опуб.' : 'Не опуб.'}
+                      color={task.public ? 'success' : 'error'} />
+                <Chip size='small' label={`${task.index}`} color={'info'} />
+                <IconButton color='error' onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  handleDelete(task.id, 'task');
                 }}>
-                  <Iconify icon="material-symbols:delete-outline"/>
+                  <Iconify icon='material-symbols:delete-outline' />
                 </IconButton>
               </Stack> : null}
-            </ListItemButton>
-          }) }
+            </ListItemButton>;
+          })}
           {!detailsMode ? <CourseAdd id={data.id} label='Добавить задачу' type='task' /> : null}
         </List>
       </Collapse>

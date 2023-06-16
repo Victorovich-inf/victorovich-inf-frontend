@@ -9,6 +9,7 @@ import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { register } from '../../../store/actions/authActions';
 import { UserRegisterData } from '../../../@types/user';
+import $authHost from '../../../utils/axios';
 
 export default function RegisterForm() {
   const navigate = useNavigate()
@@ -21,6 +22,18 @@ export default function RegisterForm() {
       const query = new URLSearchParams(search);
       if (typeof query.get('t') !== 'string') {
         navigate('/404')
+      } else {
+        $authHost.post('/auth/has-account', {token: query.get('t'), course: query.get('course')}).then(res => {
+          if (res.data?.token) {
+            localStorage.setItem('accessToken', res.data.token);
+            window.location.reload();
+          }
+        }).catch(error => {
+          console.log(error?.response?.status);
+          if (error?.response?.status === 500) {
+            navigate('/404')
+          }
+        })
       }
     }
   }, [search]);
@@ -29,7 +42,7 @@ export default function RegisterForm() {
   const onClickAuth = () => {
     const query = new URLSearchParams(search);
     window.open(
-      `${process.env.REACT_APP_API_URL}/auth/vkontakte-register?t=${query.get('t')}`,
+      `${process.env.REACT_APP_API_URL}/auth/vkontakte-register?t=${query.get('t')}&course=${query.get('course')}`,
       'Register',
       'width=650,height=500,status=yes,toolbar=no,menubar=no,location=no',
     );
@@ -42,7 +55,7 @@ export default function RegisterForm() {
         const profile = JSON.parse(user);
         if (profile?.data) {
           const query = new URLSearchParams(search);
-          await register({ ...profile.data, token: query.get('t'), vkId: profile?.data.id, password: (Math.random() + 1).toString(36).substring(7) + '123123' })
+          await register({ ...profile.data, token: query.get('t'), course: query.get('course'), vkId: profile?.data.id, password: (Math.random() + 1).toString(36).substring(7) + '123123' })
         }
       }
     });
@@ -75,7 +88,7 @@ export default function RegisterForm() {
   const onSubmit = async (data: UserRegisterData) => {
     const query = new URLSearchParams(search);
 
-    await register({ ... data, token: query.get('t') })
+    await register({ ... data, course: query.get('course'), token: query.get('t') })
   }
 
   return (

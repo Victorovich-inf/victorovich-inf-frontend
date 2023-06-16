@@ -45,6 +45,32 @@ const navConfig = (role) => {
               { title: 'Администрирование', path: PATH_DASHBOARD.courses.root },
               { title: 'Каталог', path: PATH_DASHBOARD.courses.rootUser },
             ],
+          }
+        ],
+      },
+    ]
+  }
+
+  if (role === 2) {
+    return [
+      {
+        subheader: 'Дашбоард',
+        items: [
+          {
+            title: 'Пользователи',
+            path: '/dashboard/user',
+            icon: icon('ic_user'),
+            role: [1],
+          },
+          {
+            title: 'Календарь',
+            path: '/dashboard/app',
+            icon: icon('ic_calendar'),
+          },
+          {
+            title: 'Каталог',
+            path: '/dashboard/courses',
+            icon: icon('ic_courses-admin'),
           },
           {
             title: 'Чат',
