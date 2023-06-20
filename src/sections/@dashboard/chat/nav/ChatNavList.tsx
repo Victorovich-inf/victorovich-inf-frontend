@@ -9,35 +9,38 @@ import { PATH_DASHBOARD } from '../../../../paths';
 import { useParams } from 'react-router';
 
 interface ChatNavListProps {
-  conversations: ChatData[]
-  openNav: boolean
-  loading: boolean
-  onCloseNav: () => void
-  selected: (el: ChatData) => boolean
-  sx: any
+  conversations: ChatData[];
+  openNav: boolean;
+  loading: boolean;
+  courseId: number;
+  onCloseNav: () => void;
+  selected: (el: ChatData) => boolean;
+  sx: any;
 }
 
 export default function ChatNavList({
-  conversations,
-  openNav,
-  onCloseNav,
-  selected,
-  sx,
-  loading = false,
-  ...other
-}: ChatNavListProps) {
+                                      conversations,
+                                      openNav,
+                                      courseId,
+                                      onCloseNav,
+                                      selected,
+                                      sx,
+                                      loading = false,
+                                      ...other
+                                    }: ChatNavListProps) {
   const navigate = useNavigate();
-  const params = useParams()
+  const params = useParams();
 
   const isDesktop = useResponsive('up', 'md');
 
   const handleSelectConversation = (el: ChatData) => {
-    navigate(PATH_DASHBOARD.chat.detail(el.id))
+    navigate(PATH_DASHBOARD.chat.detail(el.id, courseId));
   };
 
   return (
     <List disablePadding sx={sx} {...other}>
-      {loading ? [...Array(12)].map((_, idx: number) => <SkeletonConversationItem key={idx} sx={undefined} />) : conversations?.length ? conversations.map((el, idx: number) => {
+      {loading ? [...Array(12)].map((_, idx: number) => <SkeletonConversationItem key={idx}
+                                                                                  sx={undefined} />) : conversations?.length ? conversations.map((el, idx: number) => {
 
         return <ChatNavItem
           key={idx}
@@ -50,8 +53,8 @@ export default function ChatNavList({
             }
             handleSelectConversation(el);
           }}
-        />
-      }) : <Typography mt={3} textAlign="center" variant="h6" gutterBottom component="div">
+        />;
+      }) : <Typography mt={3} textAlign='center' variant='h6' gutterBottom component='div'>
         Список пуст
       </Typography>}
     </List>

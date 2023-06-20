@@ -6,8 +6,10 @@ import { MessagesData } from '../../../../@types/chat';
 import { connect } from 'react-redux';
 import { getUserData } from '../../../../store/reducers/userReducer';
 import { UserData } from '../../../../@types/user';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useChatContext } from '../../../../utils/context/ChatContext';
+import Iconify from '../../../../components/iconify';
+import axios from 'axios';
 
 interface ChatMessageItemProps {
   message: MessagesData;
@@ -25,7 +27,30 @@ const ChatMessageItem = ({ message, onOpenLightbox, user }: ChatMessageItemProps
 
   const firstName = message.sender.firstName;
 
-  const isImage = !!message?.image
+
+  const isImage = !!message?.image && (message?.image.includes('.svg') || message?.image.includes('.png') || message?.image.includes('.jpeg') || message?.image.includes('.jpg'));
+  const isFile = !!message?.image && (!message?.image.includes('.svg') && !message?.image.includes('.png') && !message?.image.includes('.jpeg') && !message?.image.includes('.jpg'));
+
+  function getFileExt(url: string) {
+    // @ts-ignore
+    return url.split('/').pop().split('#')[0].split('?')[0].split('.')[1];
+  }
+
+  function downloadFile(address: string, name: string) {
+    axios.get(address, {
+      responseType: 'blob',
+    }).then(({ data: blob }) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `${name}.${getFileExt(address)}`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
 
   const handleSelectMessageDown = () => {
     if (currentUser) {
@@ -92,6 +117,16 @@ const ChatMessageItem = ({ message, onOpenLightbox, user }: ChatMessageItemProps
                 },
               }}
             />
+          ) : isFile ? (
+            <div className='file-details'>
+              <div className='file-details-content'>
+                <div className='file-details-info'>
+                  <div className='file-details-top'>Файл </div>
+                  <span>{message?.image}</span>
+                </div>
+                <Iconify onClick={() => downloadFile(`${process.env.REACT_APP_API_URL}/${message?.image}`, `Файл`)} sx={{ cursor: 'pointer' }} icon='material-symbols:download' />
+              </div>
+            </div>
           ) : (
             message.message
           )}

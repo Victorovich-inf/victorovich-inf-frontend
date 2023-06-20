@@ -57,7 +57,7 @@ export default function DashboardAppPage() {
     if (data) {
       const events = data.map(el => ({
         id: el.id.toString(),
-        title: `Курс: ${el.Course?.name}, урок: ${el.name}`,
+        title: `${el.Course?.name}, урок: ${el.name}`,
         date: el.start,
         color: COLOR_OPTIONS[Math.floor(Math.random() * COLOR_OPTIONS.length)],
       }));

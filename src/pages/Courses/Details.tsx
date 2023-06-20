@@ -89,7 +89,6 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
   const [answerData, setAnswerData] = React.useState<AnswerData>({});
   const [percent, setPercent] = React.useState<number>(0);
 
-
   const navigate = useNavigate();
   const [updateProgress] = useUpdateProgressMutation();
   const [resetWinningStreak] = useResetWinningStreakMutation();
@@ -111,6 +110,9 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
 
   const { data } = useGetOnePaidQuery(id || '');
 
+  // console.log(data);
+  // console.log(selected);
+
   React.useEffect(() => {
     if (Object.keys(content).length) {
       let all = Object.keys(content).filter(el => content[el].public).length;
@@ -125,10 +127,18 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
       const answer = data.CourseUsers?.[0]?.ProgressCourseUsers[0]?.data;
 
       const content = dataToContent(data);
+
       setContent(content);
 
       if (typeof answer === 'string')
         setAnswerData(JSON.parse(answer) || {});
+
+      if (selected) {
+        if ('lessonId' in selected) {
+          const active = data.Lessons.find(el => el.id === selected.lessonId)?.Tasks?.find(el => el.id === selected.id)
+          setSelected(active as TaskData);
+        }
+      }
     }
   }, [data]);
 

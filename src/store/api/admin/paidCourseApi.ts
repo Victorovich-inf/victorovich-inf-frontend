@@ -49,16 +49,40 @@ export const paidCourseApi = createApi({
       }),
       invalidatesTags: ['OneCourse']
     }),
+    checkCurator: builder.mutation<MessageResponse, { courseId: string, lessonId: string, userId: string, taskId: string, correctly: boolean }>({
+      query: (data) => ({
+        url: `/buy-course/curator-check`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ['OneCourse']
+    }),
     resetWinningStreak: builder.mutation<void, void>({
       query: (data) => ({
         url: `/buy-course/reset`,
         method: "DELETE",
       }),
+    }),
+    answerFile: builder.mutation<void, { taskId: string, link: string }>({
+      query: (data) => ({
+        url: `/task/answer-file/`,
+        body: data,
+        method: "POST",
+      }),
+      invalidatesTags: ['OneCourse']
+    }),
+    answerFileAgain: builder.mutation<void, { taskId: string, link: string }>({
+      query: (data) => ({
+        url: `/task/answer-file-again/`,
+        body: data,
+        method: "POST",
+      }),
+      invalidatesTags: ['OneCourse']
     })
   }),
   baseQuery: apiBase
 })
 
 export const {
-  useGetOnePaidQuery, useUpdateProgressMutation, useResetWinningStreakMutation
+  useGetOnePaidQuery, useUpdateProgressMutation, useResetWinningStreakMutation, useAnswerFileMutation, useCheckCuratorMutation, useAnswerFileAgainMutation
 } = paidCourseApi

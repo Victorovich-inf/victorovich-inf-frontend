@@ -1,5 +1,17 @@
 import { Content } from "../content";
 import { LessonData } from '../lesson';
+import { UserData } from '../user';
+
+export interface TaskAnswerFiles {
+  createdAt: string
+  id: number
+  link: string
+  taskId: number
+  updatedAt: string
+  userId: number
+  wrong: boolean
+  user: UserData
+}
 
 export interface TaskData {
   lessonId: number
@@ -9,6 +21,7 @@ export interface TaskData {
   updatedAt: string;
   Content: Content;
   Lesson: LessonData;
+  TaskAnswerFiles: TaskAnswerFiles[];
   answer: string;
   prompt: string;
   taskSolutionText: string;

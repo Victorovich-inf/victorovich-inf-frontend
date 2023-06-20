@@ -33,7 +33,7 @@ export default function Router() {
         { path: 'courses-admin/add', element: <CreateCourse /> },
         { path: 'chats', element: <ChatPage /> },
         { path: 'settings', element: <SettingsUser /> },
-        { path: 'chats/:id', element: <ChatPageWithId /> },
+        { path: 'chats/:idCourse/:id', element: <ChatPageWithId /> },
         { path: 'user/add', element: <CreateUser /> },
         { path: 'user/:id', element: <CreateUser /> },
         { path: 'user/:id/view', element: <CreateUser /> },

@@ -26,9 +26,6 @@ export default function ChatMessageInput({ disabled, onSend, ...other }: ChatMes
           image: filePath
         });
       }
-    },
-    accept: {
-      'image/*': []
     }
   });
 

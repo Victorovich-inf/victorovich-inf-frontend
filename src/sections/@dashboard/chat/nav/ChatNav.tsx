@@ -35,9 +35,10 @@ const NAV_COLLAPSE_WIDTH = 96;
 
 interface ChatNavProps {
   conversations: ChatData[]
+  courseId: number
 }
 
-export default function ChatNav({ conversations }: ChatNavProps) {
+export default function ChatNav({ conversations, courseId }: ChatNavProps) {
   const theme = useTheme();
 
   const {activeChat} = useChatContext()
@@ -75,6 +76,7 @@ export default function ChatNav({ conversations }: ChatNavProps) {
         <ChatNavList
           loading={false}
           openNav={openNav}
+          courseId={courseId}
           onCloseNav={handleCloseNav}
           conversations={conversations}
           selected={(el) => {

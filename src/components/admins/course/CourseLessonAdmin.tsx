@@ -1,19 +1,14 @@
 import React, { useMemo } from 'react';
 import { Box, Button, Card, DialogContent, Grid, IconButton, Stack, Typography } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import { FormProvider, RHFCheckbox, RHFTextField } from '../../hook-form';
 import { useForm } from 'react-hook-form';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
-import Iconify from '../../iconify';
 import AddItem from './AddItem';
 import RowElementAdmin from '../editor/RowElementAdmin';
-import { useEditLessonMutation, useEditTaskMutation, useSavePageMutation } from '../../../store/api/admin/courseApi';
+import { useEditTaskMutation } from '../../../store/api/admin/courseApi';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { editorLessonDialogSchema, editorTaskDialogSchema } from '../../../schemas/editor/dialog/editorDialogSchema';
-import { LessonEditData } from '../../../@types/lesson';
+import { editorTaskDialogSchema } from '../../../schemas/editor/dialog/editorDialogSchema';
 import RHFSwitch from '../../hook-form/RHFSwitch';
-import RHFDateTime from '../../hook-form/RHFDateTime';
-import DialogActions from '@mui/material/DialogActions';
 import axios from '../../../utils/axios';
 import { TaskEditData } from '../../../@types/task';
 import { RHFUpload } from '../../hook-form/RHFUpload';
@@ -109,7 +104,7 @@ const CourseLessonAdmin = () => {
       state.prompt && formData.append('prompt', state.prompt);
       state.index && formData.append('index', state.index.toString());
       state.taskSolutionText && formData.append('taskSolutionText', state.taskSolutionText);
-      state.answerFile && formData.append('answerFile', state.answerFile ? '1' : '0');
+      formData.append('answerFile', state.answerFile ? '1' : '0');
       formData.append('public', state.public ? '1' : '0');
 
       if (handleSave) {

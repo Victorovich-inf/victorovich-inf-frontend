@@ -47,7 +47,7 @@ const ChatPage = ({ user }: ChatPageProps) => {
               <Select2
                 label={'Выбрать курс'}
                 value={courseId}
-                sx={{mb: 2}}
+                sx={{ mb: 2 }}
                 onChange={(e) => {
                   setCourseId(Number(e.target.value));
                 }}
@@ -64,9 +64,10 @@ const ChatPage = ({ user }: ChatPageProps) => {
             </FormControl>
             : null}
         </Box>
-        <Card sx={{ height: '72vh', display: 'flex' }}>
-          {courseId ? <>
-            <ChatNav conversations={data ? data.rows : []} />
+        {courseId ? <>
+          <Card sx={{ minHeight: '40vh', maxHeight: '72vh', display: 'flex' }}>
+
+            <ChatNav courseId={courseId} conversations={data ? data.rows : []} />
 
             <Stack flexGrow={1}>
               <ChatHeaderDetail />
@@ -91,8 +92,9 @@ const ChatPage = ({ user }: ChatPageProps) => {
 
               </Stack>
             </Stack>
-          </> : null}
-        </Card>
+
+          </Card>
+        </> : null}
       </ChatContextProvider>
     </Page>
   );

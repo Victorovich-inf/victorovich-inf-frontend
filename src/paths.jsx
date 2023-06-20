@@ -43,6 +43,6 @@ export const PATH_DASHBOARD = {
   },
   chat: {
     root: path(ROOTS_DASHBOARD, `/chats`),
-    detail: (id) => path(ROOTS_DASHBOARD, `/chats/${id}`),
+    detail: (id, idCourse) => path(ROOTS_DASHBOARD, `/chats/${idCourse}/${id}`),
   }
 };
