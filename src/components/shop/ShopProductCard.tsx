@@ -1,5 +1,5 @@
 import { Link as RouterLink } from 'react-router-dom';
-import { Box, Card, Link, Stack, Fab } from '@mui/material';
+import { Box, Card, Link, Stack } from '@mui/material';
 import { CourseData } from '../../@types/course';
 import { UserData } from '../../@types/user';
 import { PATH_DASHBOARD } from '../../paths';
@@ -8,9 +8,6 @@ import { connect } from 'react-redux';
 import { getUserData } from '../../store/reducers/userReducer';
 import { useBuyCourseMutation } from '../../store/api/admin/courseApi';
 import { useStableNavigate } from '../../contexts/StableNavigateContext';
-import { confirmDialog } from '../dialogs/DialogDelete';
-import { isEmpty } from 'lodash';
-import { showToast } from '../../utils/toast';
 import { makeStyles } from '@mui/styles';
 import { useState } from 'react';
 
@@ -63,37 +60,7 @@ const ShopProductCard = ({ data, user }: ShopProductCardProps) => {
   const handleGoToDetails = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
-    if (data.free) {
-      if (isEmpty(user)) {
-        navigate(PATH_DASHBOARD.courses.details(data.id));
-      } else {
-        buyCourse({
-          id: data.id.toString(),
-          buyed: true,
-        }).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)));
-      }
-    } else if (data.CourseUsers.find(el => el.userId === user.id)) {
-      navigate(PATH_DASHBOARD.courses.details(data.id));
-    } else {
-      if (user?.Subscription?.active) {
-        buyCourse({
-          id: data.id.toString(),
-          buyed: false,
-        }).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)));
-      } else {
-        confirmDialog('Приобретение курса', `Вы действительно хотите приобрести этот курс? Стоимость: ${data?.free ? 'Бесплатно' : `${data.cost}₽`}`,
-          async () => {
-            if (isEmpty(user)) {
-              showToast({ variant: 'close', content: 'Пожалуйста, авторизуйтесь' });
-            } else {
-              await buyCourse({
-                id: data.id.toString(),
-                buyed: true,
-              }).unwrap().then(() => navigate(PATH_DASHBOARD.courses.details(data.id)));
-            }
-          });
-      }
-    }
+    navigate(PATH_DASHBOARD.courses.details(data.id))
   };
 
   const linkTo = PATH_DASHBOARD.courses.details(data.id);
