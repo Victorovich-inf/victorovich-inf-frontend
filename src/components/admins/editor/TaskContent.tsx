@@ -173,7 +173,7 @@ const TaskContent = ({user}: {user: UserData}) => {
             {
               selected.TaskAnswerFiles.map((el: TaskAnswerFiles) => {
                 return <Stack marginTop={2} flex={1} justifyContent="space-between" key={el.id} direction="row" alignItems="center" spacing={1}>
-                  <Typography mr={5} variant="subtitle1">{`${el.User.email}`}</Typography>
+                  <Typography mr={5} variant="subtitle1">{`${el.User.firstName} ${el.User.lastName}`}</Typography>
 
                   <div className='file-details'>
                     <div className='file-details-content'>

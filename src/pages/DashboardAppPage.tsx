@@ -19,6 +19,7 @@ import RHFDateTime from '../components/hook-form/RHFDateTime';
 import Page from '../components/Page';
 import { PATH_DASHBOARD } from '../paths';
 import CustomBreadcrumbs from '../components/custom-breadcrumbs';
+import { useNavigate } from 'react-router-dom';
 
 const COLOR_OPTIONS = [
   '#00AB55',
@@ -35,6 +36,7 @@ export default function DashboardAppPage() {
 
   const [events, setEvents] = useState<EventInput[]>([]);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate()
 
   const { data } = useGetSchedulesQuery();
 
@@ -61,7 +63,8 @@ export default function DashboardAppPage() {
         date: el.start,
         color: COLOR_OPTIONS[Math.floor(Math.random() * COLOR_OPTIONS.length)],
       }));
-      setEvents(events);
+
+      setEvents(events.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i));
     }
   }, [data]);
 
@@ -70,14 +73,14 @@ export default function DashboardAppPage() {
   };
 
   const handleSelectEvent = (arg: { event: { id: any; }; }) => {
-    const event = events.find(el => el.id === arg.event.id);
+    if (data) {
+      const event = data.find(el => el.id.toString() === arg.event.id);
 
-    if (event) {
-      reset({ title: event.title, start: event?.date?.toString() });
-      setOpen(true);
+      if (event) {
+        console.log(event);
+        navigate(PATH_DASHBOARD.courses.details(event.id))
+      }
     }
-    ;
-
   };
 
   return (

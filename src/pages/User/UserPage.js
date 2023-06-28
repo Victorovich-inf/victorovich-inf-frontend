@@ -16,7 +16,7 @@ import useResponsive from '../../hooks/useResponsive';
 
 const ROLE_OPTIONS = [
   {value: null, title: 'Все'},
-  {value: 1, title: 'Адмнистратор'},
+  {value: 1, title: 'Администратор'},
   {value: 2, title: 'Куратор'},
   {value: 0, title: 'Пользователь'},
 ];

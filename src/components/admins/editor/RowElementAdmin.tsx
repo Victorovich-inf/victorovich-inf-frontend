@@ -97,7 +97,7 @@ const RowElementAdmin = ({ data, idx }: RowElementProps) => {
         return <img className={classes.image} src={'src' in data.element ? data.element?.src : ''} alt='image' />;
       }
       case 'video': {
-        return <ReactPlayer  className={clsx(classes.image, 'player')} url={'video' in data.element ? data.element?.video : ''} />;
+        return <ReactPlayer controls={true}  className={clsx(classes.image, 'player')} url={'video' in data.element ? data.element?.video : ''} />;
       }
       case 'html': {
         return <CKEditor

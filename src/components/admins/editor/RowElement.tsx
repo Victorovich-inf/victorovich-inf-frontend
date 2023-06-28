@@ -122,7 +122,7 @@ const RowElement = ({ data, idx }: RowElementProps) => {
         return <img className={classes.image} onClick={() => handleOpenImage('src' in data.element ? data.element?.src :'')} src={'src' in data.element ? data.element?.src : ''} alt='image' />;
       }
       case 'video': {
-        return <ReactPlayer className={clsx(classes.image, 'player-details')}
+        return <ReactPlayer controls={true} className={clsx(classes.image, 'player-details')}
                             url={'video' in data.element ? data.element?.video : ''} />;
       }
       case 'html': {

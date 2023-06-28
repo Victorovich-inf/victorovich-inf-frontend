@@ -23,6 +23,8 @@ interface CoursesChatPageWithIdProps {
 const CoursesChatPageWithId = ({user}: CoursesChatPageWithIdProps) => {
   const scrollRef = useRef<HTMLElement>(null);
 
+  console.log(scrollRef);
+
   const [roomId, setRoomId] = useState<number | null>(null)
 
   const [activeChat, setActiveChat] = useState<ChatData | undefined>()
@@ -66,7 +68,7 @@ const CoursesChatPageWithId = ({user}: CoursesChatPageWithIdProps) => {
 
   useEffect(() => {
     scrollMessagesToBottom();
-  }, [messages]);
+  }, [messages, scrollRef]);
 
   return (
     <Page title={'Чаты | Victorovich-inf'}>

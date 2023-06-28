@@ -31,7 +31,7 @@ export default function ChatMessageInput({ disabled, onSend, ...other }: ChatMes
 
   const [message, setMessage] = useState('');
 
-  const handleSend = (event: { key: string; }) => {
+  const handleSendKey = (event: { key: string; }) => {
     if (event.key === 'Enter') {
       if (onSend && message) {
         onSend({
@@ -42,11 +42,20 @@ export default function ChatMessageInput({ disabled, onSend, ...other }: ChatMes
     }
   };
 
+  const handleSend = () => {
+      if (onSend && message) {
+        onSend({
+          message
+        });
+      }
+      setMessage('');
+  };
+
   return (
     <>
       <InputBase
         value={message}
-        onKeyUp={handleSend}
+        onKeyUp={handleSendKey}
         disabled={disabled}
         onChange={(event) => setMessage(event.target.value)}
         placeholder="Введите сообщение"
@@ -54,6 +63,9 @@ export default function ChatMessageInput({ disabled, onSend, ...other }: ChatMes
           <Stack direction="row" spacing={1} sx={{ flexShrink: 0, mr: 1.5 }}>
             <IconButton  size="small" {...getRootProps()}>
               <Iconify icon="ic:round-add-photo-alternate" />
+            </IconButton>
+            <IconButton onClick={handleSend} size="small">
+              <Iconify icon="material-symbols:send" />
             </IconButton>
           </Stack>
         }
