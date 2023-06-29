@@ -35,7 +35,7 @@ const CuratorContent = () => {
         </Stack>
 
         <Stack spacing={3} divider={<Divider sx={{ borderStyle: 'dashed' }} />}>
-          {course?.CuratorCourses?.length ? course?.CuratorCourses.map(({ User: user, id }) => (
+          {course?.CuratorCourses?.length ? course?.CuratorCourses.map(({ User: user, id, createdAt }) => (
             <Stack key={user.id} spacing={1}>
               <Typography variant="subtitle1">{`${user.firstName} ${user.lastName}`}</Typography>
 
@@ -43,11 +43,11 @@ const CuratorContent = () => {
                 <Box component="span" sx={{ color: 'text.secondary', mr: 0.5 }}>
                   Дата добавления:
                 </Box>
-                {`${convertToDate(user.createdAt)}`}
+                {`${convertToDate(createdAt)}`}
               </Typography>
 
               <Stack direction="row" spacing={1}>
-                <Button onClick={() => deleteFromCourse(id.toString())} color="error" size="small" startIcon={<Iconify icon="eva:trash-2-outline" />}>
+                <Button onClick={() => deleteFromCourse({ id: id.toString(), courseId: course?.id.toString() || '', userId: user.id.toString() })} color="error" size="small" startIcon={<Iconify icon="eva:trash-2-outline" />}>
                   Удалить из курса
                 </Button>
               </Stack>

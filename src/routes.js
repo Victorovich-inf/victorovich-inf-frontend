@@ -18,6 +18,8 @@ import CoursesDetailsPage from './pages/Courses/Details';
 import ChatPage from './pages/Chat/ChatPage';
 import ChatPageWithId from './pages/Chat/ChatPageWithId';
 import CoursesChatPageWithId from './pages/Courses/CoursesChatPageWithId';
+import PasswordResetPage from './pages/auth/PasswordResetPage';
+import ConfirmPage from './pages/auth/ConfirmPage';
 
 export default function Router() {
   return useRoutes([
@@ -65,6 +67,22 @@ export default function Router() {
           element: (
             <GuestGuard>
               <RegisterPage />
+            </GuestGuard>
+          ),
+        },
+        {
+          path: 'reset',
+          element: (
+            <GuestGuard>
+              <PasswordResetPage />
+            </GuestGuard>
+          ),
+        },
+        {
+          path: 'confirm',
+          element: (
+            <GuestGuard>
+              <ConfirmPage />
             </GuestGuard>
           ),
         },

@@ -34,6 +34,7 @@ import { useCreateChatWithCuratorMutation } from '../../store/api/admin/chatApi'
 import { UserData } from '../../@types/user';
 import dayjs from 'dayjs';
 import CuratorButton from '../../components/CuratorButton';
+import { useLocation } from 'react-router-dom';
 
 const dataToContent = (data: CourseData) => {
   const content = {} as Content;
@@ -88,6 +89,7 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
   const [content, setContent] = React.useState<Content>({});
   const [answerData, setAnswerData] = React.useState<AnswerData>({});
   const [percent, setPercent] = React.useState<number>(0);
+  const location = useLocation()
 
   const navigate = useNavigate();
   const [updateProgress] = useUpdateProgressMutation();
@@ -110,9 +112,6 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
 
   const { data } = useGetOnePaidQuery(id || '');
 
-  // console.log(data);
-  // console.log(selected);
-
   React.useEffect(() => {
     if (Object.keys(content).length) {
       let all = Object.keys(content).filter(el => content[el].public).length;
@@ -120,7 +119,17 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
       const percent = calculateProgress(answerData, all);
       setPercent(percent);
     }
-  }, [answerData, content]);
+  }, [answerData, content])
+
+  React.useEffect(() => {
+    const query = new URLSearchParams(location?.search);
+    const lessonId = query.get('lessonId');
+
+    if (lessonId && data && selected === null) {
+      const active = data.Lessons.find(el => el.id === Number(lessonId))
+      setSelected(active as LessonData);
+    }
+  }, [location?.search, data]);
 
   React.useEffect(() => {
     if (data) {

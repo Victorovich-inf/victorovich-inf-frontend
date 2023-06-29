@@ -27,6 +27,7 @@ const ChatPage = ({ user }: ChatPageProps) => {
 
   const { data } = useGetChatsQuery();
 
+  console.log(data);
 
   return (
     <Page title={'Чаты | Victorovich-inf'}>
@@ -67,7 +68,7 @@ const ChatPage = ({ user }: ChatPageProps) => {
         {courseId ? <>
           <Card sx={{ minHeight: '40vh', maxHeight: '72vh', display: 'flex' }}>
 
-            <ChatNav courseId={courseId} conversations={data ? data.rows : []} />
+            <ChatNav courseId={courseId} conversations={data ? data.rows.filter(el => el.courseId === courseId) : []} />
 
             <Stack flexGrow={1}>
               <ChatHeaderDetail />

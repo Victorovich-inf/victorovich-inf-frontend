@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
-import { Stack, IconButton, InputAdornment, Alert, Button } from '@mui/material';
+import { Stack, IconButton, InputAdornment, Alert, Button, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
@@ -10,11 +10,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
 import { auth, setUser } from '../../../store/reducers/userReducer';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { PATH_AUTH } from '../../../paths';
+import { useNavigate } from 'react-router';
 
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
   const { login } = useAuth();
+  const navigate = useNavigate()
 
   const onClickAuth = () => {
     window.open(
@@ -24,7 +28,7 @@ export default function LoginForm() {
     );
   };
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     window.addEventListener('message', async ({ data, origin }) => {
@@ -33,7 +37,7 @@ export default function LoginForm() {
         const answer = JSON.parse(user);
         if (answer?.data) {
           await localStorage.setItem('accessToken', answer.token);
-          await dispatch(setUser(answer.data))
+          await dispatch(setUser(answer.data));
           await dispatch(auth());
         }
       }
@@ -70,22 +74,22 @@ export default function LoginForm() {
     } catch (error) {
       setError('afterSubmit', { ...error, message: error.message });
     }
-  }
+  };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
-        {!!errors.afterSubmit && <Alert severity="error">Неправильный логин или пароль</Alert>}
-        <RHFTextField name="email" label="Email" />
+        {!!errors.afterSubmit && <Alert severity='error'>Неправильный логин или пароль</Alert>}
+        <RHFTextField name='email' label='Email' />
 
         <RHFTextField
-          name="password"
-          label="Пароль"
+          name='password'
+          label='Пароль'
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+              <InputAdornment position='end'>
+                <IconButton onClick={() => setShowPassword(!showPassword)} edge='end'>
                   <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
                 </IconButton>
               </InputAdornment>
@@ -94,13 +98,23 @@ export default function LoginForm() {
         />
       </Stack>
 
-      <LoadingButton sx={{ my: 2 }} fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+      <LoadingButton sx={{ my: 2 }} fullWidth size='large' type='submit' variant='contained' loading={isSubmitting}>
         Войти
       </LoadingButton>
-      <Button onClick={onClickAuth} endIcon={<Iconify icon={'icomoon-free:vk'}/>} sx={{ mb: 2 }}
-              fullWidth size="large" type="button" variant="contained" loading={isSubmitting}>
+      <Button onClick={onClickAuth} endIcon={<Iconify icon={'icomoon-free:vk'} />} sx={{ mb: 2 }}
+              fullWidth size='large' type='button' variant='contained' loading={isSubmitting}>
         Войти через
       </Button>
+      <Typography onClick={() => {
+          navigate(PATH_AUTH.reset)
+      }} alignSelf='flex-end' variant='subtitle2' noWrap style={{
+        fontWeight: 300,
+        color: '#8B8799',
+        fontSize: '16px',
+        cursor: 'pointer',
+      }}>
+        Забыли пароль?
+      </Typography>
     </FormProvider>
   );
 }

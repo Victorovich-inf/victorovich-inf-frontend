@@ -92,5 +92,5 @@ export const chatApi = createApi({
 });
 
 export const {
-  useCreateChatWithCuratorMutation, useGetChatsQuery, useGetMessagesFromRoomQuery
+  useCreateChatWithCuratorMutation, useGetChatsQuery
 } = chatApi;

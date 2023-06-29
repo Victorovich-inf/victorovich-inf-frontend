@@ -24,6 +24,10 @@ export interface UserRegisterData {
   password: string;
 }
 
+export interface UserConfirmData {
+  password: string;
+}
+
 export interface ParseXLSXData {
   file: File;
 }

@@ -188,10 +188,11 @@ export const courseApi = createApi({
       }),
       invalidatesTags: ['Course'],
     }),
-    deleteFromCourse: builder.mutation<MessageResponse, string>({
-      query: (id) => ({
-        url: `/curator/${id}`,
+    deleteFromCourse: builder.mutation<MessageResponse, { courseId: string, userId: string, id: string }>({
+      query: (data) => ({
+        url: `/curator/${data.id}`,
         method: 'DELETE',
+        body: data
       }),
       invalidatesTags: ['OneCourse'],
     }),

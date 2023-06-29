@@ -11,6 +11,7 @@ export const PATH_AUTH = {
   root: ROOTS_AUTH,
   login: path(ROOTS_AUTH, '/login'),
   register: path(ROOTS_AUTH, '/register'),
+  reset: path(ROOTS_AUTH, '/reset'),
 };
 
 export const PATH_NO_AUTH = {
@@ -30,6 +31,7 @@ export const PATH_DASHBOARD = {
     add: path(ROOTS_DASHBOARD, `/courses-admin/add`),
     edit: (id) => path(ROOTS_DASHBOARD, `/courses-admin/${id}/edit`),
     details: (id) => path(ROOTS_DASHBOARD, `/courses/${id}/details`),
+    detailsWithLesson: (id, lessonId) => path(ROOTS_DASHBOARD, `/courses/${id}/details?lessonId=${lessonId}`),
     chat: (idCourse, id) => path(ROOTS_DASHBOARD, `/courses/${idCourse}/chat/${id}`),
   },
   settings: {

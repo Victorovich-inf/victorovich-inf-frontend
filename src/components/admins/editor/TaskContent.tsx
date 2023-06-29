@@ -3,7 +3,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useCourseEditContext } from '../../../utils/context/CourseEditContext';
 import { useForm, useWatch } from 'react-hook-form';
 import { FormProvider, RHFTextField } from '../../hook-form';
-import { Box, Button, Grid, Stack, Typography } from '@mui/material';
+import { Button, Grid, Stack, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import Iconify from '../../iconify';
 import { useDropzone } from 'react-dropzone';
@@ -17,17 +17,35 @@ import {
 import { connect } from 'react-redux';
 import { getUserData } from '../../../store/reducers/userReducer';
 import { UserData } from '../../../@types/user';
-import { convertToDate } from '../../../utils/time';
 import { TaskAnswerFiles } from '../../../@types/task';
 import { downloadFile } from '../../../utils/info';
+import useResponsive from '../../../hooks/useResponsive';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles({
+  image: {
+    maxWidth: '70%',
+    objectFit: 'cover',
+    maxHeight: 450,
+    '@media (max-width: 900px)': {
+      maxWidth: '95%',
+      paddingTop: 20,
+      maxHeight: 300,
+    }
+  },
+});
+
 
 const TaskContent = ({user}: {user: UserData}) => {
+  const classes = useStyles();
+
   const { selected, course, answerData, updateProgressLesson, isCurator } = useCourseEditContext();
   const [uploadImage] = useUploadImageMutation()
   const [answerFile] = useAnswerFileMutation()
   const [answerFileAgain] = useAnswerFileAgainMutation()
   const [checkCurator] = useCheckCuratorMutation()
   const [showPrompt, setShowPrompt] = React.useState(false);
+  const isMobile = useResponsive('down', 'sm');
 
   const defaultValues = useMemo(() => ({
     answer: '',
@@ -162,6 +180,12 @@ const TaskContent = ({user}: {user: UserData}) => {
         <Typography variant='subtitle1' sx={{ color: 'text.secondary' }}>
           Ответ: {selected.answer}
         </Typography>
+        {selected?.taskSolutionFile ? <Stack spacing={1} direction="column">
+          <Typography variant='subtitle1' sx={{ color: 'text.secondary' }}>
+            Ответ (файл):
+          </Typography>
+          <img className={classes.image} src={`${process.env.REACT_APP_API_URL}/${selected.taskSolutionFile}`} alt='taskSolutionFile' />
+        </Stack>: null}
         {selected.prompt ? <Typography variant='subtitle1' sx={{ color: 'text.secondary' }}>
           Подсказка: {selected.prompt}
         </Typography> : null}
@@ -172,7 +196,7 @@ const TaskContent = ({user}: {user: UserData}) => {
           <Stack direction="column" spacing={2}>
             {
               selected.TaskAnswerFiles.map((el: TaskAnswerFiles) => {
-                return <Stack marginTop={2} flex={1} justifyContent="space-between" key={el.id} direction="row" alignItems="center" spacing={1}>
+                return <Stack marginTop={2} flex={1} justifyContent="space-between" key={el.id} direction={isMobile ? 'column' : 'row'} alignItems="center" spacing={isMobile ? 3 : 1}>
                   <Typography mr={5} variant="subtitle1">{`${el.User.firstName} ${el.User.lastName}`}</Typography>
 
                   <div className='file-details'>

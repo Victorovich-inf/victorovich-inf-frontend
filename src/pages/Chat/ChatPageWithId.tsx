@@ -92,7 +92,7 @@ const ChatPageWithId = ({user}: ChatPageWithIdProps) => {
               }}
             >
               <Stack flexGrow={1}>
-                {messages?.length ?  <ChatMessageList ref={scrollRef} /> : <Box flex={1}></Box>}
+                {messages?.length ?  <ChatMessageList  /> : <Box flex={1}></Box>}
 
                 <ChatMessageInput
                   onSend={({ message, image }: {message?: string, image?: string}) => {

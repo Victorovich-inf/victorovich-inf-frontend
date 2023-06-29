@@ -45,6 +45,7 @@ export default function ChatNavList({
         return <ChatNavItem
           key={idx}
           openNav={openNav}
+          lastActivity={el?.Messages?.slice(-1)[0]?.createdAt || ''}
           conversation={el}
           isSelected={params?.id === el?.id?.toString()}
           onSelect={() => {

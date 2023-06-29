@@ -15,11 +15,11 @@ interface ChatNavItemProps {
   conversation: ChatData;
   openNav: boolean;
   isSelected: boolean;
+  lastActivity: string;
   onSelect: () => void;
 }
 
-export default function ChatNavItem({ conversation, openNav, isSelected, onSelect }: ChatNavItemProps) {
-  const lastActivity = conversation.createdAt;
+export default function ChatNavItem({ conversation, openNav, lastActivity, isSelected, onSelect }: ChatNavItemProps) {
 
   const secondaryText = conversation.user?.role === 2 ?  'Куратор' : 'Ученик'
 

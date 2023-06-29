@@ -48,6 +48,7 @@ const StudentColumn = ({ user, end, completed, id }: StudentColumnProps) => {
   }
 
   return <Stack spacing={1}>
+    <Typography variant='subtitle1'>{`${user.firstName} ${user.lastName}`}</Typography>
     <Typography variant='subtitle1'>{`${user.email}`}</Typography>
     <Typography variant='body2'>
       <Box component='span' sx={{ color: 'text.secondary', mr: 0.5 }}>
@@ -114,7 +115,7 @@ const StudentsContent = ({ user }: StudentsContentProps) => {
         </Stack>
 
         <Stack spacing={3} divider={<Divider sx={{ borderStyle: 'dashed' }} />}>
-          {course?.CourseUsers?.length ? course?.CourseUsers.filter((el) => el.User.id !== user.id).map(({
+          {course?.CourseUsers?.length ? course?.CourseUsers.filter((el) => el.User.id !== user.id && el.User.role === 0).map(({
                                                                                                            completed,
                                                                                                            end,
                                                                                                            User: user,

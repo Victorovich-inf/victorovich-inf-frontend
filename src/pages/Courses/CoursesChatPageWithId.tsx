@@ -21,10 +21,6 @@ interface CoursesChatPageWithIdProps {
 }
 
 const CoursesChatPageWithId = ({user}: CoursesChatPageWithIdProps) => {
-  const scrollRef = useRef<HTMLElement>(null);
-
-  console.log(scrollRef);
-
   const [roomId, setRoomId] = useState<number | null>(null)
 
   const [activeChat, setActiveChat] = useState<ChatData | undefined>()
@@ -40,12 +36,6 @@ const CoursesChatPageWithId = ({user}: CoursesChatPageWithIdProps) => {
   const handleSelectMessage = (message: MessagesData | null) => {
     setSelectedMessage(message);
   }
-
-  const scrollMessagesToBottom = () => {
-    if (scrollRef?.current) {
-      scrollRef.current.scrollTop = scrollRef?.current.scrollHeight;
-    }
-  };
 
   const { data: dataCourse } = useGetOnePaidQuery(params.idCourse || '');
 
@@ -65,10 +55,6 @@ const CoursesChatPageWithId = ({user}: CoursesChatPageWithIdProps) => {
       setSelectedMessage(null)
     }
   }, [params, data]);
-
-  useEffect(() => {
-    scrollMessagesToBottom();
-  }, [messages, scrollRef]);
 
   return (
     <Page title={'Чаты | Victorovich-inf'}>
@@ -93,7 +79,7 @@ const CoursesChatPageWithId = ({user}: CoursesChatPageWithIdProps) => {
               }}
             >
               <Stack flexGrow={1}>
-                {messages?.length ?  <ChatMessageList ref={scrollRef} /> : <Box flex={1}></Box>}
+                {messages?.length ?  <ChatMessageList  /> : <Box flex={1}></Box>}
 
                 <ChatMessageInput
                   onSend={({ message, image }: {message?: string, image?: string}) => {

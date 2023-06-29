@@ -57,17 +57,6 @@ const navConfig = (role) => {
         subheader: 'Дашбоард',
         items: [
           {
-            title: 'Пользователи',
-            path: '/dashboard/user',
-            icon: icon('ic_user'),
-            role: [1],
-          },
-          {
-            title: 'Календарь',
-            path: '/dashboard/app',
-            icon: icon('ic_calendar'),
-          },
-          {
             title: 'Каталог',
             path: '/dashboard/courses',
             icon: icon('ic_courses-admin'),
@@ -96,11 +85,6 @@ const navConfig = (role) => {
           title: 'Каталог',
           path: '/dashboard/courses',
           icon: icon('ic_courses-admin'),
-        },
-        {
-          title: 'Чат',
-          path: '/dashboard/chats',
-          icon: icon('ic_chat'),
         }
       ],
     },

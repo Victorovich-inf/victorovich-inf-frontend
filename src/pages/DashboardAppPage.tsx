@@ -77,8 +77,7 @@ export default function DashboardAppPage() {
       const event = data.find(el => el.id.toString() === arg.event.id);
 
       if (event) {
-        console.log(event);
-        navigate(PATH_DASHBOARD.courses.details(event.id))
+        navigate(PATH_DASHBOARD.courses.detailsWithLesson(event.courseId, event.id))
       }
     }
   };

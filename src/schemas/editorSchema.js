@@ -7,7 +7,7 @@ export const settingsImage = Yup.object().shape({
 });
 
 export const settingsVideo = Yup.object().shape({
-  video: Yup.string().required('Ссылка не может быть пустой').matches(YOUTUBE, 'Это не ссылка на Youtube'),
+  video: Yup.string().required('Ссылка не может быть пустой').matches(URL, 'Это не ссылка'),
 });
 
 export const settingsFile = Yup.object().shape({

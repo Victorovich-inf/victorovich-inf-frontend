@@ -6,7 +6,6 @@ import Iconify from '../../../../components/iconify';
 import Scrollbar from '../../../../components/scrollbar';
 import ChatNavList from './ChatNavList';
 import { ChatData } from '../../../../@types/chat';
-import { useParams } from 'react-router';
 import { useChatContext } from '../../../../utils/context/ChatContext';
 
 const StyledToggleButton = styled((props) => <IconButton disableRipple {...props} />)(

@@ -9,7 +9,9 @@ export interface ChatData {
   id?: string;
   user1Id: number;
   user2Id: number;
+  courseId: number;
   createdAt: string;
+  Messages: MessagesData[]
   user1: UserData;
   user2: UserData;
   user?: UserData;

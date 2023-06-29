@@ -1,15 +1,24 @@
-import { useEffect, useState, useRef, forwardRef, ForwardedRef } from 'react';
+import { useEffect, useState, createRef } from 'react';
 import Scrollbar from '../../../../components/scrollbar';
 import Lightbox from '../../../../components/lightbox';
 import ChatMessageItem from './ChatMessageItem';
 import { useChatContext } from '../../../../utils/context/ChatContext';
 
-const ChatMessageList = forwardRef<HTMLElement>( (props, scrollRef) => {
+const ChatMessageList = () => {
+  const scrollRef = createRef<HTMLElement>();
+  const scrollRef2 = createRef<HTMLDivElement>();
 
   const { messages } = useChatContext();
 
   const [selectedImage, setSelectedImage] = useState(-1);
 
+  const scrollMessagesToBottom = () => {
+    setTimeout(() => {
+      if (scrollRef2.current)
+        scrollRef2.current.scrollIntoView({ behavior: 'smooth' });
+    }, 300);
+
+  };
 
   const imagesLightbox: Array<{ src: string }> = messages?.length ? messages
     ?.filter((message) => message?.image)
@@ -26,13 +35,17 @@ const ChatMessageList = forwardRef<HTMLElement>( (props, scrollRef) => {
     setSelectedImage(-1);
   };
 
+  useEffect(() => {
+    scrollMessagesToBottom();
+  }, [messages]);
+
   return (
     <>
       <Scrollbar
         scrollableNodeProps={{
           ref: scrollRef,
         }}
-        sx={{ p: 3, height: 1 }}
+        sx={{ p: 3, height: 1, position: 'relative' }}
       >
         {messages?.map((message) => (
           <ChatMessageItem
@@ -41,6 +54,7 @@ const ChatMessageList = forwardRef<HTMLElement>( (props, scrollRef) => {
             onOpenLightbox={(url) => handleOpenLightbox(url)}
           />
         ))}
+        <div ref={scrollRef2} style={{ width: '100%', height: 11 }} />
       </Scrollbar>
 
       {// @ts-ignore
@@ -51,6 +65,6 @@ const ChatMessageList = forwardRef<HTMLElement>( (props, scrollRef) => {
           close={handleCloseLightbox} />}
     </>
   );
-})
+};
 
-export default ChatMessageList
+export default ChatMessageList;
