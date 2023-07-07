@@ -97,6 +97,12 @@ const RowElementAdmin = ({ data, idx }: RowElementProps) => {
         return <img className={classes.image} src={'src' in data.element ? data.element?.src : ''} alt='image' />;
       }
       case 'video': {
+        if ('video' in data.element && data.element.video.includes('vk.com')) {
+          return <iframe src={data.element?.video} height="360" width="640"
+                         className={clsx(classes.image, 'player')} allow="autoplay; encrypted-media; fullscreen; picture-in-picture;"
+                         frameBorder="0" allowFullScreen/>
+        }
+
         return <ReactPlayer controls={true}  className={clsx(classes.image, 'player')} url={'video' in data.element ? data.element?.video : ''} />;
       }
       case 'html': {

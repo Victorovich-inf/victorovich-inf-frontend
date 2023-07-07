@@ -24,6 +24,7 @@ export interface CourseUser {
   id: number
   updatedAt: string
   buyed: boolean;
+  hasCurator: boolean;
   curator: boolean;
   userId: number;
   end: string;

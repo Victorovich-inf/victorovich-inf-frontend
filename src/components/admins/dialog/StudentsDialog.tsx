@@ -16,6 +16,7 @@ import { FormProvider, RHFTextField } from '../../hook-form';
 import RHFDateTime from '../../hook-form/RHFDateTime';
 import * as Yup from 'yup';
 import { useAddUserToCourseMutation } from '../../../store/api/admin/courseApi';
+import RHFSwitch from '../../hook-form/RHFSwitch';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -74,6 +75,7 @@ const StudentsDialog = ({ open, handleClose }: CuratorDialogProps) => {
 
   const defaultValues = useMemo(() => ({
     email: '',
+    hasCurator: true,
     end: new Date(),
   }), []);
 
@@ -87,10 +89,10 @@ const StudentsDialog = ({ open, handleClose }: CuratorDialogProps) => {
   } = methods;
 
 
-  const onSubmit = async (state: {email: string, end: Date}) => {
+  const onSubmit = async (state: {email: string, end: Date, hasCurator: boolean}) => {
     try {
       if (course) {
-        await addUserToCourse({courseId: course.id.toString(), email: state.email, end: state.end.toString()})
+        await addUserToCourse({courseId: course.id.toString(), email: state.email, end: state.end.toString(), hasCurator: state.hasCurator})
         handleClose()
       }
     } catch (e) {
@@ -118,6 +120,9 @@ const StudentsDialog = ({ open, handleClose }: CuratorDialogProps) => {
             </Grid>
             <Grid item xs={12} md={12}>
               <RHFDateTime name='end' label='До какого числа оплата' />
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <RHFSwitch name='hasCurator' label='Есть куратор' helperText={undefined} />
             </Grid>
           </Grid>
         </DialogContent>

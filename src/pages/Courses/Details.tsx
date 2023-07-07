@@ -89,6 +89,7 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
   const [content, setContent] = React.useState<Content>({});
   const [answerData, setAnswerData] = React.useState<AnswerData>({});
   const [percent, setPercent] = React.useState<number>(0);
+  const [hasCurator, setHasCurator] = React.useState<boolean>(true);
   const location = useLocation()
 
   const navigate = useNavigate();
@@ -135,6 +136,7 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
     if (data) {
       const answer = data.CourseUsers?.[0]?.ProgressCourseUsers[0]?.data;
 
+
       const content = dataToContent(data);
 
       setContent(content);
@@ -149,7 +151,17 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
         }
       }
     }
-  }, [data]);
+  }, [data])
+
+  React.useEffect(() => {
+    if (data && user) {
+      const courseUser = data.CourseUsers?.find(el => el.userId == user.id)
+
+      if (courseUser) {
+        setHasCurator(courseUser.hasCurator)
+      }
+    }
+  }, [data, user]);
 
   const updateProgressLesson = (lesson: string, task?: string, answer?: string) => {
     const hasKey = Object.keys(answerData).includes(lesson);
@@ -504,7 +516,7 @@ function Details({ isCurator, user }: { isCurator: boolean, user: UserData }) {
                 <Stack sx={{ marginTop: 2, marginLeft: !isMobile ? 'auto' : 0, width: { xs: '100%', md: 'auto' } }}
                        spacing={2}
                        direction={isMobile ? 'column' : 'row'}>
-                  {!isCurator && data?.CuratorCourses?.length ?
+                  {!isCurator && data?.CuratorCourses?.length && hasCurator ?
                     <CuratorButton/> : null}
                   <Button size={isMobile ? 'small' : 'medium'} fullWidth={isMobile}
                           onClick={() => navigate(PATH_DASHBOARD.courses.rootUser)}

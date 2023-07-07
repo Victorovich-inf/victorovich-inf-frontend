@@ -204,7 +204,7 @@ export const courseApi = createApi({
       }),
       invalidatesTags: ['OneCourse'],
     }),
-    addUserToCourse: builder.mutation<MessageResponse, { courseId: string, email: string; end: string }>({
+    addUserToCourse: builder.mutation<MessageResponse, { courseId: string, email: string; end: string; hasCurator: boolean }>({
       query: (data) => ({
         url: `/course/admin/add-user`,
         method: 'POST',
